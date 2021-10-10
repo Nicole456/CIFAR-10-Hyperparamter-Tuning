@@ -110,7 +110,7 @@ Based on the following parameters $$lr=0.01,\beta=0.9,nesterov=True$$, a compara
 
 <img src="img1/image-20211008163026664.png" alt="image-20211008163026664" style="zoom:50%;" />
 
-part 5 结合阶梯学习率衰减策略
+part 5 
 
 $$ epoch=200,lr=0.01,\beta=0.9,nesterov=True$$
 
