@@ -1,0 +1,684 @@
+1
+00:00:00,000 --> 00:00:02,745
+In this concept, we're going to answer the question,
+
+2
+00:00:02,745 --> 00:00:05,400
+how do we actually use epsilon and delta?
+
+3
+00:00:05,400 --> 00:00:08,490
+We're going to learn how to take a query and at a certain degree of
+
+4
+00:00:08,490 --> 00:00:11,710
+noise to make what we call a randomized mechanism.
+
+5
+00:00:11,710 --> 00:00:17,445
+We want this randomized mechanism to satisfy a certain degree of differential privacy.
+
+6
+00:00:17,445 --> 00:00:20,310
+We went to augment a query like a sum, threshold,
+
+7
+00:00:20,310 --> 00:00:23,500
+mean or average and add a certain amount of noise to
+
+8
+00:00:23,500 --> 00:00:27,435
+this query so that we get a certain amount of differential privacy.
+
+9
+00:00:27,435 --> 00:00:29,720
+In particular, we're going to leave behind
+
+10
+00:00:29,720 --> 00:00:31,730
+the local differential privacy previously discussed,
+
+11
+00:00:31,730 --> 00:00:34,265
+and instead opt for global differential privacy.
+
+12
+00:00:34,265 --> 00:00:36,530
+As I mentioned earlier, the difference between local and
+
+13
+00:00:36,530 --> 00:00:39,920
+global is that global differential privacy adds noise to
+
+14
+00:00:39,920 --> 00:00:42,890
+the output of a query while local differential privacy
+
+15
+00:00:42,890 --> 00:00:46,115
+adds noise to each data input to the query.
+
+16
+00:00:46,115 --> 00:00:48,785
+So given that we are going for global dP,
+
+17
+00:00:48,785 --> 00:00:52,670
+we're adding noise to the output and how much noise should we add?
+
+18
+00:00:52,670 --> 00:00:56,480
+We're going to add the minimum amount required to
+
+19
+00:00:56,480 --> 00:01:00,259
+satisfy a certain level of epsilon and delta,
+
+20
+00:01:00,259 --> 00:01:04,340
+which we will term our privacy budget for a given query.
+
+21
+00:01:04,340 --> 00:01:05,840
+Now, in order to do this, there are
+
+22
+00:01:05,840 --> 00:01:07,715
+two types of noise we could add as I mentioned earlier;
+
+23
+00:01:07,715 --> 00:01:09,475
+Gaussian noise or Laplacian noise.
+
+24
+00:01:09,475 --> 00:01:13,190
+Generally speaking, Laplacian noise works better but technically
+
+25
+00:01:13,190 --> 00:01:17,135
+both are still valid and can give us varying levels of epsilon-delta privacy.
+
+26
+00:01:17,135 --> 00:01:20,725
+In this case, we're going to exclusively focus on Laplacian.
+
+27
+00:01:20,725 --> 00:01:22,225
+Now, to the hard question.
+
+28
+00:01:22,225 --> 00:01:24,825
+How much noise should we add?
+
+29
+00:01:24,825 --> 00:01:27,980
+The amount of noise necessary to add to the output of
+
+30
+00:01:27,980 --> 00:01:31,100
+the query is a function of four things.
+
+31
+00:01:31,100 --> 00:01:35,960
+First, the amount of noise is dependent on the type of noise that we're adding.
+
+32
+00:01:35,960 --> 00:01:38,755
+We're just going to focus on Laplacian here, so that one's easy.
+
+33
+00:01:38,755 --> 00:01:41,945
+Second, we must take into account the sensitivity
+
+34
+00:01:41,945 --> 00:01:45,020
+of the query that we are using to query the database.
+
+35
+00:01:45,020 --> 00:01:47,090
+As mentioned, some queries are way more
+
+36
+00:01:47,090 --> 00:01:49,790
+sensitive to removing a person from the database and other queries.
+
+37
+00:01:49,790 --> 00:01:52,640
+Some sensitivity is very consistent sensitivity,
+
+38
+00:01:52,640 --> 00:01:56,105
+as in every database always has the same level of sensitivity for that query type.
+
+39
+00:01:56,105 --> 00:01:57,710
+Whereas some queries, have
+
+40
+00:01:57,710 --> 00:02:00,970
+varying levels of sensitivity that is dependent on the database.
+
+41
+00:02:00,970 --> 00:02:03,770
+Then of course, the two other things we must take into
+
+42
+00:02:03,770 --> 00:02:06,940
+account is the desired epsilon and delta.
+
+43
+00:02:06,940 --> 00:02:09,620
+Thus, for each type of noise that we're adding,
+
+44
+00:02:09,620 --> 00:02:13,730
+we have a different way of calculating how much noise to add as a function of
+
+45
+00:02:13,730 --> 00:02:18,685
+the sensitivity of the query to meet a certain epsilon-delta constraint.
+
+46
+00:02:18,685 --> 00:02:20,350
+So to restate this,
+
+47
+00:02:20,350 --> 00:02:25,385
+each noise type has a specific function, which tells
+
+48
+00:02:25,385 --> 00:02:31,585
+us how much noise to add given a certain sensitivity, epsilon and delta.
+
+49
+00:02:31,585 --> 00:02:35,405
+For Laplacian noise, this function is the following.
+
+50
+00:02:35,405 --> 00:02:38,990
+Laplacian noise takes an input parameter beta,
+
+51
+00:02:38,990 --> 00:02:41,750
+which determines how significant the noise is.
+
+52
+00:02:41,750 --> 00:02:44,660
+We set the beta by taking the sensitivity of
+
+53
+00:02:44,660 --> 00:02:49,300
+the query and dividing it by the epsilon that we want to achieve.
+
+54
+00:02:49,300 --> 00:02:52,570
+As it happens, delta is always zero for Laplacian noise,
+
+55
+00:02:52,570 --> 00:02:54,035
+so we can just ignore it.
+
+56
+00:02:54,035 --> 00:03:00,050
+In other words, if we set beta to be this value when creating our Laplacian noise,
+
+57
+00:03:00,050 --> 00:03:03,020
+then we know we will have a privacy leakage which is
+
+58
+00:03:03,020 --> 00:03:06,625
+less than or equal to a certain amount of epsilon.
+
+59
+00:03:06,625 --> 00:03:09,530
+Furthermore, the nice thing about Laplacian noise is that we
+
+60
+00:03:09,530 --> 00:03:12,785
+don't have to worry about delta because it's always set to zero.
+
+61
+00:03:12,785 --> 00:03:15,410
+Gaussian noise has a non-zero delta,
+
+62
+00:03:15,410 --> 00:03:17,330
+which is why it's somewhat less desirable.
+
+63
+00:03:17,330 --> 00:03:20,225
+Thus, we're using Laplacian for this exercise.
+
+64
+00:03:20,225 --> 00:03:23,030
+There's this really awesome proof for why this is the case but that proof is
+
+65
+00:03:23,030 --> 00:03:25,700
+not necessary to know how to use Laplacian noise.
+
+66
+00:03:25,700 --> 00:03:28,655
+Furthermore, when reading literature about differential privacy,
+
+67
+00:03:28,655 --> 00:03:31,545
+you've heard the term Laplacian mechanism,
+
+68
+00:03:31,545 --> 00:03:35,465
+which refers to a function being augmented with Laplacian noise in this way,
+
+69
+00:03:35,465 --> 00:03:38,000
+forming the mechanism " [inaudible] " in
+
+70
+00:03:38,000 --> 00:03:40,925
+the original and differential privacy function discussed earlier.
+
+71
+00:03:40,925 --> 00:03:44,135
+The thing we need to know here however is that we can take
+
+72
+00:03:44,135 --> 00:03:47,885
+any query for which we have a measure of sensitivity,
+
+73
+00:03:47,885 --> 00:03:52,295
+choose any arbitrary epsilon budget that we want to preserve and we can
+
+74
+00:03:52,295 --> 00:03:57,490
+add the appropriate amount of Laplacian noise to the alphabet of the query, pretty neat.
+
+75
+00:03:57,490 --> 00:04:00,750
+In the next project, I want you to do this yourself.
+
+76
+00:04:00,750 --> 00:04:04,790
+First, modify a query for some with the appropriate amount of
+
+77
+00:04:04,790 --> 00:04:08,840
+Laplacian noise so that you can satisfy a certain epsilon delta constraint.
+
+78
+00:04:08,840 --> 00:04:12,020
+So this new some query should automatically add
+
+79
+00:04:12,020 --> 00:04:15,350
+the appropriate noise given an arbitrary epsilon level.
+
+80
+00:04:15,350 --> 00:04:19,660
+For Laplace, you can use the Laplace function np.random.laplace.
+
+81
+00:04:19,660 --> 00:04:22,850
+After you had this mechanism working for the sum function,
+
+82
+00:04:22,850 --> 00:04:26,840
+I then want you to do the same thing for the mean function.
+
+83
+00:04:26,840 --> 00:04:29,930
+Scaling the Laplacian noise correctly given the fact that,
+
+84
+00:04:29,930 --> 00:04:33,055
+mean has a different level of sensitivity than sum.
+
+85
+00:04:33,055 --> 00:04:36,170
+So in this lesson, we're going to learn about how to take a query and add
+
+86
+00:04:36,170 --> 00:04:40,280
+varying amounts of noise so that it satisfies a certain degree of differential privacy.
+
+87
+00:04:40,280 --> 00:04:44,030
+In particular, we're going to leave behind the local differential privacy we've
+
+88
+00:04:44,030 --> 00:04:48,095
+previously discussed and instead opt to focus on global differential privacy.
+
+89
+00:04:48,095 --> 00:04:49,700
+So as you may remember, since
+
+90
+00:04:49,700 --> 00:04:52,765
+Global differential privacy adds noise to the output of the query.
+
+91
+00:04:52,765 --> 00:04:54,970
+In this lesson, we're going to focus on learning
+
+92
+00:04:54,970 --> 00:04:57,910
+how much noise we should add to the output of the query,
+
+93
+00:04:57,910 --> 00:04:58,960
+so that it satisfies
+
+94
+00:04:58,960 --> 00:05:02,575
+a certain epsilon-delta differential privacy threshold
+
+95
+00:05:02,575 --> 00:05:05,200
+based on the formula that we learned in the last lesson.
+
+96
+00:05:05,200 --> 00:05:07,045
+So now, the question is,
+
+97
+00:05:07,045 --> 00:05:09,095
+how much noise should we add?
+
+98
+00:05:09,095 --> 00:05:11,650
+Well, the amount of noise necessary to add to the output of
+
+99
+00:05:11,650 --> 00:05:14,560
+the query is a function of four different things.
+
+100
+00:05:14,560 --> 00:05:16,840
+The first is the type of noise that want to use,
+
+101
+00:05:16,840 --> 00:05:19,795
+the most common types are Gaussian or Laplacian noise.
+
+102
+00:05:19,795 --> 00:05:23,950
+Which is simply just two different distributions that we can sample random numbers from.
+
+103
+00:05:23,950 --> 00:05:27,400
+The second, is the sensitivity of the query or
+
+104
+00:05:27,400 --> 00:05:31,230
+function that we're adding the noise to the output off, right?
+
+105
+00:05:31,230 --> 00:05:33,190
+So if we're adding noise to the output of
+
+106
+00:05:33,190 --> 00:05:36,160
+a sum query that might have a sensitivity of one,
+
+107
+00:05:36,160 --> 00:05:39,490
+then that would cause us to add a certain degree of noise.
+
+108
+00:05:39,490 --> 00:05:43,540
+But if we're adding noise to a different query that has a different sensitivity,
+
+109
+00:05:43,540 --> 00:05:45,895
+then we would add a different amount of noise, right?
+
+110
+00:05:45,895 --> 00:05:49,510
+The third thing is the desired level of epsilon that
+
+111
+00:05:49,510 --> 00:05:52,930
+we want to make sure they are next query is beneath.
+
+112
+00:05:52,930 --> 00:05:55,960
+Fourth, the desired delta, the one that stay beneath.
+
+113
+00:05:55,960 --> 00:05:57,940
+So these are our constraints on the amount of
+
+114
+00:05:57,940 --> 00:06:01,000
+privacy leakage that we're want to allow and then this
+
+115
+00:06:01,000 --> 00:06:03,370
+is the sensitivity or the king of function that we're adding
+
+116
+00:06:03,370 --> 00:06:06,355
+noise to the output of and is the type of noise we are adding to.
+
+117
+00:06:06,355 --> 00:06:07,540
+With these four things,
+
+118
+00:06:07,540 --> 00:06:10,330
+we can figure out how much noise we should add and actually
+
+119
+00:06:10,330 --> 00:06:13,445
+properly build a randomized mechanism.
+
+120
+00:06:13,445 --> 00:06:15,810
+So thus, for each type of noise we're adding,
+
+121
+00:06:15,810 --> 00:06:18,280
+we have a different way of calculating how much to add as
+
+122
+00:06:18,280 --> 00:06:21,355
+a function of sensitivity, epsilon and delta.
+
+123
+00:06:21,355 --> 00:06:23,815
+We're going to focus on Laplacian noise.
+
+124
+00:06:23,815 --> 00:06:27,670
+So Laplacian noise, increase and decrease according to a scale parameter beta.
+
+125
+00:06:27,670 --> 00:06:32,035
+Before I get to you, there are wide variety of different kinds of randomized mechanisms.
+
+126
+00:06:32,035 --> 00:06:33,730
+In this course, we're only going to go
+
+127
+00:06:33,730 --> 00:06:37,210
+through a small handful of them and I highly encourage you,
+
+128
+00:06:37,210 --> 00:06:38,440
+when you do finish this course,
+
+129
+00:06:38,440 --> 00:06:41,770
+to Google around and learn some more about the different kinds of differential
+
+130
+00:06:41,770 --> 00:06:45,655
+private randomized mechanisms that can be appropriate for different use cases.
+
+131
+00:06:45,655 --> 00:06:48,150
+Okay. So back to Laplacian noise.
+
+132
+00:06:48,150 --> 00:06:51,580
+So Laplacian noise is the amount of noise you're adding for
+
+133
+00:06:51,580 --> 00:06:56,210
+a Laplacian distribution is increased or decreased according to a scale parameter beta.
+
+134
+00:06:56,210 --> 00:06:58,790
+We choose beta based on the following formula.
+
+135
+00:06:58,790 --> 00:07:02,675
+B or beta equals the sensitivity of our query.
+
+136
+00:07:02,675 --> 00:07:05,420
+That's the query that we are adding this noise to,
+
+137
+00:07:05,420 --> 00:07:09,380
+divided by epsilon, right?
+
+138
+00:07:09,380 --> 00:07:13,800
+This epsilon again, we're spending this epsilon for every query, right?
+
+139
+00:07:13,800 --> 00:07:16,570
+So if we're querying a database, right?
+
+140
+00:07:16,570 --> 00:07:17,935
+Every time we do it,
+
+141
+00:07:17,935 --> 00:07:20,930
+we're going to spend this amount of epsilon, right?
+
+142
+00:07:20,930 --> 00:07:24,800
+So the notion here is that we have a certain epsilon budget that
+
+143
+00:07:24,800 --> 00:07:28,670
+we wanted to stay underneath and that by using this simple formula,
+
+144
+00:07:28,670 --> 00:07:32,870
+we can know how much noise we have to add to the output of these queries in
+
+145
+00:07:32,870 --> 00:07:37,480
+order to make sure that we are preserving privacy.
+
+146
+00:07:37,480 --> 00:07:40,520
+So in other words, if we set b this value, b this value,
+
+147
+00:07:40,520 --> 00:07:43,760
+that we know that we'll have a privacy leakage of less than or equal to epsilon.
+
+148
+00:07:43,760 --> 00:07:47,240
+The nice thing about Laplacian noise is that it actually guarantees that
+
+149
+00:07:47,240 --> 00:07:50,730
+we do this with a delta that is equal to zero, right?
+
+150
+00:07:50,730 --> 00:07:52,490
+So we have these four things right here.
+
+151
+00:07:52,490 --> 00:07:54,785
+So type of noise, sensitivity, epsilon-delta.
+
+152
+00:07:54,785 --> 00:07:57,770
+Laplacian noise always has a delta that's zero.
+
+153
+00:07:57,770 --> 00:08:01,400
+So if you remember, delta was a probability that we would
+
+154
+00:08:01,400 --> 00:08:05,550
+accidentally leak more than this amount of epsilon, right?
+
+155
+00:08:05,550 --> 00:08:12,340
+So Laplacian is guaranteed to not leak more than this amount of epsilon.
+
+156
+00:08:12,340 --> 00:08:15,085
+Now, one other question you might have,
+
+157
+00:08:15,085 --> 00:08:17,165
+what happens if we want to query repeatedly?
+
+158
+00:08:17,165 --> 00:08:18,890
+Well, as it happens,
+
+159
+00:08:18,890 --> 00:08:21,820
+if we do query repeatedly,
+
+160
+00:08:21,820 --> 00:08:25,610
+then we can simply add the epsilons across the different queries.
+
+161
+00:08:25,610 --> 00:08:27,380
+So if we have epsilon of say five,
+
+162
+00:08:27,380 --> 00:08:32,420
+we could do five queries that leak epsilon of value one for example.
+
+163
+00:08:32,420 --> 00:08:36,635
+This is how the Laplacian mechanism works.
+
+164
+00:08:36,635 --> 00:08:40,085
+In the next section, what I would like for you to do is actually
+
+165
+00:08:40,085 --> 00:08:44,220
+perform a sum and a mean query, right?
+
+166
+00:08:44,220 --> 00:08:46,580
+So you can take the sum and the mean query over
+
+167
+00:08:46,580 --> 00:08:49,370
+the database and use the ones we used previously in the course.
+
+168
+00:08:49,370 --> 00:08:53,000
+I want you to add a certain amount of Laplacian noise to the output,
+
+169
+00:08:53,000 --> 00:08:56,200
+so that you're underneath a certain level epsilon.
+
+170
+00:08:56,200 --> 00:08:58,415
+In the next lesson, I'll show you how I would do this.
+
+171
+00:08:58,415 --> 00:08:59,840
+See you then.
+

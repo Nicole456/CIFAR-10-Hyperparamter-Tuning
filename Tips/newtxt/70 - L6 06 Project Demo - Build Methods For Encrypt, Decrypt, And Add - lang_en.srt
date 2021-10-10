@@ -1,0 +1,94 @@
+So in this video I'm going to show you how I would create these different methods,
+which can implement this additive secret sharing protocol.
+So the first thing that we want to be able to do was,
+define an encrypt method.
+So we had a requirement for this where the encrypt method except the tuple,
+we're going to call it x, and then a number of shares that it should create.
+We're going to set that to be default to three.
+Now, as you move from the protocol,
+encryption is really about generating three shares such
+that when we sum them together and take a modulus of that sum,
+modulus, some large prime,
+that it will decrypt to the correct value.
+So the first thing we're going to do is outside of the actual method,
+is populate a list of shares.
+So as an empty list, we're going to put
+our shares and the first thing I can do is actually,
+under the assumption that we are generating three shares,
+I can generate the first two shares, totally randomly.
+Then it is just about figuring out what to set the third share value two,
+so that their sum, actually sum to the appropriate number, modulus Q.
+Now, first thing we're going to do is,
+choose a really large Q as well.
+It'd be a nice thing to have here,
+we can use this big number here,
+and then I go for I in range,
+in share, minus one, shares.append, random per randint, zero to Q.
+The idea here is that, again,
+the values of the first two shares don't matter because the only constraint that we have,
+is that, the all three shares, must sum to something.
+So once we have the first two shares,
+we can then use those to calculate what the third share should be.
+For that, the final share,
+is just going to be the sum of these shares mod Q,
+and then we're going to subtract this from Q,
+which is the difference between,
+when this wraps around,
+which is Q and the sum of these values thus far.
+So this is the distance between when this would basically revert back to zero.
+Then we do plus x plus whatever our value is and I believe,
+let's set x to be five for now.
+The shares append the final share,
+and now we have our final shares.
+So now if I were to just say sum,
+these shares, log Q,
+we get out five.
+Perfect, it is exactly what we were trying to do.
+So this is actually our encrypt method.
+I did say I wanted to return a tuple,
+so we can do tuple,
+and cast this to be a tuple.
+So now if I say, encrypt, number five,
+I said in shares, equals 10.
+That didn't work because we're setting this right here.
+Perfect. All right. So now,
+we have the ability to encrypt a number using additive sharing.
+Okay. Now, let's work on a decrypt method.
+So a decrypt method is just going to accept shares as input
+and then return the sum of these shares, mod Q.
+Easy-peasy.
+Now, in some cases, in some language,
+you have to worry about say overflow issue here,
+where you'd need to actually, mod Q as you're summing up the shares,
+but this particular case Q isn't that large, so it's not too big of a deal.
+In Python, it's actually pretty good at managing really large numbers.
+It's got lots of conveyance items that are put.
+So now, if I say, decrypt,
+encrypt, five, boom, decrease back to five. Pretty cool.
+All right and then the last method we need to do was an add.
+For that, it accepts two different tuples.
+Now, you remember, the addition is really just
+about adding the corresponding shares together.
+So in this case, this is as simple as,
+just iterating through each share [inaudible] together.
+So for I in range, length of a,
+I guess we could assert then a equals len b,
+c.append ai plus bi,
+mod Q, return tuple c. All right.
+So now, if we said, decrypt,
+add encrypt five, encrypt 10, made a mistake.
+Wrong bracket. Supposed to be parentheses.
+Actually, I think we've said one too many.
+Boom, there we go.
+So now, we can do encrypted addition between
+two numbers that are encrypted into multiple shares.
+So I guess just to break this apart, the more explicitly.
+So you can see what these look like,
+just say there are definitely,
+generating shares into the hood.
+Notice every time we do this, it actually generates a different set of shares
+because they're randomly generated. How about that?
+But they always do get to the same value.
+So I hope you've enjoyed this project, and to the next section,
+we're going to build on this and learn a bit more about the types of
+things we want to do with this encrypted computation. See you then.

@@ -1,0 +1,48 @@
+1
+00:00:00,000 --> 00:00:04,920
+What I'd like for you to do in the next project is consolidate the code that I
+
+2
+00:00:04,920 --> 00:00:09,405
+showed you in the last concept into a single function called sensitivity.
+
+3
+00:00:09,405 --> 00:00:10,860
+It should accept a function,
+
+4
+00:00:10,860 --> 00:00:12,765
+the query, as input,
+
+5
+00:00:12,765 --> 00:00:16,845
+as well as the number of entries that you want to run this database over.
+
+6
+00:00:16,845 --> 00:00:21,015
+This function should then initialize a database of the appropriate size,
+
+7
+00:00:21,015 --> 00:00:23,685
+initialize all of the parallel databases,
+
+8
+00:00:23,685 --> 00:00:26,160
+run the query over the entire database,
+
+9
+00:00:26,160 --> 00:00:31,139
+and all parallel databases and correctly calculate the sensitivity of the function,
+
+10
+00:00:31,139 --> 00:00:33,930
+which as you may remember is the maximum distance between
+
+11
+00:00:33,930 --> 00:00:37,950
+the full database query output and any parallel database.
+
+12
+00:00:37,950 --> 00:00:40,340
+Good luck and I'll see you in the next concept.
+

@@ -1,0 +1,1004 @@
+1
+00:00:00,590 --> 00:00:02,610
+So before we jump in,
+
+2
+00:00:02,610 --> 00:00:06,735
+let's just walk through the exact scenario that we're working with one more time.
+
+3
+00:00:06,735 --> 00:00:08,700
+So the idea here is that,
+
+4
+00:00:08,700 --> 00:00:10,760
+we have an unlabeled dataset.
+
+5
+00:00:10,760 --> 00:00:12,590
+This is just a general assumption.
+
+6
+00:00:12,590 --> 00:00:15,225
+The assumption of this particular differential privacy framework.
+
+7
+00:00:15,225 --> 00:00:16,890
+There are other differential privacy frameworks out there,
+
+8
+00:00:16,890 --> 00:00:20,730
+but the assumption for this one is that we have an unlabeled dataset.
+
+9
+00:00:20,730 --> 00:00:22,680
+One plausible example where this exists,
+
+10
+00:00:22,680 --> 00:00:24,900
+is we represent a hospital,
+
+11
+00:00:24,900 --> 00:00:26,820
+and a hospital generates data.
+
+12
+00:00:26,820 --> 00:00:27,990
+Inside of our hospital,
+
+13
+00:00:27,990 --> 00:00:32,235
+we're collecting patient scans of a variety of conditions.
+
+14
+00:00:32,235 --> 00:00:34,350
+But this data isn't necessarily labeled.
+
+15
+00:00:34,350 --> 00:00:37,830
+No individual person has gone through and said,
+
+16
+00:00:37,830 --> 00:00:42,350
+does this particular scan have some particular phenomenon,
+
+17
+00:00:42,350 --> 00:00:45,050
+are these scans of males or females?
+
+18
+00:00:45,050 --> 00:00:49,020
+Or is there a specific kind of tumor?
+
+19
+00:00:49,020 --> 00:00:54,530
+Or a specific kind of other condition that is present in XYZ scan?
+
+20
+00:00:54,530 --> 00:00:56,710
+Some of them may have that, but some of them may not.
+
+21
+00:00:56,710 --> 00:00:58,570
+For now, we're going to assume that they don't.
+
+22
+00:00:58,570 --> 00:01:01,115
+They're just images of people.
+
+23
+00:01:01,115 --> 00:01:05,810
+What we want to be able to do us as a hospital,
+
+24
+00:01:05,810 --> 00:01:11,060
+is to have a machine learning model that can make predictions on this set of images.
+
+25
+00:01:11,060 --> 00:01:13,140
+So we're going to say these images are say radiology scans.
+
+26
+00:01:13,140 --> 00:01:17,180
+So they are are MRI's or CT scans or maybe an X-ray of a human body.
+
+27
+00:01:17,180 --> 00:01:19,940
+So it's just the X-ray of a human body and we as a hospital care
+
+28
+00:01:19,940 --> 00:01:22,730
+about identifying certain things in that X-ray,
+
+29
+00:01:22,730 --> 00:01:25,405
+where say there are 10 things we're interested in identifying.
+
+30
+00:01:25,405 --> 00:01:29,250
+However, our X-rays, our images aren't labeled.
+
+31
+00:01:29,250 --> 00:01:31,910
+So we can't train a machine learning model with our dataset.
+
+32
+00:01:31,910 --> 00:01:33,050
+Our dataset just isn't good enough.
+
+33
+00:01:33,050 --> 00:01:35,525
+We have the inputs but we don't have the outputs.
+
+34
+00:01:35,525 --> 00:01:40,140
+It's a bummer, so it's a bummer because we want people to have machine learning model,
+
+35
+00:01:40,140 --> 00:01:43,700
+we want to be able to serve our patients with the ability to automatically predict
+
+36
+00:01:43,700 --> 00:01:47,960
+these things as opposed to having to have doctors see every image.
+
+37
+00:01:47,960 --> 00:01:49,490
+So we say, what do we do?
+
+38
+00:01:49,490 --> 00:01:55,675
+Well, it turns out we know 10 other hospitals that do have this kind of annotated data.
+
+39
+00:01:55,675 --> 00:01:58,560
+However, they don't want to give it to us.
+
+40
+00:01:58,560 --> 00:02:03,320
+Maybe they're legally are not able to or if there's a competitive dynamic,
+
+41
+00:02:03,320 --> 00:02:05,285
+they don't actually just give us the data.
+
+42
+00:02:05,285 --> 00:02:09,320
+But they're willing to let us try something a bit more creative,
+
+43
+00:02:09,320 --> 00:02:10,775
+which is this particular framework.
+
+44
+00:02:10,775 --> 00:02:20,925
+The idea is, we want to somehow annotate our unlabeled data using their labeled data.
+
+45
+00:02:20,925 --> 00:02:23,450
+So what we're going to do is we're going to go to 10 different hospitals
+
+46
+00:02:23,450 --> 00:02:26,000
+and we're going to somehow pull out statistical signal
+
+47
+00:02:26,000 --> 00:02:27,770
+from their datasets to annotate
+
+48
+00:02:27,770 --> 00:02:31,030
+our datasets so that we can train our own machine learning model.
+
+49
+00:02:31,030 --> 00:02:35,570
+So it make sense? The way that we're going to do this is first,
+
+50
+00:02:35,570 --> 00:02:41,330
+we have each one of these partner hospitals train a model on their own datasets.
+
+51
+00:02:41,330 --> 00:02:44,510
+So all 10 hospitals train a model,
+
+52
+00:02:44,510 --> 00:02:46,395
+some machine learning classifier,
+
+53
+00:02:46,395 --> 00:02:48,320
+doesn't even matter what the classifier is,
+
+54
+00:02:48,320 --> 00:02:51,260
+whatever classifier they want to be able to using or, well,
+
+55
+00:02:51,260 --> 00:02:52,910
+your favorite one is either it's an SVM or
+
+56
+00:02:52,910 --> 00:02:55,735
+deep neural net or something, it doesn't matter.
+
+57
+00:02:55,735 --> 00:03:03,675
+Then we take their model and we predict it on our data.
+
+58
+00:03:03,675 --> 00:03:07,080
+So we take the model and we predict it on our dataset,
+
+59
+00:03:07,080 --> 00:03:08,660
+the one that is public to us,
+
+60
+00:03:08,660 --> 00:03:10,450
+the one that we're allowed to look at.
+
+61
+00:03:10,450 --> 00:03:15,185
+That generates 10 predictions for each of our images.
+
+62
+00:03:15,185 --> 00:03:18,090
+Why 10? Because there were 10 hospitals that we partnered with.
+
+63
+00:03:18,090 --> 00:03:20,840
+We trained 10 different models and we took all 10 of them and we predicted
+
+64
+00:03:20,840 --> 00:03:24,370
+them on each image, generating 10 labels.
+
+65
+00:03:24,370 --> 00:03:28,430
+Now, where the differential privacy piece comes in,
+
+66
+00:03:28,430 --> 00:03:36,210
+is we want to take their 10 labels and generate whichever label that they must agree on.
+
+67
+00:03:36,210 --> 00:03:39,645
+So we want to say, all right, there's 10 models they're voting,
+
+68
+00:03:39,645 --> 00:03:44,645
+which label is the most likely given that here are the votes.
+
+69
+00:03:44,645 --> 00:03:47,390
+So maybe if all 10 models said,
+
+70
+00:03:47,390 --> 00:03:51,160
+there's phenomenon number one in this image.
+
+71
+00:03:51,160 --> 00:03:55,180
+Well, then we would say okay, then it's the phenomenon one must be what it is.
+
+72
+00:03:55,180 --> 00:03:58,515
+But if half of them said it's phenomenon number three,
+
+73
+00:03:58,515 --> 00:04:01,280
+but another half said it's phenomenon number five,
+
+74
+00:04:01,280 --> 00:04:03,380
+then we would say 50/50 chance,
+
+75
+00:04:03,380 --> 00:04:07,145
+it could be one of these things, could be the other thing.
+
+76
+00:04:07,145 --> 00:04:10,400
+So this is exactly what we want to do.
+
+77
+00:04:10,400 --> 00:04:12,870
+We want to work with these 10 different hospitals,
+
+78
+00:04:12,870 --> 00:04:15,775
+they're going to train each model from their datasets,
+
+79
+00:04:15,775 --> 00:04:18,000
+we're going to bring those models to our dataset,
+
+80
+00:04:18,000 --> 00:04:20,315
+we're going to predict them over our dataset and then we want to
+
+81
+00:04:20,315 --> 00:04:23,075
+calculate the arg max over
+
+82
+00:04:23,075 --> 00:04:26,420
+their predictions on our data to figure out what the labels in our data
+
+83
+00:04:26,420 --> 00:04:30,155
+should be so that we can train our deep learning classifier, cool?
+
+84
+00:04:30,155 --> 00:04:36,935
+So the first training round where like a bunch of hospitals train a bunch of models,
+
+85
+00:04:36,935 --> 00:04:38,870
+that's just normal machine learning, normal deep learning.
+
+86
+00:04:38,870 --> 00:04:40,070
+So for the moment,
+
+87
+00:04:40,070 --> 00:04:41,660
+we're going to skip that part.
+
+88
+00:04:41,660 --> 00:04:43,265
+What I'm going to do instead,
+
+89
+00:04:43,265 --> 00:04:45,050
+is we're just going to synthesize
+
+90
+00:04:45,050 --> 00:04:49,250
+some fake versions of predictions they could have given us on our dataset.
+
+91
+00:04:49,250 --> 00:04:51,980
+So we're assuming that those parts already happened because I want to jump
+
+92
+00:04:51,980 --> 00:04:55,610
+straight into the differential privacy piece because that's the point of this lesson.
+
+93
+00:04:55,610 --> 00:04:59,715
+So the first thing we introduce input NumPy as np.
+
+94
+00:04:59,715 --> 00:05:02,070
+I'm going to say num teachers equals 10.
+
+95
+00:05:02,070 --> 00:05:05,745
+So these are, were working with 10 hospitals.
+
+96
+00:05:05,745 --> 00:05:09,390
+Num examples, so this is the size of our dataset,
+
+97
+00:05:09,390 --> 00:05:16,230
+num labels, the number of labels for a classifier.
+
+98
+00:05:16,230 --> 00:05:19,355
+We're assuming these are mutually exclusive at the moment.
+
+99
+00:05:19,355 --> 00:05:22,145
+It doesn't have to be this way but for the sake of argument,
+
+100
+00:05:22,145 --> 00:05:24,830
+we're just saying it can be one of 10 things but
+
+101
+00:05:24,830 --> 00:05:27,595
+it can't be multiples, you have to choose.
+
+102
+00:05:27,595 --> 00:05:30,179
+But you could do this with two labels,
+
+103
+00:05:30,179 --> 00:05:33,785
+100 labels, you could do it with multiple sets of two labels.
+
+104
+00:05:33,785 --> 00:05:35,120
+This is very generic,
+
+105
+00:05:35,120 --> 00:05:38,060
+we're just picking 10 out of thin air.
+
+106
+00:05:38,060 --> 00:05:41,645
+Now, we're going to synthetically generate a tensor,
+
+107
+00:05:41,645 --> 00:05:44,285
+where the number of rows is the number of teachers.
+
+108
+00:05:44,285 --> 00:05:47,750
+So we have 10 lists of numbers,
+
+109
+00:05:47,750 --> 00:05:49,715
+each coming from one of our teachers,
+
+110
+00:05:49,715 --> 00:05:54,060
+and there's 10,000 examples from each teacher. Why are they 10,000?
+
+111
+00:05:54,060 --> 00:05:56,150
+Because we took the classifier and we predicted
+
+112
+00:05:56,150 --> 00:06:01,400
+each teacher's classifier on every example that we have on our dataset, cool?
+
+113
+00:06:01,400 --> 00:06:06,690
+Now, just a little bit of NumPy stuff here and voila,
+
+114
+00:06:06,690 --> 00:06:09,360
+we have our synthetic datasets,
+
+115
+00:06:09,360 --> 00:06:12,645
+so fake labels, fake predictions.
+
+116
+00:06:12,645 --> 00:06:17,760
+So these are all the predictions from one teacher, all right?
+
+117
+00:06:17,760 --> 00:06:19,080
+Say there's 10,000 of them,
+
+118
+00:06:19,080 --> 00:06:23,230
+and these are all the examples for say the first image.
+
+119
+00:06:23,230 --> 00:06:24,400
+So this came from the first teacher,
+
+120
+00:06:24,400 --> 00:06:26,410
+this came from the second teacher, this came from the third teacher.
+
+121
+00:06:26,410 --> 00:06:28,440
+So the first teacher thought it was label four,
+
+122
+00:06:28,440 --> 00:06:30,190
+the second teacher thought it was labeled two,
+
+123
+00:06:30,190 --> 00:06:33,515
+the third teacher thought it was labeled nine, etc.
+
+124
+00:06:33,515 --> 00:06:36,230
+So now, what we care about, what we're trying to do,
+
+125
+00:06:36,230 --> 00:06:39,490
+is we're trying to in a deferentially private way,
+
+126
+00:06:39,490 --> 00:06:41,755
+combine these labels into a single label.
+
+127
+00:06:41,755 --> 00:06:47,200
+The reason that we want to do this is based on one core assumption,
+
+128
+00:06:47,200 --> 00:06:53,285
+and that core assumption is that these 10 partner hospitals, have different patients.
+
+129
+00:06:53,285 --> 00:06:55,970
+We're assuming they don't have overlapping patients,
+
+130
+00:06:55,970 --> 00:06:57,500
+maybe from different parts of the world,
+
+131
+00:06:57,500 --> 00:06:59,570
+maybe we just asked them and approved,
+
+132
+00:06:59,570 --> 00:07:01,220
+that they have an overlap applications.
+
+133
+00:07:01,220 --> 00:07:05,575
+This gets back to our core philosophy of differential privacy which is saying,
+
+134
+00:07:05,575 --> 00:07:07,045
+whenever we perform a query,
+
+135
+00:07:07,045 --> 00:07:10,080
+that query in theory is hypothetically, perfectly,
+
+136
+00:07:10,080 --> 00:07:14,360
+differentially private if the output of the query does
+
+137
+00:07:14,360 --> 00:07:19,250
+not change no matter what person I remove from the query.
+
+138
+00:07:19,250 --> 00:07:22,794
+However, in this particular case,
+
+139
+00:07:22,794 --> 00:07:24,870
+these don't represent individual people,
+
+140
+00:07:24,870 --> 00:07:27,780
+these represent whole collections of people.
+
+141
+00:07:27,780 --> 00:07:31,969
+So this prediction represents and it has information
+
+142
+00:07:31,969 --> 00:07:36,125
+transferring to it from a whole hospital worth of patients.
+
+143
+00:07:36,125 --> 00:07:38,090
+This has another whole hospitals with patients.
+
+144
+00:07:38,090 --> 00:07:40,010
+This has a whole another hospital with the patients.
+
+145
+00:07:40,010 --> 00:07:42,770
+So when we say combine this into one label,
+
+146
+00:07:42,770 --> 00:07:45,455
+the perfect way for us to do this would be
+
+147
+00:07:45,455 --> 00:07:50,670
+if the output of whatever and however we combine these labels,
+
+148
+00:07:50,670 --> 00:07:53,855
+in which case, we probably are going to take whichever one is most frequent.
+
+149
+00:07:53,855 --> 00:07:55,385
+We get the same prediction.
+
+150
+00:07:55,385 --> 00:07:57,230
+We get the same target,
+
+151
+00:07:57,230 --> 00:07:59,540
+the same output of our query regardless
+
+152
+00:07:59,540 --> 00:08:02,105
+of whether or not we remove one of these hospitals.
+
+153
+00:08:02,105 --> 00:08:05,975
+Because then, if that's our definition of robustness,
+
+154
+00:08:05,975 --> 00:08:09,050
+we would also know that we could remove any one of the patients from
+
+155
+00:08:09,050 --> 00:08:12,065
+those hospitals and the output of the query would be the same.
+
+156
+00:08:12,065 --> 00:08:16,690
+Because one patient is strictly a subset of the whole hospital.
+
+157
+00:08:16,690 --> 00:08:19,650
+If that doesn't totally make sense to you yet, it's okay,
+
+158
+00:08:19,650 --> 00:08:23,720
+we'll walk through this step-by-step and hopefully I'll make more sense as we go along.
+
+159
+00:08:23,720 --> 00:08:28,790
+So for now, all we want to do is take each image
+
+160
+00:08:28,790 --> 00:08:32,000
+and convert this vector
+
+161
+00:08:32,000 --> 00:08:35,200
+of predictions from all the different hospitals into a single prediction.
+
+162
+00:08:35,200 --> 00:08:37,880
+The way we're going to make that conversion is we're going to just
+
+163
+00:08:37,880 --> 00:08:40,660
+figure out which one did all of them agree on.
+
+164
+00:08:40,660 --> 00:08:42,400
+We're going to take what's called an arg-max.
+
+165
+00:08:42,400 --> 00:08:43,750
+So the first thing we need to do,
+
+166
+00:08:43,750 --> 00:08:45,605
+so this is an image,
+
+167
+00:08:45,605 --> 00:08:49,120
+closing one image where the predictions.
+
+168
+00:08:49,570 --> 00:08:52,000
+We're going to compute some label counts.
+
+169
+00:08:52,000 --> 00:08:58,165
+So NumPy has this nice thing called bind count and what it does,
+
+170
+00:08:58,165 --> 00:09:01,945
+it just goes through and counts the number of times it sees a certain integer.
+
+171
+00:09:01,945 --> 00:09:03,430
+So it looks like zero, one,
+
+172
+00:09:03,430 --> 00:09:05,290
+two was the most frequent number.
+
+173
+00:09:05,290 --> 00:09:08,670
+So if I look at an image one,
+
+174
+00:09:08,670 --> 00:09:11,160
+two, three, so yeah.
+
+175
+00:09:11,160 --> 00:09:12,345
+Two happen three times,
+
+176
+00:09:12,345 --> 00:09:15,420
+see how it counted and so we look at this,
+
+177
+00:09:15,420 --> 00:09:17,050
+we see the most frequent one is three.
+
+178
+00:09:17,050 --> 00:09:20,840
+So I could see it label counts.
+
+179
+00:09:20,840 --> 00:09:25,050
+So I could go NumPy.argmax and it will say two, well index two.
+
+180
+00:09:25,050 --> 00:09:26,420
+So which is the third one from the left.
+
+181
+00:09:26,420 --> 00:09:28,100
+So this is the most frequent label.
+
+182
+00:09:28,100 --> 00:09:30,400
+This is the one that all the hospital models agreed on.
+
+183
+00:09:30,400 --> 00:09:32,900
+So all the hospitals predicted our dataset on
+
+184
+00:09:32,900 --> 00:09:36,780
+this image and this was the most popular answer.
+
+185
+00:09:36,780 --> 00:09:38,925
+That these hospital models came back with.
+
+186
+00:09:38,925 --> 00:09:41,630
+However, this is not necessarily differentially private.
+
+187
+00:09:41,630 --> 00:09:44,315
+This is the exact answer from these hospitals.
+
+188
+00:09:44,315 --> 00:09:47,355
+However, we have interesting technique,
+
+189
+00:09:47,355 --> 00:09:54,260
+adding random noise to enforce a certain level of differential privacy and so for that,
+
+190
+00:09:54,260 --> 00:09:57,265
+we're going to turn back to our Laplacian mechanism.
+
+191
+00:09:57,265 --> 00:10:00,020
+So let's review this a bit.
+
+192
+00:10:00,020 --> 00:10:01,460
+So we'll say Epsilon,
+
+193
+00:10:01,460 --> 00:10:03,410
+let's set it to 0.1 for now,
+
+194
+00:10:03,410 --> 00:10:06,390
+Beta equals one divided by Epsilon,
+
+195
+00:10:07,220 --> 00:10:12,300
+and so we're going to say for i in range len label counts.
+
+196
+00:10:12,300 --> 00:10:14,055
+So for each label,
+
+197
+00:10:14,055 --> 00:10:17,355
+that's Laplacian noise and now,
+
+198
+00:10:17,355 --> 00:10:19,560
+we have a new set of loop counts.
+
+199
+00:10:19,560 --> 00:10:22,610
+So we actually took the counts and we're adding noise
+
+200
+00:10:22,610 --> 00:10:25,790
+to the counts. So does that makes sense?
+
+201
+00:10:25,790 --> 00:10:30,570
+So the counts is basically our mini database. All right.
+
+202
+00:10:30,570 --> 00:10:31,770
+So if you remember from before,
+
+203
+00:10:31,770 --> 00:10:34,700
+like we have a mini database across
+
+204
+00:10:34,700 --> 00:10:39,800
+these hospitals of label counts and we're going to add noise to each one of these counts,
+
+205
+00:10:39,800 --> 00:10:42,380
+and then we're going to perform arg max.
+
+206
+00:10:42,380 --> 00:10:44,365
+Now as you can see,
+
+207
+00:10:44,365 --> 00:10:47,075
+the noise actually made us get the wrong answer.
+
+208
+00:10:47,075 --> 00:10:50,480
+But this is something that we just have to be okay with.
+
+209
+00:10:50,480 --> 00:10:54,110
+So this is going to happen sometimes and our assumption is that later
+
+210
+00:10:54,110 --> 00:10:58,095
+on when our our deep neural net is training,
+
+211
+00:10:58,095 --> 00:11:02,970
+that it's going to filter through the sum of this noise,
+
+212
+00:11:02,970 --> 00:11:05,010
+look for all the ways that these agreed,
+
+213
+00:11:05,010 --> 00:11:09,640
+and it will learn how to predict reasonably accurately.
+
+214
+00:11:09,640 --> 00:11:14,115
+So this is new label. But this is not enough.
+
+215
+00:11:14,115 --> 00:11:15,990
+So this is just one image so what we actually need to
+
+216
+00:11:15,990 --> 00:11:20,930
+do is iterate through all of our images.
+
+217
+00:11:20,930 --> 00:11:25,040
+Let's go ahead and transpose this so just so we can iterate through
+
+218
+00:11:25,040 --> 00:11:29,330
+the rows for an image in prints.
+
+219
+00:11:29,330 --> 00:11:31,295
+New labels equals list,
+
+220
+00:11:31,295 --> 00:11:34,085
+iterate the whole thing, that was so fast.
+
+221
+00:11:34,085 --> 00:11:35,735
+So we have 10,000 new labels.
+
+222
+00:11:35,735 --> 00:11:38,690
+So we have now generated a synthetic dataset of
+
+223
+00:11:38,690 --> 00:11:42,350
+new labels based on the predictions from all of our partner hospitals.
+
+224
+00:11:42,350 --> 00:11:44,195
+Now, you might be wondering,
+
+225
+00:11:44,195 --> 00:11:46,430
+how much information did we leak?
+
+226
+00:11:46,430 --> 00:11:49,360
+So a super naive interpretation of this
+
+227
+00:11:49,360 --> 00:11:50,950
+could be just to add up
+
+228
+00:11:50,950 --> 00:11:53,530
+all these Epsilons but we wouldn't just have to add up these Epsilons,
+
+229
+00:11:53,530 --> 00:11:56,500
+we'd also have to add them up for every time that we used them.
+
+230
+00:11:56,500 --> 00:11:57,520
+So for every label counts.
+
+231
+00:11:57,520 --> 00:12:00,955
+So this would be something on the order of 100,000 times 0.1,
+
+232
+00:12:00,955 --> 00:12:02,695
+like could be massive.
+
+233
+00:12:02,695 --> 00:12:04,680
+That's not what we want.
+
+234
+00:12:04,680 --> 00:12:08,740
+The real innovative thing of PATE which we'll go over in the next section,
+
+235
+00:12:08,740 --> 00:12:14,755
+actually has a better derivation for how Epsilon is being spent in this model,
+
+236
+00:12:14,755 --> 00:12:16,890
+and it's very interesting,
+
+237
+00:12:16,890 --> 00:12:19,515
+quite fascinating, and so in the next section,
+
+238
+00:12:19,515 --> 00:12:21,360
+I'll show you what
+
+239
+00:12:21,360 --> 00:12:24,340
+this fancy PATE framework is
+
+240
+00:12:24,340 --> 00:12:28,350
+about and how we can actually get a better bound for this Epsilon.
+
+241
+00:12:28,350 --> 00:12:30,960
+But for now, if we were the hospital,
+
+242
+00:12:30,960 --> 00:12:33,050
+we had obtained these predictions at pennies labels and
+
+243
+00:12:33,050 --> 00:12:35,780
+generated these new labels for our dataset,
+
+244
+00:12:35,780 --> 00:12:39,740
+I would then go and train a deep learning model using all of
+
+245
+00:12:39,740 --> 00:12:44,250
+my X-ray images with these new synthesized labels
+
+246
+00:12:44,250 --> 00:12:47,270
+and I would know that I have spent under
+
+247
+00:12:47,270 --> 00:12:52,945
+my new model has fits underneath a certain Epsilon budget.
+
+248
+00:12:52,945 --> 00:12:55,130
+That the entire model itself
+
+249
+00:12:55,130 --> 00:12:57,740
+being a compression and a collection of all the Epsilons from
+
+250
+00:12:57,740 --> 00:13:03,120
+this dataset would be under a certain budget and in the next video,
+
+251
+00:13:03,120 --> 00:13:07,450
+we will actually learn just how low that budget can be. See you then.
+

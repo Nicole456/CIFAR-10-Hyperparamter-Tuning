@@ -1,0 +1,171 @@
+In this concept, we're going to answer the question,
+how do we actually use epsilon and delta?
+We're going to learn how to take a query and at a certain degree of
+noise to make what we call a randomized mechanism.
+We want this randomized mechanism to satisfy a certain degree of differential privacy.
+We went to augment a query like a sum, threshold,
+mean or average and add a certain amount of noise to
+this query so that we get a certain amount of differential privacy.
+In particular, we're going to leave behind
+the local differential privacy previously discussed,
+and instead opt for global differential privacy.
+As I mentioned earlier, the difference between local and
+global is that global differential privacy adds noise to
+the output of a query while local differential privacy
+adds noise to each data input to the query.
+So given that we are going for global dP,
+we're adding noise to the output and how much noise should we add?
+We're going to add the minimum amount required to
+satisfy a certain level of epsilon and delta,
+which we will term our privacy budget for a given query.
+Now, in order to do this, there are
+two types of noise we could add as I mentioned earlier;
+Gaussian noise or Laplacian noise.
+Generally speaking, Laplacian noise works better but technically
+both are still valid and can give us varying levels of epsilon-delta privacy.
+In this case, we're going to exclusively focus on Laplacian.
+Now, to the hard question.
+How much noise should we add?
+The amount of noise necessary to add to the output of
+the query is a function of four things.
+First, the amount of noise is dependent on the type of noise that we're adding.
+We're just going to focus on Laplacian here, so that one's easy.
+Second, we must take into account the sensitivity
+of the query that we are using to query the database.
+As mentioned, some queries are way more
+sensitive to removing a person from the database and other queries.
+Some sensitivity is very consistent sensitivity,
+as in every database always has the same level of sensitivity for that query type.
+Whereas some queries, have
+varying levels of sensitivity that is dependent on the database.
+Then of course, the two other things we must take into
+account is the desired epsilon and delta.
+Thus, for each type of noise that we're adding,
+we have a different way of calculating how much noise to add as a function of
+the sensitivity of the query to meet a certain epsilon-delta constraint.
+So to restate this,
+each noise type has a specific function, which tells
+us how much noise to add given a certain sensitivity, epsilon and delta.
+For Laplacian noise, this function is the following.
+Laplacian noise takes an input parameter beta,
+which determines how significant the noise is.
+We set the beta by taking the sensitivity of
+the query and dividing it by the epsilon that we want to achieve.
+As it happens, delta is always zero for Laplacian noise,
+so we can just ignore it.
+In other words, if we set beta to be this value when creating our Laplacian noise,
+then we know we will have a privacy leakage which is
+less than or equal to a certain amount of epsilon.
+Furthermore, the nice thing about Laplacian noise is that we
+don't have to worry about delta because it's always set to zero.
+Gaussian noise has a non-zero delta,
+which is why it's somewhat less desirable.
+Thus, we're using Laplacian for this exercise.
+There's this really awesome proof for why this is the case but that proof is
+not necessary to know how to use Laplacian noise.
+Furthermore, when reading literature about differential privacy,
+you've heard the term Laplacian mechanism,
+which refers to a function being augmented with Laplacian noise in this way,
+forming the mechanism " [inaudible] " in
+the original and differential privacy function discussed earlier.
+The thing we need to know here however is that we can take
+any query for which we have a measure of sensitivity,
+choose any arbitrary epsilon budget that we want to preserve and we can
+add the appropriate amount of Laplacian noise to the alphabet of the query, pretty neat.
+In the next project, I want you to do this yourself.
+First, modify a query for some with the appropriate amount of
+Laplacian noise so that you can satisfy a certain epsilon delta constraint.
+So this new some query should automatically add
+the appropriate noise given an arbitrary epsilon level.
+For Laplace, you can use the Laplace function np.random.laplace.
+After you had this mechanism working for the sum function,
+I then want you to do the same thing for the mean function.
+Scaling the Laplacian noise correctly given the fact that,
+mean has a different level of sensitivity than sum.
+So in this lesson, we're going to learn about how to take a query and add
+varying amounts of noise so that it satisfies a certain degree of differential privacy.
+In particular, we're going to leave behind the local differential privacy we've
+previously discussed and instead opt to focus on global differential privacy.
+So as you may remember, since
+Global differential privacy adds noise to the output of the query.
+In this lesson, we're going to focus on learning
+how much noise we should add to the output of the query,
+so that it satisfies
+a certain epsilon-delta differential privacy threshold
+based on the formula that we learned in the last lesson.
+So now, the question is,
+how much noise should we add?
+Well, the amount of noise necessary to add to the output of
+the query is a function of four different things.
+The first is the type of noise that want to use,
+the most common types are Gaussian or Laplacian noise.
+Which is simply just two different distributions that we can sample random numbers from.
+The second, is the sensitivity of the query or
+function that we're adding the noise to the output off, right?
+So if we're adding noise to the output of
+a sum query that might have a sensitivity of one,
+then that would cause us to add a certain degree of noise.
+But if we're adding noise to a different query that has a different sensitivity,
+then we would add a different amount of noise, right?
+The third thing is the desired level of epsilon that
+we want to make sure they are next query is beneath.
+Fourth, the desired delta, the one that stay beneath.
+So these are our constraints on the amount of
+privacy leakage that we're want to allow and then this
+is the sensitivity or the king of function that we're adding
+noise to the output of and is the type of noise we are adding to.
+With these four things,
+we can figure out how much noise we should add and actually
+properly build a randomized mechanism.
+So thus, for each type of noise we're adding,
+we have a different way of calculating how much to add as
+a function of sensitivity, epsilon and delta.
+We're going to focus on Laplacian noise.
+So Laplacian noise, increase and decrease according to a scale parameter beta.
+Before I get to you, there are wide variety of different kinds of randomized mechanisms.
+In this course, we're only going to go
+through a small handful of them and I highly encourage you,
+when you do finish this course,
+to Google around and learn some more about the different kinds of differential
+private randomized mechanisms that can be appropriate for different use cases.
+Okay. So back to Laplacian noise.
+So Laplacian noise is the amount of noise you're adding for
+a Laplacian distribution is increased or decreased according to a scale parameter beta.
+We choose beta based on the following formula.
+B or beta equals the sensitivity of our query.
+That's the query that we are adding this noise to,
+divided by epsilon, right?
+This epsilon again, we're spending this epsilon for every query, right?
+So if we're querying a database, right?
+Every time we do it,
+we're going to spend this amount of epsilon, right?
+So the notion here is that we have a certain epsilon budget that
+we wanted to stay underneath and that by using this simple formula,
+we can know how much noise we have to add to the output of these queries in
+order to make sure that we are preserving privacy.
+So in other words, if we set b this value, b this value,
+that we know that we'll have a privacy leakage of less than or equal to epsilon.
+The nice thing about Laplacian noise is that it actually guarantees that
+we do this with a delta that is equal to zero, right?
+So we have these four things right here.
+So type of noise, sensitivity, epsilon-delta.
+Laplacian noise always has a delta that's zero.
+So if you remember, delta was a probability that we would
+accidentally leak more than this amount of epsilon, right?
+So Laplacian is guaranteed to not leak more than this amount of epsilon.
+Now, one other question you might have,
+what happens if we want to query repeatedly?
+Well, as it happens,
+if we do query repeatedly,
+then we can simply add the epsilons across the different queries.
+So if we have epsilon of say five,
+we could do five queries that leak epsilon of value one for example.
+This is how the Laplacian mechanism works.
+In the next section, what I would like for you to do is actually
+perform a sum and a mean query, right?
+So you can take the sum and the mean query over
+the database and use the ones we used previously in the course.
+I want you to add a certain amount of Laplacian noise to the output,
+so that you're underneath a certain level epsilon.
+In the next lesson, I'll show you how I would do this.
+See you then.

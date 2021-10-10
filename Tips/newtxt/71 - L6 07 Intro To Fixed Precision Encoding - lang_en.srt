@@ -1,0 +1,99 @@
+So as you know,
+our goal is to aggregate gradients in the context of
+federated learning using additive secret sharing technique,
+specifically the additive secret sharing technique that we
+learned in the last several sections.
+However, the secret sharing technique that we used was only working with integers,
+but federated learning gradients tend to be decimal numbers.
+So we want to be able to convert our decimal numbers into an integer format,
+so that we can actually aggregate them using a secret sharing technique.
+For that, we're going to look at what's called a
+fixed precision encoding and it's really quite a simple technique,
+and we're going to go through a little bit of it here.
+We're not going to dive too deep into the theory in
+a packet because this is really the thing that you want to lean on a toolkits.
+You're going to lean on price if to really do this for you.
+But, it's important to know how the information is being encoded under the hood.
+Mostly, so that if you get undefined behavior,
+maybe you set the precision to low
+or you went to a tweet performance in one way or another.
+You can just have a general idea of what this
+this fixed precision encoding is really about.
+So you'll be knowledgeable of what's going on under the hood.
+So the first thing we're going to do is we want to
+choose what precision we actually want to represent,
+which means how many decimal points we actually want to encode our numbers with.
+So we're going to take a decimal point like 0.5.
+We're going to encode it as an integer.
+We have to know how much storage we actually want to set
+aside for information it's after the decimal point.
+So for that, we need to set our base which we're going to use base 10 encoding,
+which means that we're going to use
+normal encoding if you wanted to think about it that way.
+We could also use base two encoding which would be
+binary and we're going to set up precision to be four.
+So in this case, this is saying that we're going to
+encode numbers of base 10 and then we're going
+to have four decimal places that we're going to allow for storage,
+and we also want to have a Q value and we're going to use
+the same Q value we were using in the additive secret sharing technique,
+and this is going to allow us to handle negative numbers as we'll see in a moment.
+The first thing we want to do is we want to create
+an encode function and this is going to
+take our decimal number and convert it into an integer.
+So we're going to return.
+It does this using really simple technique.
+It literally just takes our input decimal and
+multiplies it times base to the power of precision.
+So in this case, it just multiplies it by the number 10,000,
+converts it to an integer,
+and then takes the modulus, mod Q.
+So if we want to encode the number 0.5,
+we can now encode it as the number 5,000.
+So 5,000 actually means 0.5.
+We'll actually see that there are other kinds of ways that we do arithmetic.
+They allow us to actually do decimal point operations while
+everything is being stored in this integer type state.
+Cool. So let's do a decode function.
+Decode is literally just taking the same process in reverse.
+I mean, it's quite simple.
+So we'll say x fixed precision and
+return x if x is less than equal to Q divided by two,
+else x minus Q,
+and here's the main part based to the power of precision.
+So previously, the main parsing multiplied it by fixed precision.
+Now, we're going to divide it by the size of our precision
+and this is really just making it so that we can take into account negative numbers.
+So if we encode a 0.5 as 5,000,
+we can decode 5,000 as 0.5,
+and so if I did negative.
+So this ends up being a really large number.
+It basically wraps around the other side of Q and we could decode this as negative 0.5.
+So here we go.
+This is how our fixed position encoding works.
+A good example of addition.
+If I were to add two numbers together,
+so add 0.5 with 0.5.
+So we say 5,000 plus 5,000,
+decode 5,000 plus 5,000, decodes to one.
+So some of these fall out naively,
+multiplication, other operations can get more tricky, but again,
+it's not something I want you to worry about too much
+because you really going to lean on top of
+a toolkit to handle fixed precision encoding for you.
+In the same way, you lean on your processor right now to
+do most of the low-level arithmetic for you.
+It's just good to have an idea for this is happening under the hood to enable you to be
+able to use the secret sharing techniques that actually
+converting all your numbers into these fixed precision format.
+In this particular case, if the precision is set to something like four,
+it also means you're losing a few decimal places worth of value.
+So if originally were using a 32-bit encoding.
+Anyway, this big decimal value which is our gradient,
+we're going to lose the end of that.
+If we're using a precision that only allocates four decimal places of precision.
+We can make this larger or smaller.
+It will affect performance and memory and things like that.
+That's just a good thing to understand and take into
+account when you're adjusting your fixed precision encoding.
+All right, and with that let's move on to the next section.

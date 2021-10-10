@@ -1,0 +1,27 @@
+In this lesson, we're going to get into the mid of
+developing differentially private algorithms.
+The main strategy that we're going to take to protect
+individual's privacy is one of noise,
+meaning we're going to add random noise to the database
+and to the queries in the database in order to protect people's privacy.
+Now, there are two different kinds of differential privacy, which
+refer to the two different places that you can add noise.
+Local differential privacy adds noise to each individual data point.
+You can think of this as adding noise directly to the database or
+even having individuals add noise to their own data,
+before even putting it into the database.
+In this setting, users are most protected as they
+do not have to trust the database owner to use their data responsibly.
+The other kind of differential privacy is called global differential privacy,
+which adds noise to the output of the query on the database.
+This means that the database itself contains all of the private information and that it's
+only the interface to the data which
+adds the noise necessary to protect each individual's privacy.
+So what is the real difference between local and global differential privacy?
+Well, if the database operator is trustworthy,
+the only difference is that global differential privacy leads to
+more accurate results with the same level of privacy protection.
+However, this requires database owner to be trustworthy.
+Namely, that the database owner should add noise properly.
+In differential privacy literature,
+the database owner is called a trusted curator.

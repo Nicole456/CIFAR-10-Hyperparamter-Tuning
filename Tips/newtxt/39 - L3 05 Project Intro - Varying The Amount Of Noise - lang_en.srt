@@ -1,0 +1,26 @@
+In this next project,
+I want you to change this query and soup it up a bit.
+This is a pretty challenging project.
+This will be tough but the idea behind this project is
+you get an intuitive sense for exactly what's going on under the hood,
+and how the re-normalizing step is going to happen.
+So what I'd like for you to do is to augment
+the randomized response query from the previous project,
+to allow for varying amounts of randomness to be added.
+Specifically, I want you to be able to bias the first coin flip to be
+higher or lower probability of outputting a one and then run the same experiment.
+So what you're going to have to do here is to add a new parameter to the query function,
+so that we'll now accept both of the database and some noise parameter,
+which is a percentage.
+The noise parameter should change how likely is for the first coin flip to be a one,
+as opposed to zero.
+Then, I want you to properly re-balanced
+the result of the query given this adjustable parameter.
+So again, this is a challenging project and of course,
+I'd like for you to go ahead and experiment with a database of size a 100,
+and then change the amount of noise and observe
+the degree to which the query is made less accurate,
+depending on how much noise you add.
+Stick with it. It might not be one that everyone gets the first time,
+but go ahead and jump in and in a second,
+I'll show you how to implement this project myself.

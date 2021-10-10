@@ -1,0 +1,1084 @@
+1
+00:00:00,000 --> 00:00:04,815
+In the last section, we generated a vector called new labels.
+
+2
+00:00:04,815 --> 00:00:08,055
+This was the output of our private data analysis.
+
+3
+00:00:08,055 --> 00:00:11,620
+Meaning that we had 10 different private datasets,
+
+4
+00:00:11,620 --> 00:00:16,620
+datasets from private sources that we computed complex function over,
+
+5
+00:00:16,620 --> 00:00:18,510
+to generate these new labels.
+
+6
+00:00:18,510 --> 00:00:20,175
+Now we're asking the question,
+
+7
+00:00:20,175 --> 00:00:24,840
+how much information would leak through these labels if we were to publish them?
+
+8
+00:00:24,840 --> 00:00:27,510
+If we were to just put them out on the Internet for anyone to see, like,
+
+9
+00:00:27,510 --> 00:00:30,420
+how much epsilon is actually present inside these labels?
+
+10
+00:00:30,420 --> 00:00:34,170
+The reason that we care about this is because our true goal is actually
+
+11
+00:00:34,170 --> 00:00:39,015
+train a deep learning model using these labels.
+
+12
+00:00:39,015 --> 00:00:40,940
+So we have a dataset of cells amount.
+
+13
+00:00:40,940 --> 00:00:44,765
+Remember we're a hospital that has our own x-ray scans.
+
+14
+00:00:44,765 --> 00:00:48,695
+These are our synthetically generated labels for these x-ray scans.
+
+15
+00:00:48,695 --> 00:00:51,885
+These labels came from private information.
+
+16
+00:00:51,885 --> 00:00:53,915
+So there's some amount of
+
+17
+00:00:53,915 --> 00:00:58,555
+information leakage that would be potentially inside of these new labels.
+
+18
+00:00:58,555 --> 00:01:00,135
+We want to answer the question,
+
+19
+00:01:00,135 --> 00:01:01,885
+how much epsilon is in total?
+
+20
+00:01:01,885 --> 00:01:03,400
+The reason that we care about this is,
+
+21
+00:01:03,400 --> 00:01:05,570
+this is really important property in differential privacy,
+
+22
+00:01:05,570 --> 00:01:08,885
+which is, it is immune to post-processing.
+
+23
+00:01:08,885 --> 00:01:12,620
+Meaning that if a dataset contains a certain amount of private information,
+
+24
+00:01:12,620 --> 00:01:17,735
+no amount of post-processing could divulge more information than was in the dataset.
+
+25
+00:01:17,735 --> 00:01:22,465
+So if the dataset has five epsilon worth of information in it,
+
+26
+00:01:22,465 --> 00:01:29,165
+no amount of post-processing on that would suddenly yield a dataset with six epsilon.
+
+27
+00:01:29,165 --> 00:01:30,920
+For example, you can't go up afterwards.
+
+28
+00:01:30,920 --> 00:01:32,795
+This is like an information theoretical bottleneck.
+
+29
+00:01:32,795 --> 00:01:37,640
+So it's like if I give you one bit of information about me,
+
+30
+00:01:37,640 --> 00:01:39,460
+you can't turn that into,
+
+31
+00:01:39,460 --> 00:01:41,330
+actually, in two bits.
+
+32
+00:01:41,330 --> 00:01:43,900
+If I give you one epsilon about me,
+
+33
+00:01:43,900 --> 00:01:46,130
+you can't turn that into two epsilon without
+
+34
+00:01:46,130 --> 00:01:48,500
+getting one epsilon about me from someone else.
+
+35
+00:01:48,500 --> 00:01:51,605
+So this immunity of post-processing is really important,
+
+36
+00:01:51,605 --> 00:01:53,210
+and this is why we care about these labels.
+
+37
+00:01:53,210 --> 00:01:55,745
+Because the ultimate claim we want to be able to say is, "Hey,
+
+38
+00:01:55,745 --> 00:01:58,970
+we as a hospital now have a deep learning model that
+
+39
+00:01:58,970 --> 00:02:02,600
+has a certain level of epsilon contained within,
+
+40
+00:02:02,600 --> 00:02:05,540
+or is underneath a certain level of epsilon at a privacy budget."
+
+41
+00:02:05,540 --> 00:02:06,785
+The way that we're doing that,
+
+42
+00:02:06,785 --> 00:02:09,335
+the way that PATE recommends that we do that is
+
+43
+00:02:09,335 --> 00:02:12,665
+instead of trying to train a Deep learning model directly,
+
+44
+00:02:12,665 --> 00:02:13,970
+that has a certain amount epsilon,
+
+45
+00:02:13,970 --> 00:02:18,840
+we first synthetically generate a dataset that has it at epsilon.
+
+46
+00:02:18,840 --> 00:02:23,540
+Then by extension, by this post-processing property of differential privacy,
+
+47
+00:02:23,540 --> 00:02:26,810
+we will also know that any Deep Learning model trained on
+
+48
+00:02:26,810 --> 00:02:30,410
+this dataset will also satisfy the same epsilon constraint.
+
+49
+00:02:30,410 --> 00:02:33,510
+So this is what we care about. Now when we look at this naive epsilon,
+
+50
+00:02:33,510 --> 00:02:35,930
+if we were simply just to add up all these epsilons,
+
+51
+00:02:35,930 --> 00:02:37,940
+we take the number of labels,
+
+52
+00:02:37,940 --> 00:02:42,835
+so 10 labels times the number of predictions, times our epsilon,
+
+53
+00:02:42,835 --> 00:02:47,420
+then we would get some massive epsilon that would just be exorbitant,
+
+54
+00:02:47,420 --> 00:02:49,070
+and we would never be able to publish.
+
+55
+00:02:49,070 --> 00:02:55,530
+However, the clever part of PATE is actually in its epsilon analysis.
+
+56
+00:02:55,530 --> 00:02:57,385
+So this is standard,
+
+57
+00:02:57,385 --> 00:03:00,785
+kind of Laplace noisy max mechanism.
+
+58
+00:03:00,785 --> 00:03:06,905
+But the PATE analysis is really where this algorithm shines.
+
+59
+00:03:06,905 --> 00:03:09,980
+Here's where the analysis actually starts to happen.
+
+60
+00:03:09,980 --> 00:03:11,450
+So let's just say, for example,
+
+61
+00:03:11,450 --> 00:03:16,055
+we have one image worth of labels that came from our 10 different hospitals.
+
+62
+00:03:16,055 --> 00:03:20,735
+So we're going to say labels equals num.array.
+
+63
+00:03:20,735 --> 00:03:24,140
+We'll say, the first hospital labeled one of our images,
+
+64
+00:03:24,140 --> 00:03:26,180
+so we're working with just one of our images in the system.
+
+65
+00:03:26,180 --> 00:03:28,585
+So the first hospital took our image,
+
+66
+00:03:28,585 --> 00:03:31,875
+read it to their classifier and said, "I think it's labeled nine."
+
+67
+00:03:31,875 --> 00:03:34,275
+Second hospital said nine again,
+
+68
+00:03:34,275 --> 00:03:36,674
+third hospital said three,
+
+69
+00:03:36,674 --> 00:03:39,345
+the fourth hospitals said six,
+
+70
+00:03:39,345 --> 00:03:41,370
+and then nine, and then nine,
+
+71
+00:03:41,370 --> 00:03:43,800
+and then nine, and then nine, and then eight.
+
+72
+00:03:43,800 --> 00:03:45,570
+How many are they? One, two, three, four,
+
+73
+00:03:45,570 --> 00:03:47,790
+five, six, seven, eight, nine.
+
+74
+00:03:47,790 --> 00:03:49,560
+Then this one said two.
+
+75
+00:03:49,560 --> 00:03:52,230
+So now the question is, which one do we think it is?
+
+76
+00:03:52,230 --> 00:03:53,445
+Well, clearly we think it's a nine.
+
+77
+00:03:53,445 --> 00:03:56,675
+So nine was the one that did the most hospital models
+
+78
+00:03:56,675 --> 00:04:00,095
+of our partner hospitals thought this was.
+
+79
+00:04:00,095 --> 00:04:03,505
+They thought this was the correct label for our x-ray scan.
+
+80
+00:04:03,505 --> 00:04:12,185
+So now if we were to take our counts equals np.bincount labels,
+
+81
+00:04:12,185 --> 00:04:17,154
+minlength equals 10, look at counts,
+
+82
+00:04:17,154 --> 00:04:20,930
+and indeed we find that label number nine is the one that has the most counts.
+
+83
+00:04:20,930 --> 00:04:25,160
+Now, let's go back to our intuitive understanding of differential privacy and say,
+
+84
+00:04:25,160 --> 00:04:29,270
+okay, differential privacy, this was about computing functions on private datasets,
+
+85
+00:04:29,270 --> 00:04:34,770
+and our definition of perfect privacy was something like if I
+
+86
+00:04:34,770 --> 00:04:41,930
+can remove anyone from the input to my database,
+
+87
+00:04:41,930 --> 00:04:43,565
+I'll think of anyone for my database,
+
+88
+00:04:43,565 --> 00:04:46,070
+and my query to that database does not change,
+
+89
+00:04:46,070 --> 00:04:48,915
+then this query has perfect privacy.
+
+90
+00:04:48,915 --> 00:04:53,750
+Because the output of my query is not conditioned on any specific person.
+
+91
+00:04:53,750 --> 00:04:56,520
+So how does it apply to this example right here?
+
+92
+00:04:56,520 --> 00:05:02,270
+The way that applies to this example right here is that instead of saying an individual,
+
+93
+00:05:02,270 --> 00:05:04,070
+we're going to say a hospital.
+
+94
+00:05:04,070 --> 00:05:10,990
+If I could remove any hospital from my search for the max,
+
+95
+00:05:10,990 --> 00:05:12,470
+my arg max function.
+
+96
+00:05:12,470 --> 00:05:14,925
+So this is my query.
+
+97
+00:05:14,925 --> 00:05:18,370
+I used the result, query result.
+
+98
+00:05:18,400 --> 00:05:23,495
+If I could remove any one of these hospitals from this query result,
+
+99
+00:05:23,495 --> 00:05:25,795
+and the query result would be identical,
+
+100
+00:05:25,795 --> 00:05:29,490
+then we would say, "Perfect privacy." How great is that?
+
+101
+00:05:29,490 --> 00:05:33,365
+However, the degree to which we can do this
+
+102
+00:05:33,365 --> 00:05:37,000
+is actually somewhat conditioned on what the labels actually were.
+
+103
+00:05:37,000 --> 00:05:38,660
+So if all the hospitals agree,
+
+104
+00:05:38,660 --> 00:05:40,615
+if every single hospital said,
+
+105
+00:05:40,615 --> 00:05:45,905
+"It's labeled nine for sure," then we have very low sensitivity.
+
+106
+00:05:45,905 --> 00:05:49,130
+So we know that we can remove any one of these data points,
+
+107
+00:05:49,130 --> 00:05:52,170
+and the queries ought to be the same.
+
+108
+00:05:52,170 --> 00:05:57,380
+More importantly, we know that we could remove any person
+
+109
+00:05:57,380 --> 00:05:59,270
+from the dataset that
+
+110
+00:05:59,270 --> 00:06:03,780
+created these labels and the output of this query result be the same.
+
+111
+00:06:03,780 --> 00:06:07,370
+Because remember, this nine represents a whole group of people.
+
+112
+00:06:07,370 --> 00:06:09,875
+So when we're think about differential privacy and saying, "Hey,
+
+113
+00:06:09,875 --> 00:06:12,020
+it's not about numbers,
+
+114
+00:06:12,020 --> 00:06:14,250
+it's not about ids,
+
+115
+00:06:14,250 --> 00:06:18,380
+it's about people," I could remove a person from
+
+116
+00:06:18,380 --> 00:06:21,200
+the dataset that generated this nine and
+
+117
+00:06:21,200 --> 00:06:24,640
+the output of my query wouldn't be the same, sorry would be the same.
+
+118
+00:06:24,640 --> 00:06:28,430
+How do I know that? Because I know that no matter what happens to this nine,
+
+119
+00:06:28,430 --> 00:06:31,115
+this nine could become a 2,976,
+
+120
+00:06:31,115 --> 00:06:34,750
+and the most that this query result would still be a nine.
+
+121
+00:06:34,750 --> 00:06:36,910
+So if I know that this one,
+
+122
+00:06:36,910 --> 00:06:40,340
+the output of the query is not conditioned on this particular value,
+
+123
+00:06:40,340 --> 00:06:42,050
+then I also know that the output of my query is not
+
+124
+00:06:42,050 --> 00:06:44,359
+conditioned on anything that created this value,
+
+125
+00:06:44,359 --> 00:06:46,705
+including all of the people in this hospital.
+
+126
+00:06:46,705 --> 00:06:50,075
+If I know that across all of these guys, then we're saying,
+
+127
+00:06:50,075 --> 00:06:53,300
+"Man, this is a near perfect query."
+
+128
+00:06:53,300 --> 00:06:55,895
+This is not leaking
+
+129
+00:06:55,895 --> 00:06:58,010
+any private information because the output of
+
+130
+00:06:58,010 --> 00:07:00,680
+this query result is not conditioned at any specific person.
+
+131
+00:07:00,680 --> 00:07:04,575
+Now there is one core assumption to this.
+
+132
+00:07:04,575 --> 00:07:07,875
+That is, these unique partitions of the data.
+
+133
+00:07:07,875 --> 00:07:09,550
+Meaning that the same patient,
+
+134
+00:07:09,550 --> 00:07:14,935
+the same person was not present at any two of these hospitals.
+
+135
+00:07:14,935 --> 00:07:21,765
+The reason for that is that in theory, hypothetically, that person,
+
+136
+00:07:21,765 --> 00:07:26,345
+if they actually participated in the training of all of these models,
+
+137
+00:07:26,345 --> 00:07:30,970
+and they were removed in theory, hypothetically,
+
+138
+00:07:30,970 --> 00:07:35,060
+it's possible that they could actually change the result of all of
+
+139
+00:07:35,060 --> 00:07:37,970
+these models because the models will have learned something
+
+140
+00:07:37,970 --> 00:07:41,545
+slightly different such that this output query result was different.
+
+141
+00:07:41,545 --> 00:07:43,880
+So that's why the core assumption of
+
+142
+00:07:43,880 --> 00:07:47,030
+PATE is that when you partition your dataset into these partitions,
+
+143
+00:07:47,030 --> 00:07:49,220
+then you know where the references to people are
+
+144
+00:07:49,220 --> 00:07:51,555
+that you're trying to protect. Does that make sense?
+
+145
+00:07:51,555 --> 00:07:52,790
+So ultimately, at the end of the day,
+
+146
+00:07:52,790 --> 00:07:58,295
+what we're trying to say is the output of this query is immune to
+
+147
+00:07:58,295 --> 00:07:59,990
+any specific person being
+
+148
+00:07:59,990 --> 00:08:04,960
+removed from all of the data that was used to create this query.
+
+149
+00:08:04,960 --> 00:08:07,490
+If we note these partitions are across people,
+
+150
+00:08:07,490 --> 00:08:12,905
+then we can use the removal of a whole hospitals with the data as a proxy,
+
+151
+00:08:12,905 --> 00:08:15,335
+as a proxy for moving one person.
+
+152
+00:08:15,335 --> 00:08:18,790
+The cool thing is that under some conditions,
+
+153
+00:08:18,790 --> 00:08:22,590
+we can know for a fact that
+
+154
+00:08:22,590 --> 00:08:24,740
+removing any one of these hospitals from
+
+155
+00:08:24,740 --> 00:08:27,320
+our calculation wouldn't change the output of the result.
+
+156
+00:08:27,320 --> 00:08:30,875
+Now, what does all this have to do with epsilon?
+
+157
+00:08:30,875 --> 00:08:33,955
+How do we actually tie this back to epsilon?
+
+158
+00:08:33,955 --> 00:08:36,450
+Previous mechanisms that we looked at,
+
+159
+00:08:36,450 --> 00:08:38,960
+in our previous calculation to differential privacy,
+
+160
+00:08:38,960 --> 00:08:40,820
+we weren't actually looking at the data,
+
+161
+00:08:40,820 --> 00:08:44,820
+like we sort of talked about the idea that that's not what you would actually do.
+
+162
+00:08:44,820 --> 00:08:47,395
+Well, the cool thing about PATE,
+
+163
+00:08:47,395 --> 00:08:49,430
+the PATE analysis is that they actually figured out
+
+164
+00:08:49,430 --> 00:08:53,330
+a way to take a pick at these labels and say,
+
+165
+00:08:53,330 --> 00:08:58,040
+"Hey, how much do these hospitals really agree or disagree?"
+
+166
+00:08:58,040 --> 00:08:59,405
+Because if they all agree,
+
+167
+00:08:59,405 --> 00:09:02,495
+I know that my epsilon level is really, really low.
+
+168
+00:09:02,495 --> 00:09:05,480
+It's only if they disagree that
+
+169
+00:09:05,480 --> 00:09:08,960
+removing a hospital would actually cause my queries all to be different.
+
+170
+00:09:08,960 --> 00:09:15,120
+Okay. The PATE analysis is a formal set of mechanisms that's capable of
+
+171
+00:09:15,120 --> 00:09:16,945
+doing this and actually computing
+
+172
+00:09:16,945 --> 00:09:21,980
+an Epsilon level that is conditioned on this level of agreement.
+
+173
+00:09:22,080 --> 00:09:25,360
+So we're going to go ahead and use a tool that has implemented
+
+174
+00:09:25,360 --> 00:09:28,220
+this analysis to actually do this.
+
+175
+00:09:28,220 --> 00:09:31,465
+Okay. So this tool is in a toolkit called PySyft.
+
+176
+00:09:31,465 --> 00:09:37,800
+If you don't have it, go pip install syft and it should import all your dependencies.
+
+177
+00:09:37,800 --> 00:09:41,150
+I already have it installed, so I'm not going to worry about that.
+
+178
+00:09:41,150 --> 00:09:50,090
+So then we go from syft.frameworks.torch.differential_privacy,
+
+179
+00:09:50,090 --> 00:09:56,960
+import pate, pate.perform_analysis.
+
+180
+00:09:57,330 --> 00:10:00,520
+Okay. So what I'm going to do
+
+181
+00:10:00,520 --> 00:10:04,020
+next is I'm going to actually generate a synthetic dataset again.
+
+182
+00:10:04,020 --> 00:10:05,495
+So I've got one pull up over here.
+
+183
+00:10:05,495 --> 00:10:06,900
+I'm just going to drop it in.
+
+184
+00:10:06,900 --> 00:10:10,455
+This is a similar style of dataset that we had before,
+
+185
+00:10:10,455 --> 00:10:13,550
+so num_teachers, num_examples, num_labels.
+
+186
+00:10:13,550 --> 00:10:15,760
+We generate some preds, we generate some true_indices.
+
+187
+00:10:15,760 --> 00:10:19,615
+This is what the actual labels should be, this is the labels.
+
+188
+00:10:19,615 --> 00:10:24,665
+Yeah. We're going to perform our analysis of this.
+
+189
+00:10:24,665 --> 00:10:29,635
+So these indices aren't necessarily true but they're the ones that came from up here,
+
+190
+00:10:29,635 --> 00:10:35,190
+perform_analysis, and we're going to say that the teacher_preds equals preds.
+
+191
+00:10:35,190 --> 00:10:38,830
+I'm going to say that true_indices equals indices.
+
+192
+00:10:38,830 --> 00:10:41,020
+We're going to say that noise_epsilon.
+
+193
+00:10:41,020 --> 00:10:45,445
+So this noise_epsilon level is the Epsilon level that we used when noising our examples.
+
+194
+00:10:45,445 --> 00:10:47,315
+All right. So 0.1 Delta.
+
+195
+00:10:47,315 --> 00:10:49,270
+So we got to pick it at a level of Deltas from, remember,
+
+196
+00:10:49,270 --> 00:10:53,680
+Epsilon and Delta, 1e negative 5.
+
+197
+00:10:53,680 --> 00:10:55,810
+So this is 10 to the power of negative five.
+
+198
+00:10:55,810 --> 00:10:58,340
+Cool. Now, if we perform this analysis,
+
+199
+00:10:58,340 --> 00:10:59,465
+it returns two things.
+
+200
+00:10:59,465 --> 00:11:04,015
+So the first is a data_dependent_epsilon.
+
+201
+00:11:04,015 --> 00:11:05,965
+So this is the fancy one.
+
+202
+00:11:05,965 --> 00:11:08,020
+This is the one we're actually looks inside and says,
+
+203
+00:11:08,020 --> 00:11:09,900
+"Hey, how much agreement is here?"
+
+204
+00:11:09,900 --> 00:11:13,015
+Tries to give us sort of the tightest Epsilon that it can,
+
+205
+00:11:13,015 --> 00:11:17,075
+and this is the data_independent_epsilon which is looser.
+
+206
+00:11:17,075 --> 00:11:18,310
+It's a simpler Epsilon.
+
+207
+00:11:18,310 --> 00:11:21,000
+It doesn't actually look at the data to be able to tell.
+
+208
+00:11:21,000 --> 00:11:24,145
+As you can see, data_independent_epsilon.
+
+209
+00:11:24,145 --> 00:11:26,885
+As you can see, they're very, very, very close to each other.
+
+210
+00:11:26,885 --> 00:11:30,070
+However, the data_independent one is slightly higher.
+
+211
+00:11:30,070 --> 00:11:32,490
+So this says there is a teeny, teeny,
+
+212
+00:11:32,490 --> 00:11:35,930
+teeny, nine amount of agreement between the models.
+
+213
+00:11:35,930 --> 00:11:37,990
+It's not surprising that there wasn't much agreement.
+
+214
+00:11:37,990 --> 00:11:40,435
+After all, we randomly generated them.
+
+215
+00:11:40,435 --> 00:11:43,040
+So now, what are we going to do now?
+
+216
+00:11:43,040 --> 00:11:47,225
+What I'd like to do is just give you an intuition and show you that if we were to force,
+
+217
+00:11:47,225 --> 00:11:49,220
+if we were to change these predictions and actually
+
+218
+00:11:49,220 --> 00:11:52,110
+make it so that there was a certain amount of agreement,
+
+219
+00:11:52,110 --> 00:11:57,375
+say if the first five examples all 10 hospitals agreed
+
+220
+00:11:57,375 --> 00:12:03,005
+that it was label 0, this would change.
+
+221
+00:12:03,005 --> 00:12:05,770
+Let's check it out. Let's rerun it again.
+
+222
+00:12:05,770 --> 00:12:07,770
+I have forced the first five examples,
+
+223
+00:12:07,770 --> 00:12:10,970
+so all have perfect consensus at zero.
+
+224
+00:12:10,970 --> 00:12:14,890
+Now, the data_dependent_epsilon says,
+
+225
+00:12:14,890 --> 00:12:19,300
+"This dataset only leaks eight Epsilon as opposed
+
+226
+00:12:19,300 --> 00:12:23,355
+to the 11.7 Epsilon that we would have had to leak before."
+
+227
+00:12:23,355 --> 00:12:29,910
+So what if we force it to be the first 50?
+
+228
+00:12:29,910 --> 00:12:31,205
+So we only had a 100 examples,
+
+229
+00:12:31,205 --> 00:12:33,020
+so I'm getting pretty aggressive here.
+
+230
+00:12:33,020 --> 00:12:37,135
+Well, then now we get down to 1.52.
+
+231
+00:12:37,135 --> 00:12:40,755
+So significantly better privacy leak there.
+
+232
+00:12:40,755 --> 00:12:42,660
+Now, there is one thing that is here.
+
+233
+00:12:42,660 --> 00:12:47,170
+So we sort of introduce an extreme amount of agreement here,
+
+234
+00:12:47,170 --> 00:12:50,130
+and so we sort of push the bounds.
+
+235
+00:12:50,130 --> 00:12:52,850
+This actually tracks the number of moments.
+
+236
+00:12:53,900 --> 00:12:56,270
+It's a moment tracking algorithm.
+
+237
+00:12:56,270 --> 00:12:58,540
+So in reality, we would follow
+
+238
+00:12:58,540 --> 00:13:01,870
+these instructions and we would set these moments by default and set to eight.
+
+239
+00:13:01,870 --> 00:13:04,875
+So maybe we set this to 20 or something like that.
+
+240
+00:13:04,875 --> 00:13:09,780
+But the idea here and the intuition here is that the greater the agreement,
+
+241
+00:13:09,780 --> 00:13:12,365
+the more the predictions agree with each other,
+
+242
+00:13:12,365 --> 00:13:15,805
+the tighter an Epsilon value we can get.
+
+243
+00:13:15,805 --> 00:13:18,485
+So intuitively, when you're using PATE,
+
+244
+00:13:18,485 --> 00:13:20,250
+also this has really strong intuition,
+
+245
+00:13:20,250 --> 00:13:24,445
+this means that if you can do things with your algorithm to
+
+246
+00:13:24,445 --> 00:13:29,270
+encourage models at different locations to agree with each other,
+
+247
+00:13:29,270 --> 00:13:30,730
+to find the true signal,
+
+248
+00:13:30,730 --> 00:13:32,585
+to not overfit to the data,
+
+249
+00:13:32,585 --> 00:13:35,440
+that when you actually combine these together later,
+
+250
+00:13:35,440 --> 00:13:38,620
+you're going to find that you have a less privacy leakage
+
+251
+00:13:38,620 --> 00:13:42,335
+because each model was better at only memorizing,
+
+252
+00:13:42,335 --> 00:13:44,645
+only learning the generic information it was going for.
+
+253
+00:13:44,645 --> 00:13:47,250
+For example, what do tumors look like in humans as opposed
+
+254
+00:13:47,250 --> 00:13:50,365
+to whether image 576 has a tumor?
+
+255
+00:13:50,365 --> 00:13:55,020
+So this PATE framework actually rewards you for creating
+
+256
+00:13:55,020 --> 00:13:58,120
+good generalized models that don't memorize
+
+257
+00:13:58,120 --> 00:14:02,030
+the data by giving you a better Epsilon levels at the end.
+
+258
+00:14:02,030 --> 00:14:05,610
+So I hope that you found this to be quite a compelling framework.
+
+259
+00:14:05,610 --> 00:14:08,340
+Now note also that even though we've used
+
+260
+00:14:08,340 --> 00:14:14,645
+this sort of healthcare example as like a driving example,
+
+261
+00:14:14,645 --> 00:14:17,230
+it doesn't have to be datasets that are required from some of the hospital.
+
+262
+00:14:17,230 --> 00:14:19,940
+If you have a private dataset and a public dataset,
+
+263
+00:14:19,940 --> 00:14:22,990
+you can leverage labels in the private dataset, split it.
+
+264
+00:14:22,990 --> 00:14:26,045
+Split the dataset in the 10 or 100 partitions, train your models,
+
+265
+00:14:26,045 --> 00:14:28,205
+train your future models, and then use that to
+
+266
+00:14:28,205 --> 00:14:30,830
+annotate your public dataset you can train a model from.
+
+267
+00:14:30,830 --> 00:14:34,609
+You don't have to be bringing in data from part organizations,
+
+268
+00:14:34,609 --> 00:14:36,055
+you can do all this yourself.
+
+269
+00:14:36,055 --> 00:14:38,860
+In fact, in the later project,
+
+270
+00:14:38,860 --> 00:14:40,250
+we're actually going to do that.
+
+271
+00:14:40,250 --> 00:14:43,760
+So yeah. I hope you've enjoyed this lesson and I'll see you in the next one.
+

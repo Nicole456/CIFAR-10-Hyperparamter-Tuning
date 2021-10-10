@@ -1,0 +1,82 @@
+The essence of federated learning is the ability to train
+models in parallel on a wide number of machines.
+In order to do this, we first need the ability to tell
+remote machines to execute operations required for deep learning.
+Thus, instead of using torch tensors locally,
+we're now going to work with pointers to tensors that exist on a different machine.
+However, in order to do this,
+we first need to know what is an interface to another machine really look like.
+Fortunately, Pysyft creates this interface for us through something called a worker.
+The first thing we're going to create is called a virtual worker.
+What this really does is it just simulates
+the interface that we might have to another machine.
+Now a worker in the context of Pysyft really is a new kind of primitive.
+So whereas PyTorch and TensorFlow are both solely focused around the primitive type,
+the core type of a tensor, with Pysyft,
+we have tensors that are owned by a variety of different machines,
+a variety of different workers.
+So these workers form another core primitive of the framework.
+Now, workers really quite something simple.
+It's just a collection of objects.
+In most cases, these objects will be
+simple tensors that we are trying to perform operations with,
+but sometimes they can be other kinds of objects as well. Let's try it out.
+So if I create a little bit of data here,
+I can then use the first piece of functionality that PySyft
+added to PyTorch and send this data to Bob.
+Now, if I look inside of Bob's objects collection,
+I see indeed the tensor that I had originally initialized was actually sent to Bob.
+But now this begs the question,
+what was returned when I sent it?
+This is where PySyft power really starts to be shown for the first time.
+What was returned to me was a pointer to the remote object.
+Now, pointer is actually a kind of tensor and it has the full tensor API at its disposal.
+However, instead of actually executing these commands locally like a normal tensor would,
+each command is serialized to a simple JSON or tuple format sent
+to Bob and then Bob executes it on
+our behalf and returns to us a pointer to the new object.
+Now, there are few assets on these pointers that are
+required in order for this to be doable.
+The first one is location. So we go x.location.
+We see that this pointer is pointing towards Bob and we
+actually go check and see is x.location equal to Bob,
+the answer is true.
+X has an ID at location and then x has an ID as well.
+These two pieces of metadata actually allow x to communicate with Bob.
+So whenever you try to perform a command say addition or subtraction using x,
+it's going to send a message to self.location and say, "Hey,
+Bob, find the tensor that has
+this particular ID and execute the command that I would like for you to execute."
+There's one more attribute that all tensors and PySyft have which is an owner.
+In this case because we are the client,
+the owner defaults to be me.
+This reveals one other worker which was created without our knowledge.
+This was created when we first imported and hooked PySyft into PyTorch.
+This is a worker called local worker.
+So you see, whenever we actually communicate with a remote machine,
+what we're really doing whenever we execute a command regarding acts is we're saying,
+"Hey, local worker, contact Bob and tell him to do this."
+So there's a connection between local worker and Bob
+and any other workers it's sort of learn about each other.
+So let's execute one of those commands now.
+So if I go x.get,
+just to remind you that x is a pointer,
+and I will actually get the information back from Bob.
+If I go and look in Bob objects,
+you'll see that Bob no longer has any tensors anymore.
+Because you can see this is
+a very powerful interface that allows us to do everything that
+PyTorch can normally do but we can execute it on arbitrary remote machines.
+We will see that this pointer interface actually allows us to
+coordinate large complex protocols such as Federated Learning with ease.
+In the next section, what I'd like for you to do is play around with this.
+So what I would first like you to do is to extend
+this use of send and instead create two workers.
+So I want you to create a Bob worker and then Alice worker.
+Then, I want you to boost send and get a tensor to both of those workers simultaneously.
+So instead of just calling.send you're going to call.send Bob and Alice. All right.
+So go ahead and take a shot at that project,
+get used to this interface,
+get PySyft imported to your system,
+and in the next video,
+I'll show you how I would execute this program.

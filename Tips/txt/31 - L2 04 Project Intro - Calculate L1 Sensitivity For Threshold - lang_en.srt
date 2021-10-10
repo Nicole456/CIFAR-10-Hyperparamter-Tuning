@@ -1,0 +1,56 @@
+1
+00:00:00,000 --> 00:00:02,265
+Okay. So in project three,
+
+2
+00:00:02,265 --> 00:00:05,400
+I'd like for you to play around with this notion of sensitivity yourself.
+
+3
+00:00:05,400 --> 00:00:07,740
+Specifically, I'd like for you to calculate
+
+4
+00:00:07,740 --> 00:00:11,100
+the sensitivity for this new function, which is the threshold function.
+
+5
+00:00:11,100 --> 00:00:13,710
+This project is going to take three steps.
+
+6
+00:00:13,710 --> 00:00:17,580
+First, create the query function, where you compute the sum over
+
+7
+00:00:17,580 --> 00:00:19,680
+the database and return whether that sum is
+
+8
+00:00:19,680 --> 00:00:22,260
+greater than or less than a certain threshold.
+
+9
+00:00:22,260 --> 00:00:25,290
+Then, I want you to create 10 databases of
+
+10
+00:00:25,290 --> 00:00:28,530
+size 10 and query them with a threshold of five,
+
+11
+00:00:28,530 --> 00:00:30,780
+calculating the sensitivity of each.
+
+12
+00:00:30,780 --> 00:00:34,215
+Finally, I want you to print out the sensitivity of
+
+13
+00:00:34,215 --> 00:00:37,800
+all 10 databases so you can see them compared to each other.
+
+14
+00:00:37,800 --> 00:00:40,920
+Good luck and I'll see you in the next concept.
+

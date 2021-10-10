@@ -1,0 +1,240 @@
+1
+00:00:00,000 --> 00:00:01,980
+In this lesson, we're going to learn a bit more about
+
+2
+00:00:01,980 --> 00:00:04,365
+the APIs that pointer tensors offer,
+
+3
+00:00:04,365 --> 00:00:07,140
+and the full range of functionality they give us when
+
+4
+00:00:07,140 --> 00:00:10,500
+controlling pointers to tensors on other machines.
+
+5
+00:00:10,500 --> 00:00:13,575
+The first thing we'd like to do is initialize some data to play with.
+
+6
+00:00:13,575 --> 00:00:16,725
+So let's say X equals a torch tensor,
+
+7
+00:00:16,725 --> 00:00:20,010
+and we'll send this to bob and Y equals another torch tensor,
+
+8
+00:00:20,010 --> 00:00:23,150
+I have the tensor of ones and we'll send this also to bob.
+
+9
+00:00:23,150 --> 00:00:26,900
+Now, of course, if we were to send one to Bob and another one to Alice,
+
+10
+00:00:26,900 --> 00:00:31,445
+then we couldn't do any functions that involve both tensors because as you'd imagine,
+
+11
+00:00:31,445 --> 00:00:33,440
+they wouldn't be on the same machine.
+
+12
+00:00:33,440 --> 00:00:37,595
+So as you can see here, we have tensor X which is a pointer tensor,
+
+13
+00:00:37,595 --> 00:00:41,605
+where the pointer is located on the worker called me,
+
+14
+00:00:41,605 --> 00:00:44,990
+which is the one that's as mentioned previously initialize inside the hook,
+
+15
+00:00:44,990 --> 00:00:47,645
+and it has an ID of this 873 in big number.
+
+16
+00:00:47,645 --> 00:00:53,330
+But it's pointing to a tensor on Bob with an ID that starts with 99233,
+
+17
+00:00:53,330 --> 00:00:54,805
+and Y is quite similar.
+
+18
+00:00:54,805 --> 00:00:56,720
+The nice thing about these pointers tensors is that,
+
+19
+00:00:56,720 --> 00:00:58,520
+we can just pretend that they're normal tensors.
+
+20
+00:00:58,520 --> 00:01:00,080
+So if it goes Z equals X plus Y,
+
+21
+00:01:00,080 --> 00:01:05,780
+we've returned a pointer to the output of X plus Y is executed on Bob's machine.
+
+22
+00:01:05,780 --> 00:01:07,870
+We'll go Z equals z.get,
+
+23
+00:01:07,870 --> 00:01:09,980
+as you can see the output is correct.
+
+24
+00:01:09,980 --> 00:01:14,330
+So take this one into a five and add it to one to each of the individual values.
+
+25
+00:01:14,330 --> 00:01:17,540
+Now, if you prefer to use some of torches functions instead of using methods,
+
+26
+00:01:17,540 --> 00:01:20,885
+you can also go z equals th.add,
+
+27
+00:01:20,885 --> 00:01:22,360
+and we pass in x and y,
+
+28
+00:01:22,360 --> 00:01:25,730
+and this generates a pointer to the output again and of course we can go equals
+
+29
+00:01:25,730 --> 00:01:29,675
+z.get and look at z and we get the same result.
+
+30
+00:01:29,675 --> 00:01:31,730
+However torches used for more than
+
+31
+00:01:31,730 --> 00:01:34,720
+just simple operations and it actually has some more advanced protocols,
+
+32
+00:01:34,720 --> 00:01:37,860
+so if you consider say back propagation.
+
+33
+00:01:37,860 --> 00:01:42,480
+So if we were to instead create a couple of tensors which had variable send this to Bob,
+
+34
+00:01:42,480 --> 00:01:44,675
+we can even use this more advanced functionality.
+
+35
+00:01:44,675 --> 00:01:47,510
+So let's say x equals the.tensor again,
+
+36
+00:01:47,510 --> 00:01:49,180
+actually let's just copy these guys from here,
+
+37
+00:01:49,180 --> 00:01:53,525
+but instead we're going to say requires grad equals true, floating-point numbers.
+
+38
+00:01:53,525 --> 00:01:57,694
+It's now if we go z equals x plus y,
+
+39
+00:01:57,694 --> 00:01:59,750
+most sum up to a single number,
+
+40
+00:01:59,750 --> 00:02:02,999
+and then z backwards or call back propagation,
+
+41
+00:02:02,999 --> 00:02:07,325
+what this would do normally is it will create gradients on x and y.
+
+42
+00:02:07,325 --> 00:02:09,950
+So if we actually call x back,
+
+43
+00:02:09,950 --> 00:02:12,820
+we have x itself and we get x.grad,
+
+44
+00:02:12,820 --> 00:02:15,755
+that's a tensor of once just as it should be.
+
+45
+00:02:15,755 --> 00:02:21,690
+So as you can see, the full API of Pi towards that our disposal and as much as possible,
+
+46
+00:02:21,690 --> 00:02:25,655
+the craters of PySyft have tried to make it feel like you're using
+
+47
+00:02:25,655 --> 00:02:29,870
+normal Pi torch as close as possible to the original API.
+
+48
+00:02:29,870 --> 00:02:32,000
+So this leads us to the next project.
+
+49
+00:02:32,000 --> 00:02:34,970
+What I'd like for you to do in this project is leveraged
+
+50
+00:02:34,970 --> 00:02:38,975
+this API to train a simple linear model.
+
+51
+00:02:38,975 --> 00:02:40,660
+So you're going to use sort of the backward function,
+
+52
+00:02:40,660 --> 00:02:41,940
+you're going to use variables,
+
+53
+00:02:41,940 --> 00:02:45,960
+and you can even use optimizers or things from nn.modules,
+
+54
+00:02:45,960 --> 00:02:47,870
+so like nn.Linear for example.
+
+55
+00:02:47,870 --> 00:02:50,885
+So you might be familiar with this module, right?
+
+56
+00:02:50,885 --> 00:02:55,430
+So and just learn a simple linear model with one core constraint,
+
+57
+00:02:55,430 --> 00:03:00,340
+I want the data and the model to be located on Bob's machine.
+
+58
+00:03:00,340 --> 00:03:01,860
+So take a step at this project,
+
+59
+00:03:01,860 --> 00:03:03,020
+and in the next video,
+
+60
+00:03:03,020 --> 00:03:05,370
+I'll show you how I would do this with PySyft.
+

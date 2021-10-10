@@ -1,0 +1,123 @@
+So before we continue on to other privacy preserving techniques,
+I would like to first talk about garbage collection and a few of
+the common errors that people seem to run into
+when using PySyft to control tensors on remote machines.
+So first, let's talk a little bit about garbage collection
+and the life cycle of remote objects.
+So if we were to clear all the objects in
+Bob just so it's easy to tell when something gets deleted,
+so we'll see bob_objects is now empty.
+This is the collection of all the objects in Bob.
+If we're then to create a tensor and send it to
+Bob and then if we were to delete our pointer to this tensor,
+so x as you know is our pointer,
+shows first just so you can see, Bob's objects is there.
+If we were to delete this, what should happen?
+Well, PySyft always assumes that when you created the tensor and send it to someone,
+you should continue to control the life cycle of that tensor.
+Which means if you delete your pointer to the tensor that you created and sent,
+the tensor that you're pointing to should also get deleted.
+Now, this is controlled by a very specific attribute on each pointer.
+Supposed to create another pointer, x.child.garbage_collect_data.
+By default, this is set to true when you call.send.
+This means, when sort of me the pointer,
+when either pointer get garbage collected,
+should I send a message to Bob saying,
+"Hey, go delete that tensor."
+By default, this is set to true.
+So if we set this to false,
+then this would actually turn garbage collection off at this pointer and it would no
+longer send a message to Bob saying that they
+should delete tensors when they get removed.
+There's an interesting gotcha when working in Jupyter Notebooks.
+So normally, know if,
+so Bob has this object right now.
+If I said x equals asdf and this got garbage collected, Bob would lose it.
+So now Bob is empty.
+However, Jupyter Notebooks had this thing
+where they store every command you've ever executed,
+and so occasionally if you do a few commands,
+they'll get cached in such a way where
+garbage collection will no longer collect those objects.
+So you might end up with just things,
+just by virtue of the fact you're working in a Jupyter Notebook,
+it can keep a couple extra objects around.
+So let me show you what I mean specifically.
+So if we create another one of these and then we go
+x and we'll just call the double under reaper here,
+then if I go x equals this or as this,
+x equals asdf, there's still a reference to it.
+The pointer never actually got garbage collected.
+If you go delete x, it still lives on.
+But this is not because of some issue with
+PySyft or it's just an issue with sort of unknown gotcha.
+When you use Jupyter Notebooks,
+there are some things that actually end up having another reference
+to your object that you have in your Notebook and
+thus since this pointer doesn't get deleted.
+Since this pointer doesn't get garbage collected,
+it never sends an execution or
+a command to the remote worker telling it to delete the thing that it's pointing to.
+So this happens occasionally. So now we'll go ahead and go erase these again.
+So Bob equals bob.clear_objects, bob._objects.
+So clear this one more time.
+Then I just want to show you that
+this garbage collection works for like for loops and stuff too.
+So if I were to do for i in range 1000, x equals th.tensor.
+So if I were to send this tensor to Bob 1000 times,
+bob._objects should still only have one.
+The reason for that is every time this for loop went through again,
+it reassigned x and deleted the tensor that was
+returned from here which caused it to be garbage collected from the remote machine.
+Now, why is this important?
+The reason this is important is that it means that when you're
+doing say federated learning or you're doing the exercise,
+the project that we did previously where we were learning a simple linear model,
+when we iterate through this for loop and we're generating a new prediction tensor,
+a new loss tensor,
+and like all the intermediate tensors that go into executing each of these parts,
+if we end up deleting our reference to that execution,
+then the remote machine will also delete it.
+This is like a really good default piece of behavior to have.
+Because otherwise, when we ran this for loop,
+we would end up generating and persisting thousands of
+tensors even when we're doing just simple forward and backpropagation.
+So it's just a good thing to know about this particular sort of
+garbage collection feature so that you know that when
+objects are created or it seem to disappear from
+remote workers that they're actually attached to the pointers that are pointing to them.
+I know it might seem like a little bit of an advanced thing,
+but it's just something you need to know
+about as far as what are the core assumptions of how
+this API is built before jumping
+into too deep into federate learning and into your own sort of custom projects.
+Now, there's a couple of other sort of
+convenience areas that I wanted to also mention while we're here.
+So I see that Bob still have and Bob has this also x equals th.tensor([1,2,3,4,5]).
+So let's create x and y, but I'm not going to send y to Bob.
+I'm going to try to call a command on both.
+So again, x is a pointer to Bob,
+why is a data set tensor that I have here?
+So if I do this, it returns an error.
+PureTorchTensorFoundError, which means that one of these is a regulatory tensor,
+one of these is a pointer to one.
+If I scroll down to the bottom and say you tried to call a method involving
+two tensors where one tensor is actually
+located on another machine, it's a pointer tensor.
+Call.get on the PointerTensor or.send to Bob on the other tensor.
+So this gets populated automatically.
+Here are the two tensors that we tried to work with,
+and this is really just to try to make it obvious when you accidentally do this.
+Another common error that people will do,
+so we scroll down here,
+is send Alice and two different machines and we'll get a very similarity.
+So you try to call add involving two tensors which are not on the same machine.
+One tensor is on Bob while the other tensor is on Alice.
+Use combination of move, get,
+or send to co-locate them to the same machine.
+So again, if you see these,
+just follow the instructions and hopefully you'll be led to
+the right series of operations that you're interested in performing in the first place.
+All right. In the next session,
+we're going to jump a little bit deeper into privacy preserving
+deep learning techniques using these core primitives. See you then.

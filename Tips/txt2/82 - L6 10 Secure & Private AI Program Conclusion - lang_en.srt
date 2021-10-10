@@ -1,0 +1,188 @@
+1
+00:00:00,000 --> 00:00:03,345
+We've learned about several great techniques for protecting privacy.
+
+2
+00:00:03,345 --> 00:00:05,655
+However, as mentioned previously,
+
+3
+00:00:05,655 --> 00:00:10,590
+each set of techniques is only useful for the trust configuration that it supports.
+
+4
+00:00:10,590 --> 00:00:13,004
+Some techniques would be overly burdensome
+
+5
+00:00:13,004 --> 00:00:15,990
+amongst data and model owners who trust each other implicitly,
+
+6
+00:00:15,990 --> 00:00:20,175
+while others would be too insecure for the trust model of potentially malicious actors.
+
+7
+00:00:20,175 --> 00:00:22,620
+What we've learned so far is a cross-section of
+
+8
+00:00:22,620 --> 00:00:26,940
+fundamental techniques which are applicable to a broad spectrum of privacy settings.
+
+9
+00:00:26,940 --> 00:00:30,150
+Pate is useful when a party wants to annotate
+
+10
+00:00:30,150 --> 00:00:33,960
+a local dataset using the private datasets of other actors and
+
+11
+00:00:33,960 --> 00:00:38,220
+the epsilon-delta tool allows for very granular control of just
+
+12
+00:00:38,220 --> 00:00:42,685
+how much the other actors must trust us to protect their privacy in this process.
+
+13
+00:00:42,685 --> 00:00:45,710
+Vanilla Federated Learning is useful when we don't
+
+14
+00:00:45,710 --> 00:00:49,040
+want to aggregate a training dataset for a legal, social,
+
+15
+00:00:49,040 --> 00:00:52,850
+or logistical reasons, which is distributed over a large number of actors,
+
+16
+00:00:52,850 --> 00:00:54,890
+but there's still some trust required as
+
+17
+00:00:54,890 --> 00:00:57,400
+the gradients can leak some information about the training data.
+
+18
+00:00:57,400 --> 00:01:00,200
+Finally, secure additive aggregation
+
+19
+00:01:00,200 --> 00:01:03,560
+helps add additional privacy protections in this setting,
+
+20
+00:01:03,560 --> 00:01:05,840
+in the latter case preventing anyone from seeing
+
+21
+00:01:05,840 --> 00:01:10,400
+an aggregated gradient from one individual which is a much stronger privacy protection.
+
+22
+00:01:10,400 --> 00:01:13,790
+But this protocol is still not secure with a hard constraint provided from different to
+
+23
+00:01:13,790 --> 00:01:18,095
+privacy and it should only be used with parties who still have some degrees of trust.
+
+24
+00:01:18,095 --> 00:01:20,690
+For reference, the most successful deployments of
+
+25
+00:01:20,690 --> 00:01:24,530
+Federated Learning are between Apple Incorporated and the users of it's phones,
+
+26
+00:01:24,530 --> 00:01:27,230
+and between Google and the users of Android.
+
+27
+00:01:27,230 --> 00:01:30,230
+Perhaps, the final question you may be wondering is,
+
+28
+00:01:30,230 --> 00:01:33,955
+what level of trust constitutes which protocol exactly?
+
+29
+00:01:33,955 --> 00:01:35,755
+This is a tricky question,
+
+30
+00:01:35,755 --> 00:01:37,460
+and there's not a clean-cut answer.
+
+31
+00:01:37,460 --> 00:01:38,900
+At the end of the day,
+
+32
+00:01:38,900 --> 00:01:41,509
+if you want to implement these protocols in production,
+
+33
+00:01:41,509 --> 00:01:44,345
+you must do so at your own risk with your own data.
+
+34
+00:01:44,345 --> 00:01:47,390
+What it will come down to is your ability to understand
+
+35
+00:01:47,390 --> 00:01:50,675
+the various trade-offs of each protocol within your organization,
+
+36
+00:01:50,675 --> 00:01:54,815
+your ability to communicate those trade-offs to key stakeholders in your organization,
+
+37
+00:01:54,815 --> 00:01:57,305
+and then the discussion afterwards which will
+
+38
+00:01:57,305 --> 00:02:00,620
+ultimately decide whether a certain protocol is a good fit.
+
+39
+00:02:00,620 --> 00:02:04,100
+Fortunately however, we do get to stand on the shoulders of
+
+40
+00:02:04,100 --> 00:02:06,410
+some very large and successful companies who
+
+41
+00:02:06,410 --> 00:02:09,140
+have had very effective deployments with some of these protocols.
+
+42
+00:02:09,140 --> 00:02:11,240
+I wish you the best of luck in your endeavors and I
+
+43
+00:02:11,240 --> 00:02:13,475
+applaud you for taking privacy so seriously.
+
+44
+00:02:13,475 --> 00:02:16,700
+It's the early days for this technology and by taking this course,
+
+45
+00:02:16,700 --> 00:02:20,150
+you are set apart in the field of AI for both for your expertise in
+
+46
+00:02:20,150 --> 00:02:24,050
+this field as well as for your morally admirable passion for privacy.
+
+47
+00:02:24,050 --> 00:02:26,280
+Now go and do, and good luck.
+

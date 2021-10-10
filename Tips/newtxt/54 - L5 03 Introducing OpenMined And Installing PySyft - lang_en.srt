@@ -1,0 +1,91 @@
+Up until this point, we've been learning about
+deep learning in the context of privacy by building things from scratch,
+and this is a great way to learn.
+However, moving forward we're going to start doing things that are quite complex.
+So we're going to want to start using software packages that
+are a bit more purpose-built for privacy-preserving deep learning.
+For that, we're going to look to the OpenMined, open-source community.
+This open-source community has built a variety of tools
+that are useful for privacy in the context of deep learning,
+including tools for Federated Learning,
+for Differential Privacy, for Encrypted Computation, and more.
+In particular, we're going to look at the package called PySyft.
+So, if you scroll down to the bottom,
+you can click this Start Contributing button,
+and it will take you to the OpenMined GitHub organization.
+So you'll see PySyft is here at the top.
+This is a library that builds on top of PyTorch and
+TensorFlow for encrypted privacy-preserving deep learning.
+For our exercises, we're going to be looking at
+the extensions that they've made to PyTorch.
+Now, the first thing I'd like for you to do,
+scroll down and install Syft.
+So you see installation should be quite simple.
+So, pip install syft,
+and this should download the appropriate dependencies
+needed for the library as well as the library itself.
+The next thing that I'd like for you to do,
+is head on over to the Slack.
+So you can click that button here on the Read Me,
+or you can come back to the main homepage and click this chat on Slack button.
+If you follow the form to create an account,
+it will ultimately be led to a portal.
+It looks a lot like this.
+Slack is, if you haven't used it before,
+composed of several main components.
+So first, there are channels which are group chats or group discussions.
+Then, there are direct messages down here.
+Now, when you first get here,
+what I would like for you to do is go ahead
+and introduce yourself in the general discussion.
+You will find that lots of other people who are taking the course,
+as well as other people who are interested in
+privacy-preserving deep learning in general,
+always present in this community.
+As privacy-preserving deep learning is still a bit of a nascent community,
+it's a good idea to get to know other people who are in the field.
+Secondly, as we're just now installing PySyft,
+I'd like for you to head over to beginner.
+Beginner is a great place to ask questions if you're having trouble installing things,
+if you having trouble with any of the examples,
+if you think you found a bug in the code or a bug and one of the demos,
+or if you get stuck on a project.
+This place is a friendly place to build,
+ask questions no matter how simple or elementary they might be.
+If you're interested in knowing how PySyft is actually being developed as we go,
+you can see every new code update and change.
+Actually gets pushed into this co-channel,
+so it's a good channel to watch.
+Of course in here, other people introduce
+themselves and talk about their backgrounds and what they're interested in,
+and why they're interested in privacy-preserving deep learning.
+You can get to know other people who are also in this channel.
+Now, development discussion for improving PySyft and seeing how
+PySyft is changing happens in this #team_pysyft channel,
+which you can keep track off if you're interested.
+One more thing of note,
+in the channel section,
+you'll see there are actually a lot of local communities for OpenMined.
+So in particular, people like to gather in
+various places around the world to have face-to-face meetups.
+It's a good idea to go ahead and look and see if your community is listed,
+and if it's not, feel free to go ahead and create one.
+With that, now we're going to get back to
+actually walking through some new tutorials in privacy-preserving deep learning.
+So now, what is PySyft?
+PySyft is an extension of several deep learning libraries
+with new pieces that make it easier to do privacy-preserving deep learning.
+Let me show you how to setup PySyft inside of your [inaudible] notebook.
+First, we're going to import Torch like we normally would.
+We can create normal Torch tensors and use Torch in the normal way.
+However, Syft is an extension of Torch.
+So if we import Syft as sy,
+the next thing we want to do is create a hook.
+What this is going to do?
+This is going to actually modify PyTorch with new functionality.
+So I'm actually going to pass in the reference to the Torch library here.
+Behind the scenes, it actually just modified a bunch of PyTorch API,
+so that we can do things that we'd like to do with privacy-preserving deep learning.
+But you'll notice that the pieces of PyTorch that we're familiar with work as advertised.
+In the next lesson, we're going to start jumping into
+some of the new functionality that Syft has given us.

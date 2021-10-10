@@ -1,0 +1,30 @@
+In this video, I'm going to show you how to be able to send and
+get tensors to multiple workers at a time.
+So this is in the same notebook from the last video,
+we already have a worker called Bob.
+So the first thing we need to do is to create a second worker,
+we're going to call them Alice.
+New virtual worker, pass on the hook, ID equals Alice.
+Let's create some data we want to send.
+Now, as I showed you very briefly in the last video,
+we'll say x_ptr = x.send (bob, alice).
+If we look at x_ptr, we have a new update.
+This is called a multi-pointer.
+So, a multi-point or is simply just a pointer that points to multiple machines.
+It has an object called child,
+which is simply a dictionary of the various workers.
+Now, we can also go x_pointer.get and it
+returns interestingly two objects instead of one.
+You see what was contained within inside of
+x_pointer in this multi pointer it was actually, two pointer objects.
+So when we call dot get it naturally pull both of them back as separate objects.
+However, there is another option we can also use.
+It as an option for us to have it automatically sum the results,
+which will take these two tensors and sum them together.
+This is simply a convenience operation which in some contexts is quite nice.
+Now, in the next section, we're going to start looking
+at more advanced things that we can
+do with pointers to remote tensors,
+by showing you how to do
+simple arithmetic and other various operations that are inside the hydro
+JPI on tensors that are not located on the machine that you are on. See you then.

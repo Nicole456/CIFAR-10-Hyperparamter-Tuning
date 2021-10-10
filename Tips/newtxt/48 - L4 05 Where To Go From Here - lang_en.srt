@@ -1,0 +1,126 @@
+Before moving on to a description of the final project for this section,
+I first wanted to just take a quick pit stop and talk about
+where to go from here to continue your education on differential privacy
+so that the first and most resounding recommendation that I can give right now is to
+read the Algorithmic Foundations of Differential Privacy by Cynthia Dwork and Aaron Roth.
+This is the comprehensive book on the subject.
+I hope that this video series is actually giving you a really great foundation,
+an intuition and encode examples to be able to work with this book so that the pros are,
+I mean, it's the definitive work.
+It's free online because
+Aaron Roth is actually hosting it for free that people can download.
+It has the full field.
+I think was written in what, 2013? So it has lots of very modern mechanisms,
+some great stories, and great intuitions.
+I think the most challenging part of it is once you get into it,
+it delves pretty deeply into the math and the formal proofs.
+So it might be more challenging and more
+dense if you're not used to working with this kind of set notation.
+However, it is truly the definitive work on the subject, the comprehensive work.
+If you're going to teach a course in differential privacy,
+this is the textbook that you want to use,
+and so I highly recommend checking this out.
+Secondarily, you should certainly check out this paper
+called The Deep Learning with Differential Privacy, it had some really,
+really great concepts that I think are going to be quite influential,
+or actually, are already are quite
+influential and will continue to be so within the field of deep learning.
+As far as topics that you should learn next.
+So if this course was longer,
+we would have jumped into the exponential mechanism,
+we would've jumped into moments accountant,
+which is actually talked about in this paper,
+as well as differentially private stochastic gradient descent.
+I'm confident before too long with these algorithms will be present
+in the existing toolkits for differential privacy.
+They should be relatively easy to use.
+So at the very least,
+you want to become familiar with the interfaces and the
+APIs of what these algorithms signify and mean.
+Then finally, there's a bit of advice.
+So if you're used to doing deep learning,
+you're probably used to jumping in with both feet first,
+and then maybe asking questions later.
+I know that in my own pursuits of deep learning I've been very
+aggressive to be getting my hands dirty with these techniques,
+and like really going for it.
+However, when doing differential privacy,
+there are some times small nuanced things that can actually cause you negative exposure.
+People can actually get hurt if
+private information gets leaked because something wasn't implemented correctly.
+This is different from a culture that is most popular in AID phone in
+communities where if you train a model and it
+gets 99 percent accuracy instead of a 100 percent accuracy,
+nine times out of 10,
+it's not going to be that big of a deal.
+With privacy, it's a bit more like cryptography,
+where if you're off by just a little bit sometimes that can actually be
+a catastrophic mistake that someone can exploit to then steal lots of information.
+So for your actual deployments,
+the first thing is I would recommend to stick with public frameworks that
+are open-source actively being developed on and lots of people have their eyes on.
+Because this is an early field,
+there's still proofs that come out that it push against different techniques.
+So for example, there's been a paper recently
+published talking about how for Laplacian distribution.
+So remember we were using Laplacian distributions for a lot in this course.
+That if you use a Laplace generating
+function that isn't implemented in quite the right way,
+there's actually an exploit to leak
+more information based on the fact that you're using floating point numbers.
+Even if you implemented the algorithm correctly as described in this course,
+as describing Cynthia Dwork's books,
+there can still be little gotchas in
+the actual computer science implementation of these things
+just like there can be little gotchas in work around in cryptography.
+So writing cryptography libraries can be very challenging.
+So all there's to say, if you actually are interested
+in implementing this within your own organization,
+I highly recommend sticking with
+public published code that people are vetting, and people are backing,
+that people are doing DevOps on,
+because if you tried to roll the whole thing from
+scratch yourself it's going to be more challenging,
+and it's going to be more likely that you'll
+introduce vulnerabilities that you might not know about.
+Secondarily, on a more positive note,
+join the differential privacy community.
+So it's a small book,
+quickly growing community of a very interesting folks
+at the intersection of some folks going from machine learning background,
+some folks come from a statistics background,
+some folks come from a cryptography background.
+It's a really, really vibrant community,
+and I've been very pleasantly,
+maybe not surprised, but I deeply enjoy being around people in this community.
+They typically have a really strong social bent,
+they really are interested in actually making the world a better place.
+I really have enjoyed being a part of this community,
+I highly recommend doing so yourself.
+So you can do this by going to conferences, going to workshops,
+obviously join open-mind slack which we'll
+talk about I think a little bit the next lesson,
+with lots of other people who are interested in differential privacy,
+but it's really a vibrant group and I highly recommend it.
+Third, don't get too ahead of yourself on deployment.
+So again, this is a bit more like the first point.
+You've got a solid introduction to the concept differential privacy in this course,
+but this is by no means a comprehensive course.
+This is not enough to do a production deployment at the moment.
+However, this is I think a great introduction to the field of differential privacy,
+and ultimately will lead you to the skill sets
+necessary for production deployments of these algorithms.
+So the other thing to do is to keep track of state of the research.
+So there's still research being published.
+Many of these algorithms are still debated.
+So people still try to make counterpoints or maybe this isn't perfectly
+privacy preserving to stay update on literature because it's a fast-paced field,
+there's new mechanisms coming all the time.
+There's new forms of differential privacy,
+new definitions of differential privacy coming out all the time,
+and it's really exciting field to be in.
+But just be very mindful when you're interested in doing this in
+production in the real world of just how new this field is,
+how quickly it's changing,
+and how new the code bases are as well that are actually implemented in these algorithms.
+Now, enough on that let's jump into the final project.

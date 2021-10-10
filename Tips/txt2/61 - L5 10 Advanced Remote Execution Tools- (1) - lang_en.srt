@@ -1,0 +1,504 @@
+1
+00:00:00,000 --> 00:00:02,925
+In this lesson, we're going to learn how to orchestrate
+
+2
+00:00:02,925 --> 00:00:06,450
+the movement of data between multiple different workers directly.
+
+3
+00:00:06,450 --> 00:00:08,730
+In order to do this, we're going to realize that we can actually
+
+4
+00:00:08,730 --> 00:00:10,950
+extend the pointer framework that we were using to
+
+5
+00:00:10,950 --> 00:00:15,660
+manipulate remote data and actually have pointers to pointers to data.
+
+6
+00:00:15,660 --> 00:00:18,885
+Let me show you what I mean. First, let's take
+
+7
+00:00:18,885 --> 00:00:22,575
+our Bob and Alice workers and clear out all the objects on them.
+
+8
+00:00:22,575 --> 00:00:25,260
+So let's just simply delete all the tensors that happen to be on
+
+9
+00:00:25,260 --> 00:00:28,935
+Bob and Alice that might be around from previous exercises,
+
+10
+00:00:28,935 --> 00:00:33,060
+and then let's create some data that we can then start to work with.
+
+11
+00:00:33,060 --> 00:00:36,750
+So let's say, x equals to th.tensor ([1,2,3,4,5]).
+
+12
+00:00:36,750 --> 00:00:41,385
+So this is just a normal tensor so as we've been working with before.
+
+13
+00:00:41,385 --> 00:00:45,200
+So the first thing, let's take this and let's send this to Bob.
+
+14
+00:00:45,200 --> 00:00:59,395
+So now I've got a pointer to it and Bob has this object,
+
+15
+00:00:59,395 --> 00:01:01,940
+but now we're going to do something else.
+
+16
+00:01:01,940 --> 00:01:05,980
+We're going to say x.send(alice).
+
+17
+00:01:05,980 --> 00:01:09,335
+What this does actually sends this pointer to
+
+18
+00:01:09,335 --> 00:01:14,540
+Alice and replaces x on our machine with a pointer to that pointer.
+
+19
+00:01:14,540 --> 00:01:16,360
+So now, if we look at bob._objects,
+
+20
+00:01:16,360 --> 00:01:18,015
+well, that data hasn't actually moved.
+
+21
+00:01:18,015 --> 00:01:20,750
+But if we go alice._objects,
+
+22
+00:01:20,750 --> 00:01:23,380
+now we see that on Alice's machine,
+
+23
+00:01:23,380 --> 00:01:27,725
+Alice has a pointer from Alice to Bob and
+
+24
+00:01:27,725 --> 00:01:32,120
+our pointer no longer points to Bob instead it points to Alice.
+
+25
+00:01:32,120 --> 00:01:35,240
+So whenever we were to send a message to
+
+26
+00:01:35,240 --> 00:01:39,020
+contact this tensor to use it to add two tensor together or subtract,
+
+27
+00:01:39,020 --> 00:01:41,890
+the message would first go to Alice's machine,
+
+28
+00:01:41,890 --> 00:01:43,230
+wait to be processed there,
+
+29
+00:01:43,230 --> 00:01:45,255
+which would call this pointer.
+
+30
+00:01:45,255 --> 00:01:48,800
+Then this pointer will then forward that message to Bob's machine,
+
+31
+00:01:48,800 --> 00:01:51,410
+where it would actually be executed up here.
+
+32
+00:01:51,410 --> 00:01:53,760
+Let's see an example of that.
+
+33
+00:01:58,430 --> 00:02:02,105
+There it was. So now, we have a new pointer.
+
+34
+00:02:02,105 --> 00:02:04,820
+This again still pointing to Alice's machine.
+
+35
+00:02:04,820 --> 00:02:08,065
+If we look inside of bob._objects,
+
+36
+00:02:08,065 --> 00:02:11,505
+we see that now there are two tensors on Bob's machine.
+
+37
+00:02:11,505 --> 00:02:13,395
+If we look at alice._objects,
+
+38
+00:02:13,395 --> 00:02:15,075
+we see two tensors as well;
+
+39
+00:02:15,075 --> 00:02:18,570
+however this time, both of them are pointers.
+
+40
+00:02:18,570 --> 00:02:22,770
+So the interesting thing to note here is that the new pointer that was
+
+41
+00:02:22,770 --> 00:02:27,510
+created or the new tensor that was created has the exact same pointer chain,
+
+42
+00:02:27,510 --> 00:02:30,770
+same dependency chain, same ownership chain as
+
+43
+00:02:30,770 --> 00:02:34,110
+the original tensor that was used to create it.
+
+44
+00:02:34,110 --> 00:02:36,045
+So when we said y equals x plus x,
+
+45
+00:02:36,045 --> 00:02:38,100
+x has a certain dependency chain.
+
+46
+00:02:38,100 --> 00:02:41,530
+So x is owned, you can think of,
+
+47
+00:02:41,530 --> 00:02:44,280
+by both Alice and Bob to the extent that we as
+
+48
+00:02:44,280 --> 00:02:48,300
+the central server cannot actually contact that tensor.
+
+49
+00:02:48,300 --> 00:02:49,760
+We can't use that tensor,
+
+50
+00:02:49,760 --> 00:02:54,420
+we can't do anything to that tensor unless both Bob and Alice allow us to.
+
+51
+00:02:54,420 --> 00:02:57,360
+Because we could send a message to Alice and Alice would say, "Uh-uh,
+
+52
+00:02:57,360 --> 00:03:00,510
+I'm not forwarding this to Bob because I don't want to," for a various reasons.
+
+53
+00:03:00,510 --> 00:03:02,330
+Maybe it's privacy or just doesn't want
+
+54
+00:03:02,330 --> 00:03:05,260
+to or doesn't know where Bob is anymore, who knows what.
+
+55
+00:03:05,260 --> 00:03:08,100
+But alternatively, Bob could also say,
+
+56
+00:03:08,100 --> 00:03:10,235
+"No, I'm not going to allow you to perform this operation."
+
+57
+00:03:10,235 --> 00:03:11,555
+So in a sense,
+
+58
+00:03:11,555 --> 00:03:16,150
+both Alice and Bob are actually joint owners over this one digital asset.
+
+59
+00:03:16,150 --> 00:03:20,360
+Now this also leads to the second internal conclusion where if we were to try
+
+60
+00:03:20,360 --> 00:03:24,590
+to say do an operation between two tensors that we do not have the same chain structure,
+
+61
+00:03:24,590 --> 00:03:25,940
+it would lead to an error.
+
+62
+00:03:25,940 --> 00:03:30,100
+So let's say let's create this tensor chain again.
+
+63
+00:03:30,100 --> 00:03:32,970
+Let's have another one called y.
+
+64
+00:03:32,970 --> 00:03:35,295
+So we've sent this to Alice.
+
+65
+00:03:35,295 --> 00:03:38,490
+Send to Jon.
+
+66
+00:03:38,490 --> 00:03:41,055
+Do we have a third worker?
+
+67
+00:03:41,055 --> 00:03:43,720
+Let's pick a word called Jon.
+
+68
+00:03:52,580 --> 00:03:57,340
+There we go. Z equals x plus y.
+
+69
+00:03:57,410 --> 00:04:03,495
+As you can see, because this was using tensors where the actual data,
+
+70
+00:04:03,495 --> 00:04:06,350
+the data is on Bob's machine, that's where we sent it.
+
+71
+00:04:06,350 --> 00:04:08,015
+So the data is in the right location.
+
+72
+00:04:08,015 --> 00:04:10,995
+But because Jon and Alice disagree,
+
+73
+00:04:10,995 --> 00:04:13,855
+they don't have the same ownership structure along the way,
+
+74
+00:04:13,855 --> 00:04:16,165
+this can trigger an error.
+
+75
+00:04:16,165 --> 00:04:18,010
+Now the next thing is,
+
+76
+00:04:18,010 --> 00:04:19,495
+how do we get this data back?
+
+77
+00:04:19,495 --> 00:04:23,630
+Well, since we have a pointer to Alice's machine,
+
+78
+00:04:23,630 --> 00:04:26,280
+if we call.get,
+
+79
+00:04:27,720 --> 00:04:30,940
+then we actually get the pointer from
+
+80
+00:04:30,940 --> 00:04:33,675
+Alice and now we're pointing directly to the data again.
+
+81
+00:04:33,675 --> 00:04:38,350
+So let me actually show you that this actually removed the object from Alice's machine.
+
+82
+00:04:38,350 --> 00:04:40,470
+So let's clear these objects and reset
+
+83
+00:04:40,470 --> 00:04:43,720
+up this experiment so it's clean so that we can see it.
+
+84
+00:04:57,860 --> 00:05:01,455
+I don't actually need this other tensor for it now either.
+
+85
+00:05:01,455 --> 00:05:04,345
+Okay. So now Bob and Alice each have a tensor.
+
+86
+00:05:04,345 --> 00:05:05,695
+Alice has a pointer tensor,
+
+87
+00:05:05,695 --> 00:05:07,165
+Bob has the actual data.
+
+88
+00:05:07,165 --> 00:05:12,110
+So now if I call x.get and we look at this again,
+
+89
+00:05:12,540 --> 00:05:15,805
+Bob still has the actual data but
+
+90
+00:05:15,805 --> 00:05:19,995
+Alice no longer has the pointer because she sent it to us,
+
+91
+00:05:19,995 --> 00:05:23,815
+and now we are pointing directly at Bob's data.
+
+92
+00:05:23,815 --> 00:05:27,890
+So then if I were to call x.get again,
+
+93
+00:05:28,080 --> 00:05:30,565
+it would actually get the data back,
+
+94
+00:05:30,565 --> 00:05:35,120
+and now Bob has no data.
+
+95
+00:05:36,390 --> 00:05:41,455
+Beautiful. So I hope this interface really feels intuitive to you.
+
+96
+00:05:41,455 --> 00:05:44,710
+We tried to make this as simple, and easy,
+
+97
+00:05:44,710 --> 00:05:46,900
+and natural for the average PyTorch user as
+
+98
+00:05:46,900 --> 00:05:52,600
+possible and all the things that you should have expect to work indeed worked.
+
+99
+00:05:52,600 --> 00:05:54,940
+The other thing that I think you should take away from this is that,
+
+100
+00:05:54,940 --> 00:05:57,270
+pointers are actually first-classes.
+
+101
+00:05:57,270 --> 00:06:01,005
+It's like they R tensors for all intensive purposes; they have IDs.
+
+102
+00:06:01,005 --> 00:06:06,000
+So you could do a pointer chain here that is 50-people long if you wanted to,
+
+103
+00:06:06,000 --> 00:06:10,025
+and it would pass all the messages along as you specified it.
+
+104
+00:06:10,025 --> 00:06:13,330
+Even, actually, so one thing I didn't cover yet was a garbage collection.
+
+105
+00:06:13,330 --> 00:06:19,100
+So let's say if I create this tensor,
+
+106
+00:06:21,260 --> 00:06:24,380
+so on Bob and Alice machine and I go delete
+
+107
+00:06:24,380 --> 00:06:28,320
+x then we look at Bob and Alice machine again,
+
+108
+00:06:29,170 --> 00:06:33,955
+as you can see, garbage collection collected the whole chain.
+
+109
+00:06:33,955 --> 00:06:36,820
+Because it assumed that since we deleted the pointer,
+
+110
+00:06:36,820 --> 00:06:38,855
+that it should delete the thing that we're pointing to.
+
+111
+00:06:38,855 --> 00:06:39,950
+When we delete that pointer,
+
+112
+00:06:39,950 --> 00:06:41,855
+then it should delete the thing that that was pointing to.
+
+113
+00:06:41,855 --> 00:06:43,685
+So the nice thing here is that again
+
+114
+00:06:43,685 --> 00:06:45,815
+just like with the other tools we worked with with before,
+
+115
+00:06:45,815 --> 00:06:49,925
+we can do federate learning or other complicated algorithms,
+
+116
+00:06:49,925 --> 00:06:52,070
+and in theory the default behavior for
+
+117
+00:06:52,070 --> 00:06:54,470
+how objects are collected will prevent memory leaks
+
+118
+00:06:54,470 --> 00:07:00,435
+and memory explosions from objects getting so just left around.
+
+119
+00:07:00,435 --> 00:07:03,175
+Yeah. So that's this nice tool,
+
+120
+00:07:03,175 --> 00:07:07,970
+and what we're going to be able to see in the next lesson is how we can use
+
+121
+00:07:07,970 --> 00:07:13,830
+these pointer chains to actually orchestrate how data moves amongst a group of workers.
+
+122
+00:07:13,830 --> 00:07:16,655
+So instead of just calling send and get,
+
+123
+00:07:16,655 --> 00:07:21,050
+we're going to be able to actually move data around directly like telling Bob,
+
+124
+00:07:21,050 --> 00:07:24,380
+"Hey, send this data not to me and then I'll send it to someone.
+
+125
+00:07:24,380 --> 00:07:26,810
+Send it directly to Alice," for example.
+
+126
+00:07:26,810 --> 00:07:29,900
+So in the next lesson, we'll jump into that. I'll see you there.
+

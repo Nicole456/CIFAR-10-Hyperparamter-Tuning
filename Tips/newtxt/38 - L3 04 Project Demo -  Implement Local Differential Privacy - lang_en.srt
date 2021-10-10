@@ -1,0 +1,200 @@
+In this project, we're going to implement
+simple local differential privacy using randomized response from scratch in Python.
+Specifically, we're actually going to implement in Python,
+the coin flipping example that we just talked about.
+So as you may remember,
+if you have a group people that you're wishing to survey about a very taboo behavior,
+then we are given these interesting instructions as to how they should answer.
+So they flip a coin two times and if the first coin flip was heads,
+they should answer honestly.
+However, if he first coin flip was tails,
+they should answer according to a second coin flip.
+What this does, is this gives each person plausible deniability while simply
+averaging across all of their answers with a 50 percent probability of saying yes or no.
+Thus, if we sample across a 1000 people,
+we would carry this over 1000 people.
+We interrogate a 1000 people with this question,
+and around 60 percent of them answer, yes.
+Then we know that the true distribution is 70 percent because 70 percent,
+the true distribution has been averaged with
+50 percent to get the the output of our statistical survey.
+So we want to implement these steps in Python from scratch.
+The way that we're going to do this is like so.
+So the query function we're going to use is a mean function.
+So we're going to be taking an average.
+So let's say we have a database of size 10, or let's just say it's 100.
+So we've got a big old database of a hundred people.
+Then the true result is the mean of the database. Here we go.
+Since we generate our database randomly,
+with 50 percent probability of being one or zero,
+the mean tends to be around 0.5.
+However, we want to noise our dataset using local differential privacy.
+Local differential privacy is all about adding noise to the data itself.
+So in our case,
+adding noise to the data means replacing some of these values with random values.
+So if you remember, from this randomized response,
+like sometimes they answer honestly,
+so these would be the honest results in our example.
+Sometimes, they answer according to a coin flip, they answer randomly.
+So the first thing we need to do is actually flip two coins a 100 times.
+So we'll do first coin flip equals torch.rand,
+length of the database, greater than 0.5.
+We'll go ahead and cast this to a float as well.
+So now, we have our first coin flip for every single value in this database tensor.
+So this is the coin flip for this value,
+this is the coin flip for this value,
+this is the coin flip for this value,
+and so on and so forth.
+So now, let's do this and create a second coin flip.
+So now, this first coin flip is going to determine
+whether we want to use the value it's actually going to database,
+or whether we want to use the value that was
+randomly generated according to this second coin flipper.
+We can do this to create our noisy database or synthetic database or augmented database.
+We'll call it augmented in the following way.
+So half the time,
+so if the coin flip is one,
+then we want to use the database.
+So it was a heads answer honestly.
+So we'll call one heads.
+The nice thing here is, we can do this by simply just
+multiplying first coin flip by database,
+because this acts as a mask.
+Right. So the multiplying it times a one,
+will leave in wherever the database is and multiplying it times
+a zero will zero out any values in the database.
+So this will return database times first coin flip,
+returns a one only for
+the places in the database where there actually was a one originally.
+Go cast this to a float again.
+So here's all the ones and a few of the zeros that were
+in the original database at the first coin flip says we should keep around.
+But now, sometimes we need to lie.
+So sometimes we need to choose randomly.
+So if one minus our first coin flip,
+here's all the places where we want to actually choose randomly.
+So all of these ones that you see here,
+we want it to actually sample from the second coin flip.
+So we can do this by simply sampling or multiplying times the second coin flip.
+So here's all the values that are being sampled randomly.
+So now, if we simply add these together,
+then we get a new augmented database, which is differentially private.
+Cool. So far so good.
+So again, local differential privacy is all about adding noise to the database entries.
+So that any queries that we do in
+this database have a certain amount of differential privacy.
+However, in doing so,
+we have done something statistically significant.
+So we might try to say we can just query the database and be done.
+So torch.mean database.float and boom,
+so we augment the database and we can just go ahead and use this.
+However, something else has happened here.
+So half of our values are honest and half of
+our values are always going to have a mean or try to have a mean, that's at 0.5.
+This means that it's going to skew the output of our query towards 0.5.
+Because half the time,
+we're using the values that are from the second coin flip,
+which has a 50/50 chance of being positive or being heads or tails.
+So let's just say the database had,
+on average was 70 percent of the time that
+people said true for whatever the taboo behavior was.
+So this database is actual values reflecting from people.
+Let's say that 70 percent of these were true,
+so that the mean of this would be 0.7.
+That would mean that if we took half the values from here and half the values
+from this randomly generated 50/50 distribution,
+then the mean of them would shift from this where
+the mean was 0.7 and this where the mean was 0.5,
+would be halves between them.
+The mean would then be 0.6 even though the original distribution was 0.7.
+Right. So it's almost like this query is now skewed as a result of the noise.
+Skewing was not all we were after,
+what we wanted to do was just give each individual person plausible deniability.
+So we have to do one final step here, which is deskew the result.
+So the interesting thing is here,
+if we know that,
+say for example, there's a distribution
+here where there's a certain averages here and we'll say it's 70 percent.
+The average of this is always going to be 50 percent.
+So that we know that the average between these two datasets.
+If we are half from here and half from here is 60 percent,
+then we can just do that in reverse.
+So that means that if the output of
+our augmented database gives us a mean of 60 percent, well,
+then, we know that it's really trying to tell us 70 percent
+because half of our data is just 50/50 random noise.
+So I can actually go and try to deskew this result.
+This is the true output of our database.
+Because I have removed the skewed average that was
+a result of this local differential privacy or this second coin flips.
+So this is actually the output of our augmented result,
+so our augmented differentially private result. We'll call it db result.
+So now, we can package all this as a single query and see what was in our assignments.
+So in our assignment, we needed to return the augmented result,
+that differentially private result.
+We also want to return the true result,
+because the notion of this and what we wanted to learn from this lesson is
+actually to understand how these results tend to change.
+So let's go ahead and return the true result or
+compute the true result as well. Here we go.
+Okay. So now, what we want to do here,
+is work on databases at different sizes.
+So I believe in the assignment we were supposed to do a database of size 10.
+Then look at the private result, true results.
+We'll print this out here so it's easy to see.
+So with noise and without noise.
+This is the true answer.
+What we're going to see when we compare these, is that, man,
+that noise really throws things off sometimes but let's use a bigger dataset.
+Okay. That's quite a bit closer.
+Let's use an even bigger dataset.
+Now, we're getting really close.
+Then, even bigger dataset.
+So we'll put 10,000 entries and that is getting really close.
+So here's the thing to remember,
+about local differential privacy and
+really actually about differential privacy in general,
+whenever we're adding noise to a distribution, were corrupting it.
+So the statistics that the queries that
+we're doing are going to be sensitive to this noise.
+However, the more data points that we have,
+the more this noise will tend to average out.
+It will tend to not affect the output of the query because on average,
+across a large number of people,
+sometimes the noise is making the result
+higher than it should be or lower than the result should be.
+But on average, it's actually still centered
+around the same mean of the true data distribution.
+In particular, a general rule of thumb, which
+is local differential privacy is very data hungry.
+In order to be able to noise the dataset, you're adding a ton of noise,
+we're adding noise to every single value in the dataset.
+So when we have 10,000 entries,
+we're adding 10,000 bits of noise.
+I guess like with 50 percent probability.
+So it probably more like 5,000 bits of noise,
+but that's still a lot of noise.
+So global differential privacy, in contrast,
+only adds noise to the output of the query.
+We will find that this tends to be
+quite a bit more accurate and a little less data hungry than local differential privacy.
+So if you want to implement
+local differential privacy and protect data at the data level,
+protect the dataset itself.
+Then, you'll want to use local differential privacy,
+that we want to make sure you have a really large dataset.
+Whereas, if you want to use
+a less data hungry algorithms and
+maybe your dataset is smaller but you still need to protect it,
+then it's better to lean towards global differential privacy.
+In general, I think personally leaning towards global differential privacy seems
+to be where a lot of the field is going
+although obviously the local db has its advantages.
+So the event the local db is that in theory you could publish some of these datasets.
+So you don't have to trust someone
+to lower trust settings, but we'll get into those later.
+But for now, just understand this notion of
+this trade off between small datasets and and large datasets.
+Meaning that your noise creates vastly different outputs of the queries,
+versus only slightly different outputs of the queries
+when you have a large enough dataset to average the noise over.

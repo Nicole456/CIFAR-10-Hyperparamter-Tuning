@@ -1,0 +1,120 @@
+1
+00:00:00,000 --> 00:00:02,565
+In the final project for this course,
+
+2
+00:00:02,565 --> 00:00:04,800
+I'd like for you to build on the first project where you
+
+3
+00:00:04,800 --> 00:00:07,635
+perform federated learning with a trusted secure aggregator.
+
+4
+00:00:07,635 --> 00:00:09,570
+In this project, I'd like for you to take
+
+5
+00:00:09,570 --> 00:00:12,540
+the same neural networks you worked with in the first project,
+
+6
+00:00:12,540 --> 00:00:15,620
+and aggregate gradients using additive secret sharing and
+
+7
+00:00:15,620 --> 00:00:19,010
+fixed precision encoding as you learn about in the last several lessons.
+
+8
+00:00:19,010 --> 00:00:23,015
+Make sure you use at least the three data owners per aggregation.
+
+9
+00:00:23,015 --> 00:00:27,740
+This will ensure that no one will ever see anyone's gradients other than their own,
+
+10
+00:00:27,740 --> 00:00:31,945
+protecting the privacy without needing to trust a secure aggregator.
+
+11
+00:00:31,945 --> 00:00:35,310
+Okay. So in this next project,
+
+12
+00:00:35,310 --> 00:00:38,870
+what I would like for you to do is leverage
+
+13
+00:00:38,870 --> 00:00:42,765
+this secret sharing technique that you learned about in the last section,
+
+14
+00:00:42,765 --> 00:00:45,820
+right using PySyft where you can do a fixed precision of
+
+15
+00:00:45,820 --> 00:00:49,610
+encoding of an additive secret sharing tensor,
+
+16
+00:00:49,610 --> 00:00:52,490
+and I want you to actually use this to
+
+17
+00:00:52,490 --> 00:00:55,070
+aggregate gradients in the federated learning contexts, right?
+
+18
+00:00:55,070 --> 00:00:57,530
+So take the same example that we were working with
+
+19
+00:00:57,530 --> 00:01:00,195
+towards the beginning of this lesson where we were using
+
+20
+00:01:00,195 --> 00:01:03,050
+a trusted third party to form the aggregation and just
+
+21
+00:01:03,050 --> 00:01:06,650
+replace the trusted third party with this encryption protocol,
+
+22
+00:01:06,650 --> 00:01:08,930
+with this additive secret sharing protocol,
+
+23
+00:01:08,930 --> 00:01:14,810
+so that no one actually has to share their own gradients with any other worker directly,
+
+24
+00:01:14,810 --> 00:01:17,635
+instead they will encrypt it, right?
+
+25
+00:01:17,635 --> 00:01:24,020
+Encrypt the individual values so that you the data scientist can actually pull up
+
+26
+00:01:24,020 --> 00:01:26,495
+the model and average the gradients from
+
+27
+00:01:26,495 --> 00:01:28,115
+these multiple different workers without
+
+28
+00:01:28,115 --> 00:01:31,325
+anyone ever seeing a gradient that isn't their own.
+
+29
+00:01:31,325 --> 00:01:33,365
+So I wish you the best of luck with this project,
+
+30
+00:01:33,365 --> 00:01:34,850
+and I'll see you in the next section.
+

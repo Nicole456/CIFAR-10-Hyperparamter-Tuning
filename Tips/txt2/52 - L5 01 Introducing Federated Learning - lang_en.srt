@@ -1,0 +1,480 @@
+1
+00:00:00,000 --> 00:00:01,230
+Federated Learning is one of
+
+2
+00:00:01,230 --> 00:00:05,450
+the most widely deployed techniques in the context of private deep learning.
+
+3
+00:00:05,450 --> 00:00:08,790
+The term was coined at Google a few years ago by Brenda McMann, et al.
+
+4
+00:00:08,790 --> 00:00:11,670
+And Google has been pioneering this field ever since.
+
+5
+00:00:11,670 --> 00:00:13,230
+Federated Learning is a technique for
+
+6
+00:00:13,230 --> 00:00:17,070
+training machine learning models on data to which we do not have access.
+
+7
+00:00:17,070 --> 00:00:23,190
+So basically, instead of bringing all the data into one machines in the Cloud,
+
+8
+00:00:23,190 --> 00:00:24,465
+and training a model,
+
+9
+00:00:24,465 --> 00:00:27,165
+we're going to bring that model to the data,
+
+10
+00:00:27,165 --> 00:00:30,060
+train it locally wherever the data lives and
+
+11
+00:00:30,060 --> 00:00:33,390
+merely upload model updates to a central server.
+
+12
+00:00:33,390 --> 00:00:36,600
+So there are several use cases here we're Federated Learning is quite interesting,
+
+13
+00:00:36,600 --> 00:00:41,925
+but the first and probably most famous use case is in the context of mobile phones.
+
+14
+00:00:41,925 --> 00:00:44,520
+If you're familiar with smart phones,
+
+15
+00:00:44,520 --> 00:00:46,060
+when you open your texting app,
+
+16
+00:00:46,060 --> 00:00:50,510
+and the texting app tries to predict the next word that you're about to text,
+
+17
+00:00:50,510 --> 00:00:52,700
+the machine learning model that actually does that,
+
+18
+00:00:52,700 --> 00:00:54,140
+if you have an iPhone or Android,
+
+19
+00:00:54,140 --> 00:00:56,390
+it's actually trained using Federated Learning.
+
+20
+00:00:56,390 --> 00:01:00,500
+Meaning when you go home at night and you plug in your phone and attach it to Wi-Fi,
+
+21
+00:01:00,500 --> 00:01:04,520
+every once in a while, it'll actually do a bit of local training on your device,
+
+22
+00:01:04,520 --> 00:01:06,095
+on your own text messages,
+
+23
+00:01:06,095 --> 00:01:07,550
+and it will send a new model,
+
+24
+00:01:07,550 --> 00:01:10,880
+a slightly smarter model up to the Cloud and then later you'll
+
+25
+00:01:10,880 --> 00:01:14,495
+get an updated aggregation of everyone else's model that also went up to the Cloud,
+
+26
+00:01:14,495 --> 00:01:16,675
+thus giving you a smarter model.
+
+27
+00:01:16,675 --> 00:01:19,640
+So the nice thing about this approach is that you are able
+
+28
+00:01:19,640 --> 00:01:22,220
+to benefit from having this texting model inside
+
+29
+00:01:22,220 --> 00:01:25,055
+your phone despite the fact that you personally
+
+30
+00:01:25,055 --> 00:01:28,475
+are not generating enough training data for it to become intelligent.
+
+31
+00:01:28,475 --> 00:01:31,490
+So you're benefiting from this model becoming smart by
+
+32
+00:01:31,490 --> 00:01:34,550
+looking at thousands and millions of other phones,
+
+33
+00:01:34,550 --> 00:01:36,740
+without any of these people having to divulge
+
+34
+00:01:36,740 --> 00:01:39,005
+the private informations contained in their phone,
+
+35
+00:01:39,005 --> 00:01:42,565
+and without you having to divulge any private information within your phone.
+
+36
+00:01:42,565 --> 00:01:44,025
+In the context of Federated Learning,
+
+37
+00:01:44,025 --> 00:01:46,790
+there are also other applications that are very interesting.
+
+38
+00:01:46,790 --> 00:01:49,775
+One interesting case is predictive maintenance.
+
+39
+00:01:49,775 --> 00:01:52,535
+So, for example, if you own a car.
+
+40
+00:01:52,535 --> 00:01:56,875
+Every several 1,000 miles you have to take it in to get an oil change, right?
+
+41
+00:01:56,875 --> 00:02:01,225
+We just have this fixed number of miles that we have to do this typically.
+
+42
+00:02:01,225 --> 00:02:03,260
+But Federated Learning could be used to try to
+
+43
+00:02:03,260 --> 00:02:06,005
+predict when your car needs to go into maintenance
+
+44
+00:02:06,005 --> 00:02:10,550
+ahead of time by having a model that actually lives within all cars that are on the road,
+
+45
+00:02:10,550 --> 00:02:12,890
+studying when they actually start to break down.
+
+46
+00:02:12,890 --> 00:02:14,385
+So in this particular way,
+
+47
+00:02:14,385 --> 00:02:17,519
+using various aspects of your climate, how you drive,
+
+48
+00:02:17,519 --> 00:02:18,810
+the kind of engine you have,
+
+49
+00:02:18,810 --> 00:02:22,415
+these kinds of predictive models could actually become intelligent in doing this.
+
+50
+00:02:22,415 --> 00:02:25,595
+The nice thing is that, this wouldn't actually require you to
+
+51
+00:02:25,595 --> 00:02:28,895
+upload any data from your car to some sort of central server.
+
+52
+00:02:28,895 --> 00:02:31,790
+In theory, a model just comes down to your car,
+
+53
+00:02:31,790 --> 00:02:34,790
+it learns how to predict when your car is going to require maintenance and
+
+54
+00:02:34,790 --> 00:02:37,965
+it uploads that ability to predict.
+
+55
+00:02:37,965 --> 00:02:39,420
+An update to the model,
+
+56
+00:02:39,420 --> 00:02:41,035
+backup to the Cloud.
+
+57
+00:02:41,035 --> 00:02:44,110
+Another interesting use cases is in wearable medical devices.
+
+58
+00:02:44,110 --> 00:02:46,840
+So you can imagine if you have one of those sort of fancy watches,
+
+59
+00:02:46,840 --> 00:02:49,720
+or wristbands that's tracking your movement, heart rate,
+
+60
+00:02:49,720 --> 00:02:53,170
+or perhaps even your sleep cycles or if you maybe you log your diet online,
+
+61
+00:02:53,170 --> 00:02:54,695
+one of these dialoguing apps,
+
+62
+00:02:54,695 --> 00:02:57,685
+you can imagine that Federated Learning will allow you to learn
+
+63
+00:02:57,685 --> 00:03:02,980
+a machine learning model which could help you optimize certain parts of your health,
+
+64
+00:03:02,980 --> 00:03:05,530
+whether it's your diet for having a better sleep cycle,
+
+65
+00:03:05,530 --> 00:03:09,035
+or how much you move during the day for accomplishing some sort of wake up.
+
+66
+00:03:09,035 --> 00:03:12,790
+Again, the nice thing here is that you by yourself are not
+
+67
+00:03:12,790 --> 00:03:16,870
+actually generating enough training data to be able to train a model like this.
+
+68
+00:03:16,870 --> 00:03:19,140
+But, if you collaboratively trained as
+
+69
+00:03:19,140 --> 00:03:22,855
+single machine learning model with thousands or millions of other people,
+
+70
+00:03:22,855 --> 00:03:25,910
+then everyone can benefit from this machine learning model
+
+71
+00:03:25,910 --> 00:03:29,525
+without anyone having to upload their data to a central Cloud.
+
+72
+00:03:29,525 --> 00:03:32,435
+Finally, one of the other widely deployed use cases
+
+73
+00:03:32,435 --> 00:03:35,180
+of Federated Learning is inside of mobile browsers,
+
+74
+00:03:35,180 --> 00:03:38,005
+often in the context of ad blocking or an auto-complete.
+
+75
+00:03:38,005 --> 00:03:41,390
+So, when you go up to your browser and you start to type
+
+76
+00:03:41,390 --> 00:03:43,370
+some website and it tries to predict what
+
+77
+00:03:43,370 --> 00:03:45,860
+website it thinks you're trying to refer to, again,
+
+78
+00:03:45,860 --> 00:03:48,180
+that's another example where Federated Learning has been
+
+79
+00:03:48,180 --> 00:03:50,630
+used out in the world to allow large groups of
+
+80
+00:03:50,630 --> 00:03:52,550
+individuals to enjoy the benefits of
+
+81
+00:03:52,550 --> 00:03:56,650
+ML models without having to upload all of their data to the Cloud.
+
+82
+00:03:56,650 --> 00:03:58,940
+So I hope these examples give you a sense for
+
+83
+00:03:58,940 --> 00:04:01,520
+the kind of settings when Federated Learning is useful,
+
+84
+00:04:01,520 --> 00:04:03,650
+and really a context for the setup that
+
+85
+00:04:03,650 --> 00:04:06,245
+leads to people wanting to use Federated Learning.
+
+86
+00:04:06,245 --> 00:04:08,990
+The general challenge is that you have a scenario where
+
+87
+00:04:08,990 --> 00:04:11,990
+a dataset is distributed amongst a large number of sources,
+
+88
+00:04:11,990 --> 00:04:14,135
+usually because it's being produced by the sources,
+
+89
+00:04:14,135 --> 00:04:16,370
+in the context of phone's,
+
+90
+00:04:16,370 --> 00:04:18,320
+browser, wearable medical devices,
+
+91
+00:04:18,320 --> 00:04:19,670
+or automobiles, for example.
+
+92
+00:04:19,670 --> 00:04:24,190
+What we want to do is, we want be able to train a machine learning model on that dataset.
+
+93
+00:04:24,190 --> 00:04:28,385
+But you aren't able to aggregate that data set for a variety of reasons.
+
+94
+00:04:28,385 --> 00:04:30,260
+Sometimes it's for privacy, right?
+
+95
+00:04:30,260 --> 00:04:32,240
+There might be a legal restriction that prevents
+
+96
+00:04:32,240 --> 00:04:34,670
+you from aggregating the data to a central server,
+
+97
+00:04:34,670 --> 00:04:38,410
+medical data for example has a lot of these kinds of legal restrictions.
+
+98
+00:04:38,410 --> 00:04:40,100
+There might be user discomfort.
+
+99
+00:04:40,100 --> 00:04:44,030
+So in the case of this ad blocker or autocomplete use case within browsers,
+
+100
+00:04:44,030 --> 00:04:45,800
+people don't really want to upload
+
+101
+00:04:45,800 --> 00:04:51,095
+every webpage URL that they're going to to some central server if they don't need to.
+
+102
+00:04:51,095 --> 00:04:53,690
+Then of course, there are competitive dynamics.
+
+103
+00:04:53,690 --> 00:04:56,165
+So if you think in the context that predictive maintenance,
+
+104
+00:04:56,165 --> 00:04:59,150
+automobile companies might not want to upload to
+
+105
+00:04:59,150 --> 00:05:02,800
+some central server every time one of their automobiles breaks down.
+
+106
+00:05:02,800 --> 00:05:04,530
+Now, if it's just within one brand,
+
+107
+00:05:04,530 --> 00:05:07,065
+maybe just Ford or something like that, that'd be great.
+
+108
+00:05:07,065 --> 00:05:09,460
+But if you can imagine that if Toyota could
+
+109
+00:05:09,460 --> 00:05:12,080
+see when Honda cars break down because if some central server,
+
+110
+00:05:12,080 --> 00:05:13,880
+there could be some strange competitive dynamics or
+
+111
+00:05:13,880 --> 00:05:16,345
+leaks of potentially negative information.
+
+112
+00:05:16,345 --> 00:05:18,875
+But Federated Learning isn't just about privacy.
+
+113
+00:05:18,875 --> 00:05:21,725
+Often it's used because of engineering constraints.
+
+114
+00:05:21,725 --> 00:05:27,290
+As it turns out, Federated Learning can actually be used to reduce the bandwidth cost of
+
+115
+00:05:27,290 --> 00:05:29,780
+having to upload datasets to the Cloud by
+
+116
+00:05:29,780 --> 00:05:33,110
+allowing training to happen locally inside of these devices.
+
+117
+00:05:33,110 --> 00:05:37,310
+So, this is why the contexts of Federated Learning is an incredibly powerful tool.
+
+118
+00:05:37,310 --> 00:05:41,540
+It's already been widely deployed to some very substantial use cases,
+
+119
+00:05:41,540 --> 00:05:43,909
+and it's one of the things that's really advancing the fastest
+
+120
+00:05:43,909 --> 00:05:47,260
+in terms of privacy, preserving technologies.
+

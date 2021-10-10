@@ -1,0 +1,47 @@
+We've learned about several great techniques for protecting privacy.
+However, as mentioned previously,
+each set of techniques is only useful for the trust configuration that it supports.
+Some techniques would be overly burdensome
+amongst data and model owners who trust each other implicitly,
+while others would be too insecure for the trust model of potentially malicious actors.
+What we've learned so far is a cross-section of
+fundamental techniques which are applicable to a broad spectrum of privacy settings.
+Pate is useful when a party wants to annotate
+a local dataset using the private datasets of other actors and
+the epsilon-delta tool allows for very granular control of just
+how much the other actors must trust us to protect their privacy in this process.
+Vanilla Federated Learning is useful when we don't
+want to aggregate a training dataset for a legal, social,
+or logistical reasons, which is distributed over a large number of actors,
+but there's still some trust required as
+the gradients can leak some information about the training data.
+Finally, secure additive aggregation
+helps add additional privacy protections in this setting,
+in the latter case preventing anyone from seeing
+an aggregated gradient from one individual which is a much stronger privacy protection.
+But this protocol is still not secure with a hard constraint provided from different to
+privacy and it should only be used with parties who still have some degrees of trust.
+For reference, the most successful deployments of
+Federated Learning are between Apple Incorporated and the users of it's phones,
+and between Google and the users of Android.
+Perhaps, the final question you may be wondering is,
+what level of trust constitutes which protocol exactly?
+This is a tricky question,
+and there's not a clean-cut answer.
+At the end of the day,
+if you want to implement these protocols in production,
+you must do so at your own risk with your own data.
+What it will come down to is your ability to understand
+the various trade-offs of each protocol within your organization,
+your ability to communicate those trade-offs to key stakeholders in your organization,
+and then the discussion afterwards which will
+ultimately decide whether a certain protocol is a good fit.
+Fortunately however, we do get to stand on the shoulders of
+some very large and successful companies who
+have had very effective deployments with some of these protocols.
+I wish you the best of luck in your endeavors and I
+applaud you for taking privacy so seriously.
+It's the early days for this technology and by taking this course,
+you are set apart in the field of AI for both for your expertise in
+this field as well as for your morally admirable passion for privacy.
+Now go and do, and good luck.

@@ -1,0 +1,14 @@
+Okay. So in project three,
+I'd like for you to play around with this notion of sensitivity yourself.
+Specifically, I'd like for you to calculate
+the sensitivity for this new function, which is the threshold function.
+This project is going to take three steps.
+First, create the query function, where you compute the sum over
+the database and return whether that sum is
+greater than or less than a certain threshold.
+Then, I want you to create 10 databases of
+size 10 and query them with a threshold of five,
+calculating the sensitivity of each.
+Finally, I want you to print out the sensitivity of
+all 10 databases so you can see them compared to each other.
+Good luck and I'll see you in the next concept.

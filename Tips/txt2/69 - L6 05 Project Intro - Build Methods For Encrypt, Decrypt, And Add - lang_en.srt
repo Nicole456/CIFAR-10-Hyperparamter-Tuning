@@ -1,0 +1,52 @@
+1
+00:00:00,000 --> 00:00:02,025
+So in this next project,
+
+2
+00:00:02,025 --> 00:00:04,320
+I'd like if you to take the raw protocol you just learned
+
+3
+00:00:04,320 --> 00:00:07,080
+about and create several functions which are implemented.
+
+4
+00:00:07,080 --> 00:00:12,420
+First, create a method called encrypt which accepts two input parameters,
+
+5
+00:00:12,420 --> 00:00:13,770
+the number to be encrypted,
+
+6
+00:00:13,770 --> 00:00:15,810
+and the number of shares to be split into,
+
+7
+00:00:15,810 --> 00:00:17,715
+and returns a tuple of shares.
+
+8
+00:00:17,715 --> 00:00:20,640
+Second, create a method called decrypt which
+
+9
+00:00:20,640 --> 00:00:24,210
+accepts as input a tuple of shares and returns the decrypted value.
+
+10
+00:00:24,210 --> 00:00:29,010
+Finally, create a method called add which accepts two tuples of shares and returns
+
+11
+00:00:29,010 --> 00:00:31,380
+a single tuple shares which are added correctly
+
+12
+00:00:31,380 --> 00:00:34,155
+according to the protocol specified in the previous concept.
+
+13
+00:00:34,155 --> 00:00:37,060
+Good luck, and I'll see you in the next concept.
+

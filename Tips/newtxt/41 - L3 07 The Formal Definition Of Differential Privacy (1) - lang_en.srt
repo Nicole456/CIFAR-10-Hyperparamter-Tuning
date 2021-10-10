@@ -1,0 +1,295 @@
+Thus far, we've gotten a lot of intuitive notions of privacy.
+We've walked through an example of local differential privacy,
+we've walked through a differencing attack,
+we've walked through basic queries and the definition of sensitivity.
+Now, we have the basic building blocks,
+talk about what the true formalized definition of differential privacy actually is.
+This will also lead us into
+our first implementation of global differential privacy as well.
+In particular, we're going to look at global differential privacy and ask the question,
+how much noise should we add after the query has been run to
+sort of noise up the entire query your database with one block of noise?
+We will find that this global differential privacy will also intuitively relate
+quite nicely to the formal definition of
+differential privacy, which we'll propose along the way.
+So what we're going to do here is we're going to create a database with
+our query and then analyze it with the formal definition of DP.
+We're going to add noise to the output of
+our function and we have two different kinds of noise that we can add,
+Laplacian noise or Gaussian noise.
+In order to know how much noise we should add,
+we will appear to the formalized definition of DP.
+This is the definition proposed by Cynthia Dwork.
+It's the e equals mc squared of differential privacy.
+It's most important formula in the field and it
+doesn't create differential privacy necessarily,
+it's not a method of adding noise per say.
+Instead, it's a constraint so that you can analyze a query with
+noise and know whether or not this query and noise is leaking too much information.
+In particular, we have two different measures called Epsilon and Delta,
+and these compose a threshold for leakage.
+Now, let me unpack this a little bit for you what this exact inequality is.
+So the previous method of adding noise that we
+just worked with in the last session was called
+local differential privacy because we added noise to each datapoint individually.
+This is necessary for some situations where in the data is so sensitive
+that individuals do not trust them that noise will be added later.
+However, it comes at a very high costs in terms of accuracy.
+So if you'll remember back to how we actually constructed the coin flipping example,
+you'll remember that before an individual gave us their answer,
+you would query an individual and you would say, hey,
+are you performing some sort of let's say activity?
+Before they gave you they're true or false value,
+they would actually flip their coin at that point and so that means that they
+were adding noise themselves to their individual datapoint
+before submitting it to you and it's this local term
+refers to the fact that they are locally
+adding noise to the data before it gets sent to you.
+Now, if you're familiar with the intuitions of say dataset anonymization,
+even though dataset anonymization is a broken technique and you should use it,
+it's probably the closest parallel to local differential privacy to the extent that it is
+augmenting datapoints individually with the intent of trying to build release.
+But again, don't do dataset anonymization,
+don't advocate people to do dataset anonymization
+because it's a fundamentally broken idea.
+However, this leads us directly into the other kind or
+the other class of differential private algorithms called global differential privacy.
+Global differential privacy instead of adding noise to individual datapoints,
+applies noise to the output of a function on datapoints.
+The advantage in general,
+and is a little bit of a sweeping statement,
+but the advantage in general is that you can often add a lot less noise and get
+a much more accurate result if you
+wait to add the noise until after you've computed a function,
+and the reason for this is that many functions actually reduce the sensitivity involved.
+So for example, here we have a query or a database.
+So local differential privacy would add noise here,
+and this is what we did in the last session we were adding a little bit of noise to
+individual datapoints for the sake
+of protecting when we were simulating the coin flipping example.
+Have a global differential privacy would add noise out here to the output of a function.
+Now, this doesn't have to be just a single function,
+this can be a big long chain of functions,
+it could be a sum and a threshold and then another some and then multiplication or any
+any number of functions that we wanted to chain together and we can add
+noise in the middle or at the end wherever we wanted to do this.
+As a general rule of thumb,
+as you process data more and more,
+it is quite common for sensitivity to go down.
+So a good place to start,
+if you're trying to figure out where you want to add
+noise in your system and your pipeline,
+is to lean more towards doing it as late in
+the chain as possible because the later you go,
+the more individuals you have likely aggregated over,
+the more processing you have done, the more likely you will have
+done to do thresholds or squishing
+functions like [inaudible] or any other kinds of post-processing on your data.
+The better the chances are that you'll do things that actually
+reduce some sensitivity and actually end up
+reducing the amount of noise that you have to add giving you
+a more accurate result with less privacy leakage.
+So just these are a few general statements that I'm making about
+global and local differential privacy and why people prefer one over the other.
+So if the data is so sensitive,
+the people aren't going to give it to you then people tend to lean more towards
+local differential privacy because the individual data owners are just
+sort of so scared that they want to protect their data before they handed over to what's
+called a trusted curator, who is the party that is
+generally referred to as the one who's actually performing differential privacy.
+That's the reason that most people use local DP, use
+local differential privacy whereas people who use
+global differential privacy when they're more interested in saying,
+"Hey, I really need the output of this to be
+accurate while still having the same level of privacy".
+So if there's a trade-off between how
+much the data owner is willing to trust the person performing differential privacy here.
+So if you can facilitate a setup, where differential privacy is being
+performed over a large dataset
+and they can trust the you're performing differential privacy correctly,
+I would strongly advocate for you to lean
+towards global differential privacy because it can
+be a much more accurate method of stripping out private information.
+So enough on global local differential privacy
+both of these lead to the next question of
+how do we actually measure how much privacy is
+being leaked inside of a differentially private algorithm?
+This leads us to the formal definition of differential privacy.
+So even though up to this point,
+I've for the sake of making an intuitive,
+I've been giving intuitive explanations and
+sort of high-level intuitions on
+how differential privacy works, what it's really all about.
+Differential privacy itself, the term
+differential privacy. It's actually a very formalized definition.
+There's actually multiple definitions.
+There are multiple proposed definitions of differential privacy.
+The one we're going to be talking about today is
+the one that has been proposed by Cynthia Dwork.
+It's actually the most well-known,
+the most widely used and other forms of differential privacy typically build on
+top of this one for one purpose or another purpose.
+So, this is a great place to start and many of the terms and
+the techniques that we would mentioning here are
+also relevant to other forms of differential privacy.
+So, let's walk through this definition.
+A randomized algorithm M with domain natural numbers absolute value of x.
+So, this is basically saying a certain set of
+natural numbers is epsilon delta differentially private,
+if for all S in the range of M and for all x,
+y in an X such that x minus y is less than or equal to 1.
+Okay. So, let's reread this a bit more intuitively.
+A randomized algorithm M,
+M being a randomized algorithm is this.
+This would be a globally differential private randomized algorithm.
+It's some sort of function on a database with some sort of noise added to it.
+Now, this noise could have been inside the db or applied to
+the db in here which in case it would have been locally differentially private.
+So, where the noise is actually added,
+the exact characteristics and this mechanism is nonspecific here.
+So, this this could be any function.
+We have we don't know what algorithm is S,
+we just know that it has the ability to query
+a database and it is randomized in some way.
+Okay. So, that's what we know about M. Oh yes,
+and it has an output domain of Nx.
+Meaning it could be a histogram over certain entries in database.
+So, it's discretized in this particular case and we're saying that this
+is epsilon delta differentially private if
+for all the potential things that it could predict.
+Right, so for all for things S in the range of M and for all database pairs.
+So, parallel of databases such that x minus y is less than equal to 1.
+Actually, these are these are histograms over pair databases.
+So, this is saying, okay,
+database has a bunch of stuff in it, right?
+And Mx counts how many times each thing happened in the database right?
+So, how many times it was a database full of marbles.
+I don't know, in each each entry had a marble of a specific color.
+This might count the number of red marbles and blue marbles,
+the number of yellow marbles right in which case,
+this would be three natural numbers and the size of x would be
+three and of course their natural numbers because we're counting individual things.
+So, things, it's something to take away. Its discretized,
+the differential privacy definition is post in the form of a histogram over a database.
+Okay, and so we're saying there are two histograms right,
+and the max distance between these two histograms is one.
+Meaning that they only differ in one entry.
+Meaning that, that they are parallel databases.
+So, the databases that formed the histograms are parallel.
+Okay. So, let's just walk through this one more time just to
+make sure that you understand this setup. This definition.
+A randomized algorithm m with a domain Nx meaning that is it's their natural numbers,
+the x and actually earlier in this paper,
+it was identified that this was referring specifically to a histogram over
+database is epsilon delta differentially private if,
+for all the things that M could predict,
+so all the all the potential outputs of m for all and
+for all the potential inputs that are
+parallel databases right and this is the part of the thing.
+It's parallel. That this constraint is true.
+Okay. So, the setup is two histograms.
+One is the full database.
+One is database with one entry missing and this constraint is true.
+So, what is this constraint?
+Let's start with what we know.
+m to the x is actually taking our mechanism and running it over this histogram.
+My is doing the same thing over any for every parallel database right.
+So, it's every database, well, any database.
+We'll say any database. Any database with one entry missing right.
+So, this threshold has to be true for all databases.
+But, it's only actually expressing one at a time right.
+But we're saying that it's true for all databases and so okay.
+So, we've got the query over other parallel database,
+we got query over the full database right,
+and it's returning something in S. Okay.
+So, S is one of the possible things that it could be predicting.
+One of the things in the range M right.
+Now, we're saying that this is true for all things,
+but you can think about it intuitively in your head as you know
+for predicting the the red marble.
+So, what is the distance between the distribution over all the things in the database,
+the probability distribution over all things database
+versus the probability distribution over all the things in the database minus one entry.
+So, random distribution over things in the database, objects in the database.
+Random distribution over objects in the database with one entry missing.
+Now, the question that we want to ask,
+the question that is that the core focus of
+differential privacy is how different are these two distributions?
+How different is the output of my mechanism that the prediction of my mechanism,
+when I remove an entry from the database?
+How much does it change from here to here?
+And the measurement of the maximum amount that these two distributions are
+different is measured by two parameters.
+Epsilon and delta.
+E to the power of epsilon constrains how different these distributions are.
+Sort of the primary constraint we might say,
+and some algorithms actually only use epsilon.
+So, here we say,
+if epsilon was zero and these distributions are identical,
+we're going to ignore delta for a second right.
+So, if epsilon is zero,
+then e to the epsilon is one,
+and these distributions are identical right.
+So this is less than or equal to would be equal two.
+Now, since epsilon zero,
+we would say is perfect privacy.
+Epsilon zero delta zero would be perfect privacy.
+So, if this constraint was satisfied at epsilon zero delta zero,
+then we have no privacy leakage with M on x.
+So, by computing the output of this randomized mechanism.
+However, let's say epsilon was 1.
+Okay. Well, that allows some privacy leakage.
+Exactly, how much that is, we can get to that in a minute.
+But, something that is very important to take away is
+that something can satisfy differential privacy.
+Can satisfy this constraint,
+but still leak private information right.
+So, leaking or not, leaking is not an all or nothing kind of thing.
+You can actually leak small amounts of statistical information.
+Now, delta is the probability,
+which is usually very small.
+The probability that you will accidentally leak
+more information than epsilon claims that you will leak.
+So, delta is often you know,
+0.00001 or something like that or it's zero,
+it's usually a very very small probability when it's
+non-zero and it's basically saying hey,
+most of the time,
+you're able to keep everything underneath this amount of leakage.
+These distributions are going to be very very
+going to be at least as close most of the time,
+but only this probability will they actually not be,
+and this is basically saying that, if your query
+is for just the right thing with just the right random noise some probability,
+you will accidentally leak more information.
+So, this is the constraint of differential privacy and so as you might imagine,
+a tremendous amount of effort goes into developing really good random algorithms.
+So, I said this can be satisfied in a way that is useful right.
+So, where we get the most accurate output of our queries possible
+with the lowest epsilon and delta possible and there are also
+improvements or modifications to this algorithm or this constraint that seek to
+modify it in various ways which you can observe
+for literature and and will lead to some pointers to at the end of the course.
+So, things to note about this setup.
+So, first and foremost,
+this is looking at one query.
+So, this is one query against the database.
+If you have multiple queries,
+this is not what this is supporting.
+Multiple queries would would have to have a build on this and
+we can talk about how that actually happens in a minute right.
+So, this is the sort of epsilon delta budget
+which I'll also sometimes referred to as your privacy budget,
+is satisfied for one query using this particular constraint.
+Okay. So, in the next video,
+we're actually going to look at how to actually add
+noise for global differential privacy.
+So, we can say okay,
+given that we want to be able to satisfy
+this constraint for a particular query against a database,
+how much noise should we add to make sure
+that we don't spend more than a certain level of epsilon.
+So, don't move on from this video and rewatch it if you have
+two until you get an intuitive sense for what epsilon
+and delta are all about because they are crucially
+important to differential privacy and to the next project that we're going to tackle.

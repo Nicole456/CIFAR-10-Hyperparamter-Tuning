@@ -1,0 +1,19 @@
+Next, we're going to be looking at a toolkit,
+that will allow us to perform federated learning called PySyft.
+PySyft is an extension to the major deep learning toolkits.
+In particular, we are going to be looking at its extension to the PyTorch framework,
+which will allow you to do the kinds of remote executions
+necessary for federated learning in a deep learning context.
+As you can imagine, if I'm a central server,
+and I'm trying to orchestrate millions of different devices,
+training models in the correct way so that I can aggregate all these gradients,
+I need a special set of tools because
+the nature of standard deep learning toolkits is that they
+assume that you have some dataset
+locally in some local framework to let you perform operations.
+So what we're going to be looking at here is a new set of tools,
+that allow us to actually have an interface that is nearly identical to PyTorch,
+but allows us to execute commands on remote machines and
+coordinate how data is moved amongst different machines.
+That's really what's going to form the foundation for us to be able to do
+federated learning on actual distributed dataset

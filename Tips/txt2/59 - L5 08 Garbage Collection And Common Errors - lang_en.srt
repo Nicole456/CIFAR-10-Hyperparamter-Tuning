@@ -1,0 +1,492 @@
+1
+00:00:00,000 --> 00:00:04,645
+So before we continue on to other privacy preserving techniques,
+
+2
+00:00:04,645 --> 00:00:08,440
+I would like to first talk about garbage collection and a few of
+
+3
+00:00:08,440 --> 00:00:10,855
+the common errors that people seem to run into
+
+4
+00:00:10,855 --> 00:00:14,035
+when using PySyft to control tensors on remote machines.
+
+5
+00:00:14,035 --> 00:00:15,940
+So first, let's talk a little bit about garbage collection
+
+6
+00:00:15,940 --> 00:00:17,830
+and the life cycle of remote objects.
+
+7
+00:00:17,830 --> 00:00:19,560
+So if we were to clear all the objects in
+
+8
+00:00:19,560 --> 00:00:21,670
+Bob just so it's easy to tell when something gets deleted,
+
+9
+00:00:21,670 --> 00:00:24,685
+so we'll see bob_objects is now empty.
+
+10
+00:00:24,685 --> 00:00:26,575
+This is the collection of all the objects in Bob.
+
+11
+00:00:26,575 --> 00:00:29,440
+If we're then to create a tensor and send it to
+
+12
+00:00:29,440 --> 00:00:32,850
+Bob and then if we were to delete our pointer to this tensor,
+
+13
+00:00:32,850 --> 00:00:34,960
+so x as you know is our pointer,
+
+14
+00:00:34,960 --> 00:00:38,260
+shows first just so you can see, Bob's objects is there.
+
+15
+00:00:38,260 --> 00:00:40,970
+If we were to delete this, what should happen?
+
+16
+00:00:40,970 --> 00:00:48,110
+Well, PySyft always assumes that when you created the tensor and send it to someone,
+
+17
+00:00:48,110 --> 00:00:51,830
+you should continue to control the life cycle of that tensor.
+
+18
+00:00:51,830 --> 00:00:56,210
+Which means if you delete your pointer to the tensor that you created and sent,
+
+19
+00:00:56,210 --> 00:00:59,210
+the tensor that you're pointing to should also get deleted.
+
+20
+00:00:59,210 --> 00:01:04,580
+Now, this is controlled by a very specific attribute on each pointer.
+
+21
+00:01:04,580 --> 00:01:08,690
+Supposed to create another pointer, x.child.garbage_collect_data.
+
+22
+00:01:08,690 --> 00:01:12,955
+By default, this is set to true when you call.send.
+
+23
+00:01:12,955 --> 00:01:16,480
+This means, when sort of me the pointer,
+
+24
+00:01:16,480 --> 00:01:18,595
+when either pointer get garbage collected,
+
+25
+00:01:18,595 --> 00:01:21,100
+should I send a message to Bob saying,
+
+26
+00:01:21,100 --> 00:01:22,770
+"Hey, go delete that tensor."
+
+27
+00:01:22,770 --> 00:01:24,140
+By default, this is set to true.
+
+28
+00:01:24,140 --> 00:01:25,610
+So if we set this to false,
+
+29
+00:01:25,610 --> 00:01:29,270
+then this would actually turn garbage collection off at this pointer and it would no
+
+30
+00:01:29,270 --> 00:01:31,190
+longer send a message to Bob saying that they
+
+31
+00:01:31,190 --> 00:01:33,500
+should delete tensors when they get removed.
+
+32
+00:01:33,500 --> 00:01:36,845
+There's an interesting gotcha when working in Jupyter Notebooks.
+
+33
+00:01:36,845 --> 00:01:38,090
+So normally, know if,
+
+34
+00:01:38,090 --> 00:01:39,950
+so Bob has this object right now.
+
+35
+00:01:39,950 --> 00:01:46,540
+If I said x equals asdf and this got garbage collected, Bob would lose it.
+
+36
+00:01:46,540 --> 00:01:47,880
+So now Bob is empty.
+
+37
+00:01:47,880 --> 00:01:49,940
+However, Jupyter Notebooks had this thing
+
+38
+00:01:49,940 --> 00:01:52,400
+where they store every command you've ever executed,
+
+39
+00:01:52,400 --> 00:01:55,520
+and so occasionally if you do a few commands,
+
+40
+00:01:55,520 --> 00:01:56,720
+they'll get cached in such a way where
+
+41
+00:01:56,720 --> 00:01:59,060
+garbage collection will no longer collect those objects.
+
+42
+00:01:59,060 --> 00:02:01,730
+So you might end up with just things,
+
+43
+00:02:01,730 --> 00:02:04,250
+just by virtue of the fact you're working in a Jupyter Notebook,
+
+44
+00:02:04,250 --> 00:02:05,750
+it can keep a couple extra objects around.
+
+45
+00:02:05,750 --> 00:02:07,490
+So let me show you what I mean specifically.
+
+46
+00:02:07,490 --> 00:02:10,115
+So if we create another one of these and then we go
+
+47
+00:02:10,115 --> 00:02:13,700
+x and we'll just call the double under reaper here,
+
+48
+00:02:13,700 --> 00:02:16,560
+then if I go x equals this or as this,
+
+49
+00:02:16,560 --> 00:02:19,505
+x equals asdf, there's still a reference to it.
+
+50
+00:02:19,505 --> 00:02:21,620
+The pointer never actually got garbage collected.
+
+51
+00:02:21,620 --> 00:02:25,985
+If you go delete x, it still lives on.
+
+52
+00:02:25,985 --> 00:02:29,480
+But this is not because of some issue with
+
+53
+00:02:29,480 --> 00:02:33,410
+PySyft or it's just an issue with sort of unknown gotcha.
+
+54
+00:02:33,410 --> 00:02:34,560
+When you use Jupyter Notebooks,
+
+55
+00:02:34,560 --> 00:02:37,895
+there are some things that actually end up having another reference
+
+56
+00:02:37,895 --> 00:02:40,610
+to your object that you have in your Notebook and
+
+57
+00:02:40,610 --> 00:02:43,200
+thus since this pointer doesn't get deleted.
+
+58
+00:02:43,200 --> 00:02:44,805
+Since this pointer doesn't get garbage collected,
+
+59
+00:02:44,805 --> 00:02:48,275
+it never sends an execution or
+
+60
+00:02:48,275 --> 00:02:52,100
+a command to the remote worker telling it to delete the thing that it's pointing to.
+
+61
+00:02:52,100 --> 00:02:57,020
+So this happens occasionally. So now we'll go ahead and go erase these again.
+
+62
+00:02:57,020 --> 00:03:02,835
+So Bob equals bob.clear_objects, bob._objects.
+
+63
+00:03:02,835 --> 00:03:04,635
+So clear this one more time.
+
+64
+00:03:04,635 --> 00:03:06,740
+Then I just want to show you that
+
+65
+00:03:06,740 --> 00:03:08,990
+this garbage collection works for like for loops and stuff too.
+
+66
+00:03:08,990 --> 00:03:18,415
+So if I were to do for i in range 1000, x equals th.tensor.
+
+67
+00:03:18,415 --> 00:03:20,900
+So if I were to send this tensor to Bob 1000 times,
+
+68
+00:03:20,900 --> 00:03:23,990
+bob._objects should still only have one.
+
+69
+00:03:23,990 --> 00:03:27,070
+The reason for that is every time this for loop went through again,
+
+70
+00:03:27,070 --> 00:03:30,020
+it reassigned x and deleted the tensor that was
+
+71
+00:03:30,020 --> 00:03:33,470
+returned from here which caused it to be garbage collected from the remote machine.
+
+72
+00:03:33,470 --> 00:03:34,945
+Now, why is this important?
+
+73
+00:03:34,945 --> 00:03:37,850
+The reason this is important is that it means that when you're
+
+74
+00:03:37,850 --> 00:03:41,824
+doing say federated learning or you're doing the exercise,
+
+75
+00:03:41,824 --> 00:03:46,415
+the project that we did previously where we were learning a simple linear model,
+
+76
+00:03:46,415 --> 00:03:51,770
+when we iterate through this for loop and we're generating a new prediction tensor,
+
+77
+00:03:51,770 --> 00:03:52,850
+a new loss tensor,
+
+78
+00:03:52,850 --> 00:03:56,530
+and like all the intermediate tensors that go into executing each of these parts,
+
+79
+00:03:56,530 --> 00:04:00,620
+if we end up deleting our reference to that execution,
+
+80
+00:04:00,620 --> 00:04:02,750
+then the remote machine will also delete it.
+
+81
+00:04:02,750 --> 00:04:06,725
+This is like a really good default piece of behavior to have.
+
+82
+00:04:06,725 --> 00:04:09,575
+Because otherwise, when we ran this for loop,
+
+83
+00:04:09,575 --> 00:04:12,900
+we would end up generating and persisting thousands of
+
+84
+00:04:12,900 --> 00:04:16,570
+tensors even when we're doing just simple forward and backpropagation.
+
+85
+00:04:16,570 --> 00:04:20,030
+So it's just a good thing to know about this particular sort of
+
+86
+00:04:20,030 --> 00:04:23,420
+garbage collection feature so that you know that when
+
+87
+00:04:23,420 --> 00:04:26,420
+objects are created or it seem to disappear from
+
+88
+00:04:26,420 --> 00:04:31,115
+remote workers that they're actually attached to the pointers that are pointing to them.
+
+89
+00:04:31,115 --> 00:04:33,100
+I know it might seem like a little bit of an advanced thing,
+
+90
+00:04:33,100 --> 00:04:34,780
+but it's just something you need to know
+
+91
+00:04:34,780 --> 00:04:37,790
+about as far as what are the core assumptions of how
+
+92
+00:04:37,790 --> 00:04:40,220
+this API is built before jumping
+
+93
+00:04:40,220 --> 00:04:43,850
+into too deep into federate learning and into your own sort of custom projects.
+
+94
+00:04:43,850 --> 00:04:44,990
+Now, there's a couple of other sort of
+
+95
+00:04:44,990 --> 00:04:47,315
+convenience areas that I wanted to also mention while we're here.
+
+96
+00:04:47,315 --> 00:04:54,170
+So I see that Bob still have and Bob has this also x equals th.tensor([1,2,3,4,5]).
+
+97
+00:04:54,170 --> 00:04:57,090
+So let's create x and y, but I'm not going to send y to Bob.
+
+98
+00:04:57,090 --> 00:04:59,000
+I'm going to try to call a command on both.
+
+99
+00:04:59,000 --> 00:05:01,250
+So again, x is a pointer to Bob,
+
+100
+00:05:01,250 --> 00:05:04,145
+why is a data set tensor that I have here?
+
+101
+00:05:04,145 --> 00:05:07,605
+So if I do this, it returns an error.
+
+102
+00:05:07,605 --> 00:05:12,180
+PureTorchTensorFoundError, which means that one of these is a regulatory tensor,
+
+103
+00:05:12,180 --> 00:05:13,495
+one of these is a pointer to one.
+
+104
+00:05:13,495 --> 00:05:16,370
+If I scroll down to the bottom and say you tried to call a method involving
+
+105
+00:05:16,370 --> 00:05:17,930
+two tensors where one tensor is actually
+
+106
+00:05:17,930 --> 00:05:20,185
+located on another machine, it's a pointer tensor.
+
+107
+00:05:20,185 --> 00:05:23,750
+Call.get on the PointerTensor or.send to Bob on the other tensor.
+
+108
+00:05:23,750 --> 00:05:25,580
+So this gets populated automatically.
+
+109
+00:05:25,580 --> 00:05:27,355
+Here are the two tensors that we tried to work with,
+
+110
+00:05:27,355 --> 00:05:33,600
+and this is really just to try to make it obvious when you accidentally do this.
+
+111
+00:05:33,600 --> 00:05:36,080
+Another common error that people will do,
+
+112
+00:05:36,080 --> 00:05:37,580
+so we scroll down here,
+
+113
+00:05:37,580 --> 00:05:43,220
+is send Alice and two different machines and we'll get a very similarity.
+
+114
+00:05:43,220 --> 00:05:46,190
+So you try to call add involving two tensors which are not on the same machine.
+
+115
+00:05:46,190 --> 00:05:49,550
+One tensor is on Bob while the other tensor is on Alice.
+
+116
+00:05:49,550 --> 00:05:51,080
+Use combination of move, get,
+
+117
+00:05:51,080 --> 00:05:53,585
+or send to co-locate them to the same machine.
+
+118
+00:05:53,585 --> 00:05:54,950
+So again, if you see these,
+
+119
+00:05:54,950 --> 00:05:57,650
+just follow the instructions and hopefully you'll be led to
+
+120
+00:05:57,650 --> 00:06:02,300
+the right series of operations that you're interested in performing in the first place.
+
+121
+00:06:02,300 --> 00:06:03,620
+All right. In the next session,
+
+122
+00:06:03,620 --> 00:06:06,410
+we're going to jump a little bit deeper into privacy preserving
+
+123
+00:06:06,410 --> 00:06:10,110
+deep learning techniques using these core primitives. See you then.
+

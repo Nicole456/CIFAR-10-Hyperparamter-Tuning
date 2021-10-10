@@ -1,0 +1,76 @@
+1
+00:00:00,000 --> 00:00:02,850
+Next, we're going to be looking at a toolkit,
+
+2
+00:00:02,850 --> 00:00:06,030
+that will allow us to perform federated learning called PySyft.
+
+3
+00:00:06,030 --> 00:00:09,315
+PySyft is an extension to the major deep learning toolkits.
+
+4
+00:00:09,315 --> 00:00:13,080
+In particular, we are going to be looking at its extension to the PyTorch framework,
+
+5
+00:00:13,080 --> 00:00:16,020
+which will allow you to do the kinds of remote executions
+
+6
+00:00:16,020 --> 00:00:19,080
+necessary for federated learning in a deep learning context.
+
+7
+00:00:19,080 --> 00:00:21,450
+As you can imagine, if I'm a central server,
+
+8
+00:00:21,450 --> 00:00:24,240
+and I'm trying to orchestrate millions of different devices,
+
+9
+00:00:24,240 --> 00:00:28,260
+training models in the correct way so that I can aggregate all these gradients,
+
+10
+00:00:28,260 --> 00:00:30,300
+I need a special set of tools because
+
+11
+00:00:30,300 --> 00:00:32,895
+the nature of standard deep learning toolkits is that they
+
+12
+00:00:32,895 --> 00:00:34,980
+assume that you have some dataset
+
+13
+00:00:34,980 --> 00:00:38,530
+locally in some local framework to let you perform operations.
+
+14
+00:00:38,530 --> 00:00:41,810
+So what we're going to be looking at here is a new set of tools,
+
+15
+00:00:41,810 --> 00:00:46,490
+that allow us to actually have an interface that is nearly identical to PyTorch,
+
+16
+00:00:46,490 --> 00:00:49,940
+but allows us to execute commands on remote machines and
+
+17
+00:00:49,940 --> 00:00:54,140
+coordinate how data is moved amongst different machines.
+
+18
+00:00:54,140 --> 00:00:57,530
+That's really what's going to form the foundation for us to be able to do
+
+19
+00:00:57,530 --> 00:01:00,970
+federated learning on actual distributed dataset
+

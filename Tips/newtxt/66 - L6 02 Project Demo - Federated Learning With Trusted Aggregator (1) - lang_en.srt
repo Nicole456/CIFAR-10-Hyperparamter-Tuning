@@ -1,0 +1,127 @@
+In this section, we're going to learn how to view
+federated learning with a trusted aggregator,
+which means that when we actually aggregate our gradients from multiple workers,
+instead of bringing them to a central server to aggregate them,
+or having them send gradients directly to each other.
+We're going to have everyone who's involved in the federated learning process or
+the federated learning session send all of their gradients to a neutral third party,
+which we're going to call a secure worker.
+So first, let's set up PySyft.
+So we're going to do all the normal things we did before.
+So, import syft, import torch,
+hook torch, and then import a few other things from torch.
+Then let's create a few workers.
+So in this case, we're going to create three workers;
+Bob, Alice, and secure worker.
+So Bob and Alice are going to be our data owners,
+and secure worker is going to be this trusted third party
+that is able to perform that good aggregation.
+Now, we're doing this additional step which
+for virtual workers is not strictly speaking necessary,
+however, for workers in a real-world,
+if you're going to use socket workers and some of
+these other HTTP worker is you actually do need to do this.
+You do inform workers that other workers exist.
+So we have Bob, Alice and secure worker,
+we're just letting them know that the address is.
+We have a reference to these other workers.
+So now we're going to have use the same toy data set that we used in the last example,
+and we're going to train the same simple linear model
+just to keep everything pretty simple.
+So that's our data and target.
+Here's Bob's data, so we'll set it to Bob.
+Here's Alice's data, which we'll send to Alice.
+Then we'll initialize a toy model to be the same model that we were working with before.
+So now, we're all set up.
+So we've got our model and our central server.
+You've got a data set that's distributed,
+and now let's start working on federated learning.
+So the first thing we're going to do it's a little bit different this time.
+Is that instead of just having one model that we
+send to and from each individual person in synchrony.
+We actually want to have two different models that we
+send to each of the workers because we want that to be averaged.
+So we have Bob's model which equals model.copy and we're going to send it to Bob.
+We're going to have Alice's model, which is a copy of the original model,
+and we're going to send it to Alice.
+This also means that we need to have two separate optimizers.
+So we'd have one for the parameters Bob's model and one for the parameters of Alice's.
+So Bob's optimizer equals optim.
+So this is just standard by torch stuff.
+Sgd params equals bobs_model.parameters, parameter equals 0.1.
+Then Alice's optimizer equals optim.
+SG descent params Alice's_ model.parameters, parameter equals 0.01.
+Great. Now, let's do a step of training for Bob's model.
+So first thing we'll do is bobs_opt.zero_grad,
+so zero out the gradients.
+bobs_pred is just going to be bobs_model, bobs_data.
+As you can see, this is all working with the pointers as it should, bobs_loss.
+Then we're back propagating.
+Beautiful. Now, we want to do bobs_opt.step.
+So the weight update and then we'll just get bobs_loss right now.
+So my O key
+is not doing what it's supposed to.
+That is super odd. Okay. Well, I'm going to just copy that for now.
+All right.
+Okay.
+There we go.
+If we do this multiple times,
+we can see that Bob's loss goes down.
+So now I also want to do this separately for Alice.
+We can just replace all references to Bob to the references to Alice.
+Make sure I don't miss any here.
+Like it might have been plural.
+All right. It seems to learn. So now
+we've got this ability to train Bob's analysis workers.
+But then, we come to the question
+of how are we going to average these two models together.
+So we have Bob's model, we have Alice's model.
+We trained both of them separately on these different machines.
+But now I want to be able to average them together.
+Well, we have this nice convenience method or we can go alices _model.move secure_worker.
+What this does and it's similar
+to.send that you might have used previously on the worker.
+So it just iterates through
+every parameter analysis model and calls.move on that parameter inline.
+So now, we can do bobs_model.moves secure_worker.
+Now, both Bob and Alice's model are on secure_workers.
+So if we look at secure_worker._objects we can
+see here all the parameters for Bob's analysis model.
+Now, all we need to do is just average them together.
+So if you have alices_model.weight.data plus bobs_model.weight.data.
+I'm going to average them, so we'll divide them by two.
+Then we'll call it.get.
+then we'll say, model,
+which is our global model,.weight.data.set to read this, boom.
+Now, we just averaged our weights,
+and then we'll do the same thing for bias.
+So these are the two parameters that we have in linear model.
+Now, we have just average our models and brought them back up,
+brought just the average version of the model backup to the central secure server.
+So now all we really need to do is just put this whole thing in a
+big for loop so that we can rinse and repeat.
+So let's see here.
+We can take this, and this,
+and this, and then we move it. We average it.
+So we'll call this for num_rounds in, for round_iter.
+So at one session of this is called a round. So that could enable iter.
+This is the number of iterations in the round.
+We can actually print Bob and Alice's last loss.
+There you have it. Federated learning where
+the gradient aggregation happens on a neutral third party.
+So it just makes it so that each sort of layer of additional functionality adds
+a little bit more privacy and a little more flexibility
+to the different scenarios that we can use federated learning in.
+So in this case, now we are flexible enough to be able to
+do federated learning where we work with a secure worker,
+a third third-party aggregator.
+Actually this kind of setup is actually the most popular one.
+So in several large-scale deployments,
+actually use a trusted machine that is trusted to aggregate weights together,
+and then delete what it has leftover.
+We didn't put the delete part in here,
+but we could certainly do that if we did secure_worker.clear_objects. There you go.
+Now as your worker reliably got rid
+of all of the tensors that have had stored on this machine.
+So there you go. I hope you've enjoyed this project.
+In the next section, we're going to build on this a little bit more

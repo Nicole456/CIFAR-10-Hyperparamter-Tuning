@@ -1,0 +1,396 @@
+1
+00:00:00,000 --> 00:00:01,290
+So as you know,
+
+2
+00:00:01,290 --> 00:00:03,360
+our goal is to aggregate gradients in the context of
+
+3
+00:00:03,360 --> 00:00:07,095
+federated learning using additive secret sharing technique,
+
+4
+00:00:07,095 --> 00:00:09,240
+specifically the additive secret sharing technique that we
+
+5
+00:00:09,240 --> 00:00:12,000
+learned in the last several sections.
+
+6
+00:00:12,000 --> 00:00:17,460
+However, the secret sharing technique that we used was only working with integers,
+
+7
+00:00:17,460 --> 00:00:21,495
+but federated learning gradients tend to be decimal numbers.
+
+8
+00:00:21,495 --> 00:00:27,550
+So we want to be able to convert our decimal numbers into an integer format,
+
+9
+00:00:27,550 --> 00:00:31,830
+so that we can actually aggregate them using a secret sharing technique.
+
+10
+00:00:31,830 --> 00:00:33,360
+For that, we're going to look at what's called a
+
+11
+00:00:33,360 --> 00:00:36,855
+fixed precision encoding and it's really quite a simple technique,
+
+12
+00:00:36,855 --> 00:00:38,400
+and we're going to go through a little bit of it here.
+
+13
+00:00:38,400 --> 00:00:41,130
+We're not going to dive too deep into the theory in
+
+14
+00:00:41,130 --> 00:00:44,570
+a packet because this is really the thing that you want to lean on a toolkits.
+
+15
+00:00:44,570 --> 00:00:46,955
+You're going to lean on price if to really do this for you.
+
+16
+00:00:46,955 --> 00:00:51,100
+But, it's important to know how the information is being encoded under the hood.
+
+17
+00:00:51,100 --> 00:00:54,600
+Mostly, so that if you get undefined behavior,
+
+18
+00:00:54,600 --> 00:00:56,300
+maybe you set the precision to low
+
+19
+00:00:56,300 --> 00:00:59,435
+or you went to a tweet performance in one way or another.
+
+20
+00:00:59,435 --> 00:01:01,580
+You can just have a general idea of what this
+
+21
+00:01:01,580 --> 00:01:04,355
+this fixed precision encoding is really about.
+
+22
+00:01:04,355 --> 00:01:07,310
+So you'll be knowledgeable of what's going on under the hood.
+
+23
+00:01:07,310 --> 00:01:09,020
+So the first thing we're going to do is we want to
+
+24
+00:01:09,020 --> 00:01:10,900
+choose what precision we actually want to represent,
+
+25
+00:01:10,900 --> 00:01:16,060
+which means how many decimal points we actually want to encode our numbers with.
+
+26
+00:01:16,060 --> 00:01:19,390
+So we're going to take a decimal point like 0.5.
+
+27
+00:01:19,390 --> 00:01:20,450
+We're going to encode it as an integer.
+
+28
+00:01:20,450 --> 00:01:22,550
+We have to know how much storage we actually want to set
+
+29
+00:01:22,550 --> 00:01:25,225
+aside for information it's after the decimal point.
+
+30
+00:01:25,225 --> 00:01:29,375
+So for that, we need to set our base which we're going to use base 10 encoding,
+
+31
+00:01:29,375 --> 00:01:31,010
+which means that we're going to use
+
+32
+00:01:31,010 --> 00:01:33,390
+normal encoding if you wanted to think about it that way.
+
+33
+00:01:33,390 --> 00:01:35,030
+We could also use base two encoding which would be
+
+34
+00:01:35,030 --> 00:01:37,260
+binary and we're going to set up precision to be four.
+
+35
+00:01:37,260 --> 00:01:39,260
+So in this case, this is saying that we're going to
+
+36
+00:01:39,260 --> 00:01:41,360
+encode numbers of base 10 and then we're going
+
+37
+00:01:41,360 --> 00:01:45,990
+to have four decimal places that we're going to allow for storage,
+
+38
+00:01:45,990 --> 00:01:48,350
+and we also want to have a Q value and we're going to use
+
+39
+00:01:48,350 --> 00:01:50,990
+the same Q value we were using in the additive secret sharing technique,
+
+40
+00:01:50,990 --> 00:01:54,935
+and this is going to allow us to handle negative numbers as we'll see in a moment.
+
+41
+00:01:54,935 --> 00:01:56,660
+The first thing we want to do is we want to create
+
+42
+00:01:56,660 --> 00:01:58,580
+an encode function and this is going to
+
+43
+00:01:58,580 --> 00:02:02,390
+take our decimal number and convert it into an integer.
+
+44
+00:02:02,390 --> 00:02:03,815
+So we're going to return.
+
+45
+00:02:03,815 --> 00:02:06,305
+It does this using really simple technique.
+
+46
+00:02:06,305 --> 00:02:09,680
+It literally just takes our input decimal and
+
+47
+00:02:09,680 --> 00:02:13,640
+multiplies it times base to the power of precision.
+
+48
+00:02:13,640 --> 00:02:17,630
+So in this case, it just multiplies it by the number 10,000,
+
+49
+00:02:17,630 --> 00:02:18,995
+converts it to an integer,
+
+50
+00:02:18,995 --> 00:02:21,760
+and then takes the modulus, mod Q.
+
+51
+00:02:21,760 --> 00:02:24,110
+So if we want to encode the number 0.5,
+
+52
+00:02:24,110 --> 00:02:27,040
+we can now encode it as the number 5,000.
+
+53
+00:02:27,040 --> 00:02:29,845
+So 5,000 actually means 0.5.
+
+54
+00:02:29,845 --> 00:02:34,415
+We'll actually see that there are other kinds of ways that we do arithmetic.
+
+55
+00:02:34,415 --> 00:02:38,300
+They allow us to actually do decimal point operations while
+
+56
+00:02:38,300 --> 00:02:42,545
+everything is being stored in this integer type state.
+
+57
+00:02:42,545 --> 00:02:46,025
+Cool. So let's do a decode function.
+
+58
+00:02:46,025 --> 00:02:50,840
+Decode is literally just taking the same process in reverse.
+
+59
+00:02:50,840 --> 00:02:52,400
+I mean, it's quite simple.
+
+60
+00:02:52,400 --> 00:02:56,735
+So we'll say x fixed precision and
+
+61
+00:02:56,735 --> 00:03:03,735
+return x if x is less than equal to Q divided by two,
+
+62
+00:03:03,735 --> 00:03:05,565
+else x minus Q,
+
+63
+00:03:05,565 --> 00:03:09,395
+and here's the main part based to the power of precision.
+
+64
+00:03:09,395 --> 00:03:13,070
+So previously, the main parsing multiplied it by fixed precision.
+
+65
+00:03:13,070 --> 00:03:16,400
+Now, we're going to divide it by the size of our precision
+
+66
+00:03:16,400 --> 00:03:20,615
+and this is really just making it so that we can take into account negative numbers.
+
+67
+00:03:20,615 --> 00:03:23,120
+So if we encode a 0.5 as 5,000,
+
+68
+00:03:23,120 --> 00:03:26,450
+we can decode 5,000 as 0.5,
+
+69
+00:03:26,450 --> 00:03:28,495
+and so if I did negative.
+
+70
+00:03:28,495 --> 00:03:30,140
+So this ends up being a really large number.
+
+71
+00:03:30,140 --> 00:03:34,580
+It basically wraps around the other side of Q and we could decode this as negative 0.5.
+
+72
+00:03:34,580 --> 00:03:35,750
+So here we go.
+
+73
+00:03:35,750 --> 00:03:38,405
+This is how our fixed position encoding works.
+
+74
+00:03:38,405 --> 00:03:40,175
+A good example of addition.
+
+75
+00:03:40,175 --> 00:03:44,025
+If I were to add two numbers together,
+
+76
+00:03:44,025 --> 00:03:45,870
+so add 0.5 with 0.5.
+
+77
+00:03:45,870 --> 00:03:47,910
+So we say 5,000 plus 5,000,
+
+78
+00:03:47,910 --> 00:03:52,470
+decode 5,000 plus 5,000, decodes to one.
+
+79
+00:03:52,470 --> 00:03:54,630
+So some of these fall out naively,
+
+80
+00:03:54,630 --> 00:03:57,590
+multiplication, other operations can get more tricky, but again,
+
+81
+00:03:57,590 --> 00:03:59,420
+it's not something I want you to worry about too much
+
+82
+00:03:59,420 --> 00:04:01,190
+because you really going to lean on top of
+
+83
+00:04:01,190 --> 00:04:05,165
+a toolkit to handle fixed precision encoding for you.
+
+84
+00:04:05,165 --> 00:04:07,910
+In the same way, you lean on your processor right now to
+
+85
+00:04:07,910 --> 00:04:10,620
+do most of the low-level arithmetic for you.
+
+86
+00:04:10,620 --> 00:04:15,710
+It's just good to have an idea for this is happening under the hood to enable you to be
+
+87
+00:04:15,710 --> 00:04:18,110
+able to use the secret sharing techniques that actually
+
+88
+00:04:18,110 --> 00:04:21,215
+converting all your numbers into these fixed precision format.
+
+89
+00:04:21,215 --> 00:04:23,750
+In this particular case, if the precision is set to something like four,
+
+90
+00:04:23,750 --> 00:04:27,675
+it also means you're losing a few decimal places worth of value.
+
+91
+00:04:27,675 --> 00:04:30,805
+So if originally were using a 32-bit encoding.
+
+92
+00:04:30,805 --> 00:04:32,960
+Anyway, this big decimal value which is our gradient,
+
+93
+00:04:32,960 --> 00:04:35,000
+we're going to lose the end of that.
+
+94
+00:04:35,000 --> 00:04:38,960
+If we're using a precision that only allocates four decimal places of precision.
+
+95
+00:04:38,960 --> 00:04:40,220
+We can make this larger or smaller.
+
+96
+00:04:40,220 --> 00:04:42,410
+It will affect performance and memory and things like that.
+
+97
+00:04:42,410 --> 00:04:44,660
+That's just a good thing to understand and take into
+
+98
+00:04:44,660 --> 00:04:47,740
+account when you're adjusting your fixed precision encoding.
+
+99
+00:04:47,740 --> 00:04:50,410
+All right, and with that let's move on to the next section.
+

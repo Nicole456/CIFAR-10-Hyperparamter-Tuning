@@ -1,0 +1,1180 @@
+1
+00:00:00,000 --> 00:00:03,720
+Thus far, we've gotten a lot of intuitive notions of privacy.
+
+2
+00:00:03,720 --> 00:00:06,270
+We've walked through an example of local differential privacy,
+
+3
+00:00:06,270 --> 00:00:08,070
+we've walked through a differencing attack,
+
+4
+00:00:08,070 --> 00:00:11,685
+we've walked through basic queries and the definition of sensitivity.
+
+5
+00:00:11,685 --> 00:00:13,890
+Now, we have the basic building blocks,
+
+6
+00:00:13,890 --> 00:00:18,195
+talk about what the true formalized definition of differential privacy actually is.
+
+7
+00:00:18,195 --> 00:00:19,470
+This will also lead us into
+
+8
+00:00:19,470 --> 00:00:22,605
+our first implementation of global differential privacy as well.
+
+9
+00:00:22,605 --> 00:00:26,430
+In particular, we're going to look at global differential privacy and ask the question,
+
+10
+00:00:26,430 --> 00:00:29,965
+how much noise should we add after the query has been run to
+
+11
+00:00:29,965 --> 00:00:34,255
+sort of noise up the entire query your database with one block of noise?
+
+12
+00:00:34,255 --> 00:00:38,360
+We will find that this global differential privacy will also intuitively relate
+
+13
+00:00:38,360 --> 00:00:40,190
+quite nicely to the formal definition of
+
+14
+00:00:40,190 --> 00:00:42,830
+differential privacy, which we'll propose along the way.
+
+15
+00:00:42,830 --> 00:00:46,160
+So what we're going to do here is we're going to create a database with
+
+16
+00:00:46,160 --> 00:00:49,655
+our query and then analyze it with the formal definition of DP.
+
+17
+00:00:49,655 --> 00:00:51,680
+We're going to add noise to the output of
+
+18
+00:00:51,680 --> 00:00:54,740
+our function and we have two different kinds of noise that we can add,
+
+19
+00:00:54,740 --> 00:00:57,100
+Laplacian noise or Gaussian noise.
+
+20
+00:00:57,100 --> 00:00:59,870
+In order to know how much noise we should add,
+
+21
+00:00:59,870 --> 00:01:02,585
+we will appear to the formalized definition of DP.
+
+22
+00:01:02,585 --> 00:01:05,195
+This is the definition proposed by Cynthia Dwork.
+
+23
+00:01:05,195 --> 00:01:08,330
+It's the e equals mc squared of differential privacy.
+
+24
+00:01:08,330 --> 00:01:10,610
+It's most important formula in the field and it
+
+25
+00:01:10,610 --> 00:01:13,520
+doesn't create differential privacy necessarily,
+
+26
+00:01:13,520 --> 00:01:16,070
+it's not a method of adding noise per say.
+
+27
+00:01:16,070 --> 00:01:20,270
+Instead, it's a constraint so that you can analyze a query with
+
+28
+00:01:20,270 --> 00:01:26,000
+noise and know whether or not this query and noise is leaking too much information.
+
+29
+00:01:26,000 --> 00:01:30,380
+In particular, we have two different measures called Epsilon and Delta,
+
+30
+00:01:30,380 --> 00:01:32,720
+and these compose a threshold for leakage.
+
+31
+00:01:32,720 --> 00:01:36,380
+Now, let me unpack this a little bit for you what this exact inequality is.
+
+32
+00:01:36,380 --> 00:01:38,450
+So the previous method of adding noise that we
+
+33
+00:01:38,450 --> 00:01:40,700
+just worked with in the last session was called
+
+34
+00:01:40,700 --> 00:01:45,530
+local differential privacy because we added noise to each datapoint individually.
+
+35
+00:01:45,530 --> 00:01:49,130
+This is necessary for some situations where in the data is so sensitive
+
+36
+00:01:49,130 --> 00:01:52,460
+that individuals do not trust them that noise will be added later.
+
+37
+00:01:52,460 --> 00:01:55,580
+However, it comes at a very high costs in terms of accuracy.
+
+38
+00:01:55,580 --> 00:02:00,260
+So if you'll remember back to how we actually constructed the coin flipping example,
+
+39
+00:02:00,260 --> 00:02:05,180
+you'll remember that before an individual gave us their answer,
+
+40
+00:02:05,180 --> 00:02:07,625
+you would query an individual and you would say, hey,
+
+41
+00:02:07,625 --> 00:02:11,210
+are you performing some sort of let's say activity?
+
+42
+00:02:11,210 --> 00:02:14,240
+Before they gave you they're true or false value,
+
+43
+00:02:14,240 --> 00:02:17,930
+they would actually flip their coin at that point and so that means that they
+
+44
+00:02:17,930 --> 00:02:22,250
+were adding noise themselves to their individual datapoint
+
+45
+00:02:22,250 --> 00:02:27,440
+before submitting it to you and it's this local term
+
+46
+00:02:27,440 --> 00:02:30,335
+refers to the fact that they are locally
+
+47
+00:02:30,335 --> 00:02:33,940
+adding noise to the data before it gets sent to you.
+
+48
+00:02:33,940 --> 00:02:39,245
+Now, if you're familiar with the intuitions of say dataset anonymization,
+
+49
+00:02:39,245 --> 00:02:43,350
+even though dataset anonymization is a broken technique and you should use it,
+
+50
+00:02:43,350 --> 00:02:47,720
+it's probably the closest parallel to local differential privacy to the extent that it is
+
+51
+00:02:47,720 --> 00:02:52,330
+augmenting datapoints individually with the intent of trying to build release.
+
+52
+00:02:52,330 --> 00:02:54,170
+But again, don't do dataset anonymization,
+
+53
+00:02:54,170 --> 00:02:55,970
+don't advocate people to do dataset anonymization
+
+54
+00:02:55,970 --> 00:02:58,945
+because it's a fundamentally broken idea.
+
+55
+00:02:58,945 --> 00:03:03,260
+However, this leads us directly into the other kind or
+
+56
+00:03:03,260 --> 00:03:08,555
+the other class of differential private algorithms called global differential privacy.
+
+57
+00:03:08,555 --> 00:03:13,204
+Global differential privacy instead of adding noise to individual datapoints,
+
+58
+00:03:13,204 --> 00:03:19,800
+applies noise to the output of a function on datapoints.
+
+59
+00:03:19,800 --> 00:03:22,620
+The advantage in general,
+
+60
+00:03:22,620 --> 00:03:24,610
+and is a little bit of a sweeping statement,
+
+61
+00:03:24,610 --> 00:03:30,380
+but the advantage in general is that you can often add a lot less noise and get
+
+62
+00:03:30,380 --> 00:03:33,710
+a much more accurate result if you
+
+63
+00:03:33,710 --> 00:03:37,880
+wait to add the noise until after you've computed a function,
+
+64
+00:03:37,880 --> 00:03:45,245
+and the reason for this is that many functions actually reduce the sensitivity involved.
+
+65
+00:03:45,245 --> 00:03:50,165
+So for example, here we have a query or a database.
+
+66
+00:03:50,165 --> 00:03:54,384
+So local differential privacy would add noise here,
+
+67
+00:03:54,384 --> 00:03:59,390
+and this is what we did in the last session we were adding a little bit of noise to
+
+68
+00:03:59,390 --> 00:04:01,505
+individual datapoints for the sake
+
+69
+00:04:01,505 --> 00:04:05,375
+of protecting when we were simulating the coin flipping example.
+
+70
+00:04:05,375 --> 00:04:11,600
+Have a global differential privacy would add noise out here to the output of a function.
+
+71
+00:04:11,600 --> 00:04:13,220
+Now, this doesn't have to be just a single function,
+
+72
+00:04:13,220 --> 00:04:14,870
+this can be a big long chain of functions,
+
+73
+00:04:14,870 --> 00:04:21,400
+it could be a sum and a threshold and then another some and then multiplication or any
+
+74
+00:04:21,400 --> 00:04:24,860
+any number of functions that we wanted to chain together and we can add
+
+75
+00:04:24,860 --> 00:04:29,420
+noise in the middle or at the end wherever we wanted to do this.
+
+76
+00:04:29,420 --> 00:04:31,715
+As a general rule of thumb,
+
+77
+00:04:31,715 --> 00:04:35,315
+as you process data more and more,
+
+78
+00:04:35,315 --> 00:04:38,615
+it is quite common for sensitivity to go down.
+
+79
+00:04:38,615 --> 00:04:40,380
+So a good place to start,
+
+80
+00:04:40,380 --> 00:04:41,990
+if you're trying to figure out where you want to add
+
+81
+00:04:41,990 --> 00:04:44,450
+noise in your system and your pipeline,
+
+82
+00:04:44,450 --> 00:04:48,620
+is to lean more towards doing it as late in
+
+83
+00:04:48,620 --> 00:04:52,550
+the chain as possible because the later you go,
+
+84
+00:04:52,550 --> 00:04:55,325
+the more individuals you have likely aggregated over,
+
+85
+00:04:55,325 --> 00:04:57,740
+the more processing you have done, the more likely you will have
+
+86
+00:04:57,740 --> 00:05:00,340
+done to do thresholds or squishing
+
+87
+00:05:00,340 --> 00:05:06,200
+functions like [inaudible] or any other kinds of post-processing on your data.
+
+88
+00:05:06,200 --> 00:05:09,140
+The better the chances are that you'll do things that actually
+
+89
+00:05:09,140 --> 00:05:11,960
+reduce some sensitivity and actually end up
+
+90
+00:05:11,960 --> 00:05:14,690
+reducing the amount of noise that you have to add giving you
+
+91
+00:05:14,690 --> 00:05:19,160
+a more accurate result with less privacy leakage.
+
+92
+00:05:19,160 --> 00:05:23,120
+So just these are a few general statements that I'm making about
+
+93
+00:05:23,120 --> 00:05:27,365
+global and local differential privacy and why people prefer one over the other.
+
+94
+00:05:27,365 --> 00:05:28,980
+So if the data is so sensitive,
+
+95
+00:05:28,980 --> 00:05:31,910
+the people aren't going to give it to you then people tend to lean more towards
+
+96
+00:05:31,910 --> 00:05:35,510
+local differential privacy because the individual data owners are just
+
+97
+00:05:35,510 --> 00:05:41,030
+sort of so scared that they want to protect their data before they handed over to what's
+
+98
+00:05:41,030 --> 00:05:43,610
+called a trusted curator, who is the party that is
+
+99
+00:05:43,610 --> 00:05:47,465
+generally referred to as the one who's actually performing differential privacy.
+
+100
+00:05:47,465 --> 00:05:51,680
+That's the reason that most people use local DP, use
+
+101
+00:05:51,680 --> 00:05:53,840
+local differential privacy whereas people who use
+
+102
+00:05:53,840 --> 00:05:56,210
+global differential privacy when they're more interested in saying,
+
+103
+00:05:56,210 --> 00:05:59,240
+"Hey, I really need the output of this to be
+
+104
+00:05:59,240 --> 00:06:03,170
+accurate while still having the same level of privacy".
+
+105
+00:06:03,170 --> 00:06:06,260
+So if there's a trade-off between how
+
+106
+00:06:06,260 --> 00:06:12,905
+much the data owner is willing to trust the person performing differential privacy here.
+
+107
+00:06:12,905 --> 00:06:16,790
+So if you can facilitate a setup, where differential privacy is being
+
+108
+00:06:16,790 --> 00:06:19,640
+performed over a large dataset
+
+109
+00:06:19,640 --> 00:06:22,715
+and they can trust the you're performing differential privacy correctly,
+
+110
+00:06:22,715 --> 00:06:25,220
+I would strongly advocate for you to lean
+
+111
+00:06:25,220 --> 00:06:27,530
+towards global differential privacy because it can
+
+112
+00:06:27,530 --> 00:06:33,610
+be a much more accurate method of stripping out private information.
+
+113
+00:06:33,610 --> 00:06:37,625
+So enough on global local differential privacy
+
+114
+00:06:37,625 --> 00:06:39,800
+both of these lead to the next question of
+
+115
+00:06:39,800 --> 00:06:42,680
+how do we actually measure how much privacy is
+
+116
+00:06:42,680 --> 00:06:45,620
+being leaked inside of a differentially private algorithm?
+
+117
+00:06:45,620 --> 00:06:49,250
+This leads us to the formal definition of differential privacy.
+
+118
+00:06:49,250 --> 00:06:50,690
+So even though up to this point,
+
+119
+00:06:50,690 --> 00:06:52,940
+I've for the sake of making an intuitive,
+
+120
+00:06:52,940 --> 00:06:55,130
+I've been giving intuitive explanations and
+
+121
+00:06:55,130 --> 00:06:57,380
+sort of high-level intuitions on
+
+122
+00:06:57,380 --> 00:07:00,065
+how differential privacy works, what it's really all about.
+
+123
+00:07:00,065 --> 00:07:02,180
+Differential privacy itself, the term
+
+124
+00:07:02,180 --> 00:07:05,795
+differential privacy. It's actually a very formalized definition.
+
+125
+00:07:05,795 --> 00:07:07,380
+There's actually multiple definitions.
+
+126
+00:07:07,380 --> 00:07:10,325
+There are multiple proposed definitions of differential privacy.
+
+127
+00:07:10,325 --> 00:07:12,140
+The one we're going to be talking about today is
+
+128
+00:07:12,140 --> 00:07:15,230
+the one that has been proposed by Cynthia Dwork.
+
+129
+00:07:15,230 --> 00:07:20,135
+It's actually the most well-known,
+
+130
+00:07:20,135 --> 00:07:24,230
+the most widely used and other forms of differential privacy typically build on
+
+131
+00:07:24,230 --> 00:07:28,310
+top of this one for one purpose or another purpose.
+
+132
+00:07:28,310 --> 00:07:32,450
+So, this is a great place to start and many of the terms and
+
+133
+00:07:32,450 --> 00:07:34,520
+the techniques that we would mentioning here are
+
+134
+00:07:34,520 --> 00:07:37,070
+also relevant to other forms of differential privacy.
+
+135
+00:07:37,070 --> 00:07:39,410
+So, let's walk through this definition.
+
+136
+00:07:39,410 --> 00:07:46,970
+A randomized algorithm M with domain natural numbers absolute value of x.
+
+137
+00:07:46,970 --> 00:07:48,785
+So, this is basically saying a certain set of
+
+138
+00:07:48,785 --> 00:07:53,090
+natural numbers is epsilon delta differentially private,
+
+139
+00:07:53,090 --> 00:07:57,080
+if for all S in the range of M and for all x,
+
+140
+00:07:57,080 --> 00:08:01,940
+y in an X such that x minus y is less than or equal to 1.
+
+141
+00:08:01,940 --> 00:08:05,090
+Okay. So, let's reread this a bit more intuitively.
+
+142
+00:08:05,090 --> 00:08:07,385
+A randomized algorithm M,
+
+143
+00:08:07,385 --> 00:08:10,760
+M being a randomized algorithm is this.
+
+144
+00:08:10,760 --> 00:08:14,030
+This would be a globally differential private randomized algorithm.
+
+145
+00:08:14,030 --> 00:08:18,500
+It's some sort of function on a database with some sort of noise added to it.
+
+146
+00:08:18,500 --> 00:08:21,920
+Now, this noise could have been inside the db or applied to
+
+147
+00:08:21,920 --> 00:08:25,955
+the db in here which in case it would have been locally differentially private.
+
+148
+00:08:25,955 --> 00:08:28,955
+So, where the noise is actually added,
+
+149
+00:08:28,955 --> 00:08:32,210
+the exact characteristics and this mechanism is nonspecific here.
+
+150
+00:08:32,210 --> 00:08:34,625
+So, this this could be any function.
+
+151
+00:08:34,625 --> 00:08:37,580
+We have we don't know what algorithm is S,
+
+152
+00:08:37,580 --> 00:08:40,670
+we just know that it has the ability to query
+
+153
+00:08:40,670 --> 00:08:44,165
+a database and it is randomized in some way.
+
+154
+00:08:44,165 --> 00:08:46,820
+Okay. So, that's what we know about M. Oh yes,
+
+155
+00:08:46,820 --> 00:08:51,815
+and it has an output domain of Nx.
+
+156
+00:08:51,815 --> 00:08:57,455
+Meaning it could be a histogram over certain entries in database.
+
+157
+00:08:57,455 --> 00:09:02,270
+So, it's discretized in this particular case and we're saying that this
+
+158
+00:09:02,270 --> 00:09:04,535
+is epsilon delta differentially private if
+
+159
+00:09:04,535 --> 00:09:07,160
+for all the potential things that it could predict.
+
+160
+00:09:07,160 --> 00:09:12,800
+Right, so for all for things S in the range of M and for all database pairs.
+
+161
+00:09:12,800 --> 00:09:16,700
+So, parallel of databases such that x minus y is less than equal to 1.
+
+162
+00:09:16,700 --> 00:09:19,400
+Actually, these are these are histograms over pair databases.
+
+163
+00:09:19,400 --> 00:09:20,630
+So, this is saying, okay,
+
+164
+00:09:20,630 --> 00:09:22,490
+database has a bunch of stuff in it, right?
+
+165
+00:09:22,490 --> 00:09:28,100
+And Mx counts how many times each thing happened in the database right?
+
+166
+00:09:28,100 --> 00:09:33,860
+So, how many times it was a database full of marbles.
+
+167
+00:09:33,860 --> 00:09:39,155
+I don't know, in each each entry had a marble of a specific color.
+
+168
+00:09:39,155 --> 00:09:42,470
+This might count the number of red marbles and blue marbles,
+
+169
+00:09:42,470 --> 00:09:46,100
+the number of yellow marbles right in which case,
+
+170
+00:09:46,100 --> 00:09:49,250
+this would be three natural numbers and the size of x would be
+
+171
+00:09:49,250 --> 00:09:53,450
+three and of course their natural numbers because we're counting individual things.
+
+172
+00:09:53,450 --> 00:09:56,720
+So, things, it's something to take away. Its discretized,
+
+173
+00:09:56,720 --> 00:10:02,420
+the differential privacy definition is post in the form of a histogram over a database.
+
+174
+00:10:02,420 --> 00:10:06,230
+Okay, and so we're saying there are two histograms right,
+
+175
+00:10:06,230 --> 00:10:10,025
+and the max distance between these two histograms is one.
+
+176
+00:10:10,025 --> 00:10:12,290
+Meaning that they only differ in one entry.
+
+177
+00:10:12,290 --> 00:10:14,450
+Meaning that, that they are parallel databases.
+
+178
+00:10:14,450 --> 00:10:17,855
+So, the databases that formed the histograms are parallel.
+
+179
+00:10:17,855 --> 00:10:20,720
+Okay. So, let's just walk through this one more time just to
+
+180
+00:10:20,720 --> 00:10:23,720
+make sure that you understand this setup. This definition.
+
+181
+00:10:23,720 --> 00:10:31,100
+A randomized algorithm m with a domain Nx meaning that is it's their natural numbers,
+
+182
+00:10:31,100 --> 00:10:33,830
+the x and actually earlier in this paper,
+
+183
+00:10:33,830 --> 00:10:37,490
+it was identified that this was referring specifically to a histogram over
+
+184
+00:10:37,490 --> 00:10:41,645
+database is epsilon delta differentially private if,
+
+185
+00:10:41,645 --> 00:10:44,825
+for all the things that M could predict,
+
+186
+00:10:44,825 --> 00:10:49,640
+so all the all the potential outputs of m for all and
+
+187
+00:10:49,640 --> 00:10:51,530
+for all the potential inputs that are
+
+188
+00:10:51,530 --> 00:10:54,470
+parallel databases right and this is the part of the thing.
+
+189
+00:10:54,470 --> 00:10:58,115
+It's parallel. That this constraint is true.
+
+190
+00:10:58,115 --> 00:11:02,165
+Okay. So, the setup is two histograms.
+
+191
+00:11:02,165 --> 00:11:03,845
+One is the full database.
+
+192
+00:11:03,845 --> 00:11:09,215
+One is database with one entry missing and this constraint is true.
+
+193
+00:11:09,215 --> 00:11:11,315
+So, what is this constraint?
+
+194
+00:11:11,315 --> 00:11:13,190
+Let's start with what we know.
+
+195
+00:11:13,190 --> 00:11:20,670
+m to the x is actually taking our mechanism and running it over this histogram.
+
+196
+00:11:21,040 --> 00:11:30,170
+My is doing the same thing over any for every parallel database right.
+
+197
+00:11:30,170 --> 00:11:34,325
+So, it's every database, well, any database.
+
+198
+00:11:34,325 --> 00:11:39,380
+We'll say any database. Any database with one entry missing right.
+
+199
+00:11:39,380 --> 00:11:43,145
+So, this threshold has to be true for all databases.
+
+200
+00:11:43,145 --> 00:11:48,760
+But, it's only actually expressing one at a time right.
+
+201
+00:11:48,760 --> 00:11:52,390
+But we're saying that it's true for all databases and so okay.
+
+202
+00:11:52,390 --> 00:11:54,550
+So, we've got the query over other parallel database,
+
+203
+00:11:54,550 --> 00:11:56,455
+we got query over the full database right,
+
+204
+00:11:56,455 --> 00:11:59,155
+and it's returning something in S. Okay.
+
+205
+00:11:59,155 --> 00:12:03,590
+So, S is one of the possible things that it could be predicting.
+
+206
+00:12:03,590 --> 00:12:07,475
+One of the things in the range M right.
+
+207
+00:12:07,475 --> 00:12:09,710
+Now, we're saying that this is true for all things,
+
+208
+00:12:09,710 --> 00:12:12,425
+but you can think about it intuitively in your head as you know
+
+209
+00:12:12,425 --> 00:12:16,830
+for predicting the the red marble.
+
+210
+00:12:17,130 --> 00:12:24,400
+So, what is the distance between the distribution over all the things in the database,
+
+211
+00:12:24,400 --> 00:12:27,915
+the probability distribution over all things database
+
+212
+00:12:27,915 --> 00:12:33,840
+versus the probability distribution over all the things in the database minus one entry.
+
+213
+00:12:33,940 --> 00:12:40,505
+So, random distribution over things in the database, objects in the database.
+
+214
+00:12:40,505 --> 00:12:45,350
+Random distribution over objects in the database with one entry missing.
+
+215
+00:12:45,350 --> 00:12:48,050
+Now, the question that we want to ask,
+
+216
+00:12:48,050 --> 00:12:50,960
+the question that is that the core focus of
+
+217
+00:12:50,960 --> 00:12:55,355
+differential privacy is how different are these two distributions?
+
+218
+00:12:55,355 --> 00:13:02,700
+How different is the output of my mechanism that the prediction of my mechanism,
+
+219
+00:13:03,310 --> 00:13:06,380
+when I remove an entry from the database?
+
+220
+00:13:06,380 --> 00:13:10,700
+How much does it change from here to here?
+
+221
+00:13:10,700 --> 00:13:16,100
+And the measurement of the maximum amount that these two distributions are
+
+222
+00:13:16,100 --> 00:13:22,610
+different is measured by two parameters.
+
+223
+00:13:22,610 --> 00:13:26,160
+Epsilon and delta.
+
+224
+00:13:26,260 --> 00:13:33,755
+E to the power of epsilon constrains how different these distributions are.
+
+225
+00:13:33,755 --> 00:13:36,290
+Sort of the primary constraint we might say,
+
+226
+00:13:36,290 --> 00:13:39,290
+and some algorithms actually only use epsilon.
+
+227
+00:13:39,290 --> 00:13:42,230
+So, here we say,
+
+228
+00:13:42,230 --> 00:13:47,945
+if epsilon was zero and these distributions are identical,
+
+229
+00:13:47,945 --> 00:13:49,730
+we're going to ignore delta for a second right.
+
+230
+00:13:49,730 --> 00:13:50,840
+So, if epsilon is zero,
+
+231
+00:13:50,840 --> 00:13:53,105
+then e to the epsilon is one,
+
+232
+00:13:53,105 --> 00:13:56,900
+and these distributions are identical right.
+
+233
+00:13:56,900 --> 00:14:00,840
+So this is less than or equal to would be equal two.
+
+234
+00:14:01,300 --> 00:14:04,520
+Now, since epsilon zero,
+
+235
+00:14:04,520 --> 00:14:06,140
+we would say is perfect privacy.
+
+236
+00:14:06,140 --> 00:14:08,870
+Epsilon zero delta zero would be perfect privacy.
+
+237
+00:14:08,870 --> 00:14:14,510
+So, if this constraint was satisfied at epsilon zero delta zero,
+
+238
+00:14:14,510 --> 00:14:19,910
+then we have no privacy leakage with M on x.
+
+239
+00:14:19,910 --> 00:14:23,615
+So, by computing the output of this randomized mechanism.
+
+240
+00:14:23,615 --> 00:14:27,680
+However, let's say epsilon was 1.
+
+241
+00:14:27,680 --> 00:14:30,515
+Okay. Well, that allows some privacy leakage.
+
+242
+00:14:30,515 --> 00:14:32,960
+Exactly, how much that is, we can get to that in a minute.
+
+243
+00:14:32,960 --> 00:14:36,440
+But, something that is very important to take away is
+
+244
+00:14:36,440 --> 00:14:39,800
+that something can satisfy differential privacy.
+
+245
+00:14:39,800 --> 00:14:41,659
+Can satisfy this constraint,
+
+246
+00:14:41,659 --> 00:14:44,420
+but still leak private information right.
+
+247
+00:14:44,420 --> 00:14:48,755
+So, leaking or not, leaking is not an all or nothing kind of thing.
+
+248
+00:14:48,755 --> 00:14:53,700
+You can actually leak small amounts of statistical information.
+
+249
+00:14:54,550 --> 00:14:59,585
+Now, delta is the probability,
+
+250
+00:14:59,585 --> 00:15:01,775
+which is usually very small.
+
+251
+00:15:01,775 --> 00:15:04,370
+The probability that you will accidentally leak
+
+252
+00:15:04,370 --> 00:15:07,520
+more information than epsilon claims that you will leak.
+
+253
+00:15:07,520 --> 00:15:09,515
+So, delta is often you know,
+
+254
+00:15:09,515 --> 00:15:12,200
+0.00001 or something like that or it's zero,
+
+255
+00:15:12,200 --> 00:15:14,060
+it's usually a very very small probability when it's
+
+256
+00:15:14,060 --> 00:15:17,645
+non-zero and it's basically saying hey,
+
+257
+00:15:17,645 --> 00:15:19,295
+most of the time,
+
+258
+00:15:19,295 --> 00:15:21,950
+you're able to keep everything underneath this amount of leakage.
+
+259
+00:15:21,950 --> 00:15:24,620
+These distributions are going to be very very
+
+260
+00:15:24,620 --> 00:15:27,680
+going to be at least as close most of the time,
+
+261
+00:15:27,680 --> 00:15:31,520
+but only this probability will they actually not be,
+
+262
+00:15:31,520 --> 00:15:35,825
+and this is basically saying that, if your query
+
+263
+00:15:35,825 --> 00:15:40,565
+is for just the right thing with just the right random noise some probability,
+
+264
+00:15:40,565 --> 00:15:44,870
+you will accidentally leak more information.
+
+265
+00:15:44,870 --> 00:15:50,770
+So, this is the constraint of differential privacy and so as you might imagine,
+
+266
+00:15:50,770 --> 00:15:57,790
+a tremendous amount of effort goes into developing really good random algorithms.
+
+267
+00:15:57,790 --> 00:16:02,440
+So, I said this can be satisfied in a way that is useful right.
+
+268
+00:16:02,440 --> 00:16:06,655
+So, where we get the most accurate output of our queries possible
+
+269
+00:16:06,655 --> 00:16:12,135
+with the lowest epsilon and delta possible and there are also
+
+270
+00:16:12,135 --> 00:16:18,790
+improvements or modifications to this algorithm or this constraint that seek to
+
+271
+00:16:18,790 --> 00:16:22,270
+modify it in various ways which you can observe
+
+272
+00:16:22,270 --> 00:16:26,605
+for literature and and will lead to some pointers to at the end of the course.
+
+273
+00:16:26,605 --> 00:16:31,810
+So, things to note about this setup.
+
+274
+00:16:31,810 --> 00:16:33,295
+So, first and foremost,
+
+275
+00:16:33,295 --> 00:16:36,500
+this is looking at one query.
+
+276
+00:16:36,500 --> 00:16:39,280
+So, this is one query against the database.
+
+277
+00:16:39,280 --> 00:16:42,190
+If you have multiple queries,
+
+278
+00:16:42,780 --> 00:16:46,060
+this is not what this is supporting.
+
+279
+00:16:46,060 --> 00:16:49,300
+Multiple queries would would have to have a build on this and
+
+280
+00:16:49,300 --> 00:16:52,390
+we can talk about how that actually happens in a minute right.
+
+281
+00:16:52,390 --> 00:16:55,675
+So, this is the sort of epsilon delta budget
+
+282
+00:16:55,675 --> 00:16:59,785
+which I'll also sometimes referred to as your privacy budget,
+
+283
+00:16:59,785 --> 00:17:06,130
+is satisfied for one query using this particular constraint.
+
+284
+00:17:06,130 --> 00:17:10,425
+Okay. So, in the next video,
+
+285
+00:17:10,425 --> 00:17:11,960
+we're actually going to look at how to actually add
+
+286
+00:17:11,960 --> 00:17:13,940
+noise for global differential privacy.
+
+287
+00:17:13,940 --> 00:17:15,445
+So, we can say okay,
+
+288
+00:17:15,445 --> 00:17:17,690
+given that we want to be able to satisfy
+
+289
+00:17:17,690 --> 00:17:20,689
+this constraint for a particular query against a database,
+
+290
+00:17:20,689 --> 00:17:23,390
+how much noise should we add to make sure
+
+291
+00:17:23,390 --> 00:17:26,330
+that we don't spend more than a certain level of epsilon.
+
+292
+00:17:26,330 --> 00:17:29,090
+So, don't move on from this video and rewatch it if you have
+
+293
+00:17:29,090 --> 00:17:32,330
+two until you get an intuitive sense for what epsilon
+
+294
+00:17:32,330 --> 00:17:35,030
+and delta are all about because they are crucially
+
+295
+00:17:35,030 --> 00:17:38,730
+important to differential privacy and to the next project that we're going to tackle.
+

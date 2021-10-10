@@ -1,0 +1,596 @@
+1
+00:00:00,000 --> 00:00:03,570
+In the last project, we created a function which lets us
+
+2
+00:00:03,570 --> 00:00:07,650
+generate every parallel database to a given input database.
+
+3
+00:00:07,650 --> 00:00:10,830
+In this concept, we're going to learn how to query this database,
+
+4
+00:00:10,830 --> 00:00:14,085
+and then measure the privacy of that query.
+
+5
+00:00:14,085 --> 00:00:15,585
+How are we going to do this?
+
+6
+00:00:15,585 --> 00:00:20,010
+Well, we're going to compare the output of the query on the entire database,
+
+7
+00:00:20,010 --> 00:00:23,805
+with the output of the query on each of the parallel databases.
+
+8
+00:00:23,805 --> 00:00:26,190
+In this way, we're going to see how the query
+
+9
+00:00:26,190 --> 00:00:29,700
+changes when we remove an individual from the database.
+
+10
+00:00:29,700 --> 00:00:31,490
+Let's unpack this a bit.
+
+11
+00:00:31,490 --> 00:00:34,370
+So intuitively, we want to query our database and
+
+12
+00:00:34,370 --> 00:00:38,240
+evaluate whether the result of our query is leaking private information.
+
+13
+00:00:38,240 --> 00:00:41,360
+As I mentioned, this is about evaluating whether the output of
+
+14
+00:00:41,360 --> 00:00:45,535
+the query changes when you remove someone from the database.
+
+15
+00:00:45,535 --> 00:00:47,750
+Specifically, we want to evaluate
+
+16
+00:00:47,750 --> 00:00:51,560
+the maximum amount that the query changes when someone is removed,
+
+17
+00:00:51,560 --> 00:00:54,695
+maximum over all possible people who could be removed.
+
+18
+00:00:54,695 --> 00:00:57,630
+So in order to evaluate how much privacy is leaked,
+
+19
+00:00:57,630 --> 00:01:01,700
+we're going to iterate over each person in the database and measure the difference
+
+20
+00:01:01,700 --> 00:01:06,380
+in the output of the query relative to when we would query the entire database.
+
+21
+00:01:06,380 --> 00:01:09,410
+In this section, I'm going to show you how to create
+
+22
+00:01:09,410 --> 00:01:12,230
+a function or a query over a database and then
+
+23
+00:01:12,230 --> 00:01:14,210
+empirically evaluate the sensitivity of
+
+24
+00:01:14,210 --> 00:01:18,065
+that function to two people being removed from the database that we're querying.
+
+25
+00:01:18,065 --> 00:01:20,630
+So we're going to query the full database and then we're
+
+26
+00:01:20,630 --> 00:01:23,410
+going to look at querying every possible parallel databases.
+
+27
+00:01:23,410 --> 00:01:25,340
+We're going to look at the output of these queries and say,
+
+28
+00:01:25,340 --> 00:01:27,325
+what's the maximum amount that they differ?
+
+29
+00:01:27,325 --> 00:01:31,040
+Now, entity thing to remember as I am doing this is that the in
+
+30
+00:01:31,040 --> 00:01:32,600
+production we won't necessarily use
+
+31
+00:01:32,600 --> 00:01:35,000
+this technique to actually measure the sensitivity of that function.
+
+32
+00:01:35,000 --> 00:01:36,800
+As we'll find it a minute, it turns out that
+
+33
+00:01:36,800 --> 00:01:39,635
+different functions actually have a pretty consistent sensitivity,
+
+34
+00:01:39,635 --> 00:01:40,760
+which we can know a priori.
+
+35
+00:01:40,760 --> 00:01:42,110
+But before we jump to that,
+
+36
+00:01:42,110 --> 00:01:43,730
+let's start with a simple query.
+
+37
+00:01:43,730 --> 00:01:48,035
+I think that the simplest possible query we can have on the database is a simple sum.
+
+38
+00:01:48,035 --> 00:01:50,520
+So first let's create a database,
+
+39
+00:01:50,520 --> 00:01:52,250
+so let's create a database at 20 entries.
+
+40
+00:01:52,250 --> 00:01:54,430
+Then we have every parallel database.
+
+41
+00:01:54,430 --> 00:01:57,740
+This database sends to the function that we created in the last screencast.
+
+42
+00:01:57,740 --> 00:01:59,910
+Okay. So what we want to do,
+
+43
+00:01:59,910 --> 00:02:03,290
+is we want to then define a function which queries as database,
+
+44
+00:02:03,290 --> 00:02:05,030
+and the one that we want to do first,
+
+45
+00:02:05,030 --> 00:02:07,550
+I think it's sort of the simplest and most intuitive is a simple sum.
+
+46
+00:02:07,550 --> 00:02:10,130
+So let's create a function called query,
+
+47
+00:02:10,130 --> 00:02:13,370
+pass the database and return the sum of that database.
+
+48
+00:02:13,370 --> 00:02:15,095
+So query db.
+
+49
+00:02:15,095 --> 00:02:18,020
+Looks like there are 10 ones in this database, right?
+
+50
+00:02:18,020 --> 00:02:20,105
+So if we recreate it again,
+
+51
+00:02:20,105 --> 00:02:21,955
+looks like sometimes there's 13,
+
+52
+00:02:21,955 --> 00:02:24,500
+obviously this is randomly generated database,
+
+53
+00:02:24,500 --> 00:02:27,560
+the number of ones in the output of this query tends to change.
+
+54
+00:02:27,560 --> 00:02:31,385
+However, if we look at this database, it's 13,
+
+55
+00:02:31,385 --> 00:02:34,980
+and then we query parallel database one,
+
+56
+00:02:34,980 --> 00:02:36,990
+that was only 12.
+
+57
+00:02:36,990 --> 00:02:39,870
+For a lot this is only 12.
+
+58
+00:02:39,870 --> 00:02:45,035
+So as you can see, when we remove people from this database,
+
+59
+00:02:45,035 --> 00:02:47,795
+it changes the output of the query.
+
+60
+00:02:47,795 --> 00:02:51,380
+What does this mean? What this means is that the output of this query is actually
+
+61
+00:02:51,380 --> 00:02:56,645
+conditioned directly on information from a lot of people in this database.
+
+62
+00:02:56,645 --> 00:02:57,995
+So as it turns out,
+
+63
+00:02:57,995 --> 00:02:59,970
+if this wasn't true, right?
+
+64
+00:02:59,970 --> 00:03:02,769
+If the sensitivity was say zero,
+
+65
+00:03:02,769 --> 00:03:06,485
+then that would mean that we get the same output
+
+66
+00:03:06,485 --> 00:03:10,310
+of the query regardless of who we remove from the database.
+
+67
+00:03:10,310 --> 00:03:11,660
+So obviously this is not the case for some,
+
+68
+00:03:11,660 --> 00:03:14,945
+but they could be functions later which do have zero sensitivity.
+
+69
+00:03:14,945 --> 00:03:18,350
+Let's actually look and see what is the maximum amount that
+
+70
+00:03:18,350 --> 00:03:22,250
+this query changes when we remove someone from the database.
+
+71
+00:03:22,250 --> 00:03:24,320
+So we iterate over every single person in the database,
+
+72
+00:03:24,320 --> 00:03:25,805
+all these parallel databases,
+
+73
+00:03:25,805 --> 00:03:27,920
+and just compute the query for them,
+
+74
+00:03:27,920 --> 00:03:32,750
+and then see what's the maximum math they change from this query over the full database.
+
+75
+00:03:32,750 --> 00:03:36,870
+All right. So let's call this the full result, right?
+
+76
+00:03:36,870 --> 00:03:40,600
+So the full query, or full DB.
+
+77
+00:03:41,270 --> 00:03:44,840
+Now, let's iterate over every parallel database.
+
+78
+00:03:44,840 --> 00:03:47,560
+So for PDB in PDBs,
+
+79
+00:03:47,560 --> 00:03:49,730
+as you recall, this is a list of databases.
+
+80
+00:03:49,730 --> 00:03:57,305
+Then we're going to compute a parallel database result equals query PDB.
+
+81
+00:03:57,305 --> 00:03:59,720
+Then we want to evaluate the distance,
+
+82
+00:03:59,720 --> 00:04:03,030
+so I will say the max distance is originally zero.
+
+83
+00:04:03,030 --> 00:04:10,480
+Then we want to make a comparison between this PDB result and the full DB result.
+
+84
+00:04:10,480 --> 00:04:12,610
+We actually don't care about the sign here.
+
+85
+00:04:12,610 --> 00:04:14,850
+We're just looking for the absolute distance, right?
+
+86
+00:04:14,850 --> 00:04:16,175
+As you might remember from the previous,
+
+87
+00:04:16,175 --> 00:04:18,520
+I mentioned this was called the L1 sensitivity.
+
+88
+00:04:18,520 --> 00:04:21,625
+This is because we're computing this sum directly.
+
+89
+00:04:21,625 --> 00:04:25,360
+If we were to square this, it will become the L2 just like sort of L1 and L2 norms.
+
+90
+00:04:25,360 --> 00:04:28,560
+Let's just put this DB distance equals this.
+
+91
+00:04:28,560 --> 00:04:33,105
+Then if DB distance is greater than max distance,
+
+92
+00:04:33,105 --> 00:04:37,170
+max distance equals DB distance.
+
+93
+00:04:37,170 --> 00:04:39,555
+So let's see what are our max distances.
+
+94
+00:04:39,555 --> 00:04:42,795
+Our max distance is one.
+
+95
+00:04:42,795 --> 00:04:44,645
+Now, let's think about this for a second.
+
+96
+00:04:44,645 --> 00:04:46,310
+Why is our max distance one?
+
+97
+00:04:46,310 --> 00:04:48,935
+Let's actually make this database a lot bigger, and so we just do it,
+
+98
+00:04:48,935 --> 00:04:50,825
+we'll say with 5,000 people,
+
+99
+00:04:50,825 --> 00:04:54,985
+right and see what our max distance says.
+
+100
+00:04:54,985 --> 00:04:57,690
+Look, as you can see, our max distance is still one.
+
+101
+00:04:57,690 --> 00:05:01,220
+What does it turn out? Our database is binary database, right?
+
+102
+00:05:01,220 --> 00:05:05,780
+So all of these entries in the database are either one or zero,
+
+103
+00:05:05,780 --> 00:05:07,790
+which means that if we're computing a sum over it,
+
+104
+00:05:07,790 --> 00:05:11,870
+the maximum amount that the output of a query could change is just by one,
+
+105
+00:05:11,870 --> 00:05:14,675
+because you're removing a person from this database.
+
+106
+00:05:14,675 --> 00:05:15,780
+This teaches us something, right?
+
+107
+00:05:15,780 --> 00:05:18,500
+So some actually has a consistent sensitivity.
+
+108
+00:05:18,500 --> 00:05:19,940
+So even though we're calculating it
+
+109
+00:05:19,940 --> 00:05:22,280
+empirically or actually we're iterating through the data,
+
+110
+00:05:22,280 --> 00:05:24,535
+and seeing how much it changes,
+
+111
+00:05:24,535 --> 00:05:26,865
+this is actually an unnecessary step,
+
+112
+00:05:26,865 --> 00:05:30,230
+like we don't have to do this because we know something
+
+113
+00:05:30,230 --> 00:05:31,940
+about our database and then we know something
+
+114
+00:05:31,940 --> 00:05:33,705
+about the function that we're computing our database.
+
+115
+00:05:33,705 --> 00:05:39,470
+We know that the maximum value of any value in a database is a one,
+
+116
+00:05:39,470 --> 00:05:42,020
+and the minimum value is a zero.
+
+117
+00:05:42,020 --> 00:05:44,570
+So that the most that anyone could change as
+
+118
+00:05:44,570 --> 00:05:47,370
+some query is one minus zero which is one, right?
+
+119
+00:05:47,370 --> 00:05:48,440
+So this is max distance.
+
+120
+00:05:48,440 --> 00:05:51,589
+So intuitively just for the purpose of teaching sensitivity,
+
+121
+00:05:51,589 --> 00:05:54,709
+we're walking through this sort of explicit calculation,
+
+122
+00:05:54,709 --> 00:05:57,740
+and we'll continue to do this just like a teaching tool.
+
+123
+00:05:57,740 --> 00:05:59,585
+In real world production use cases,
+
+124
+00:05:59,585 --> 00:06:02,060
+this would be inefficient and sometimes
+
+125
+00:06:02,060 --> 00:06:05,030
+inaccurate if you happen to have a database that had all zeros in it for example.
+
+126
+00:06:05,030 --> 00:06:06,770
+When you actually do this in the real world,
+
+127
+00:06:06,770 --> 00:06:10,220
+the a priori knowledge that you know about your database like
+
+128
+00:06:10,220 --> 00:06:14,030
+the maximum and minimum values in the query that you're computing,
+
+129
+00:06:14,030 --> 00:06:16,685
+is actually sufficient to know the sensitivity.
+
+130
+00:06:16,685 --> 00:06:20,185
+So let's go ahead and rename this.
+
+131
+00:06:20,185 --> 00:06:22,920
+We could probably rename this empirical sensitivity,
+
+132
+00:06:22,920 --> 00:06:26,210
+so I'm just calling it sensitivity but for the sake of just
+
+133
+00:06:26,210 --> 00:06:27,350
+teaching these techniques and getting
+
+134
+00:06:27,350 --> 00:06:30,080
+an intuitive feeling for what sensitive is all about.
+
+135
+00:06:30,080 --> 00:06:33,120
+I think that this is going to be sufficient.
+
+136
+00:06:33,410 --> 00:06:36,860
+Now this definition, the maximum amount that
+
+137
+00:06:36,860 --> 00:06:39,920
+the query changes when removing an individual from the database,
+
+138
+00:06:39,920 --> 00:06:41,375
+has a specific term.
+
+139
+00:06:41,375 --> 00:06:45,730
+It's called the L1 sensitivity or simply the sensitivity for short.
+
+140
+00:06:45,730 --> 00:06:48,830
+This is going to be an incredibly important measure because it
+
+141
+00:06:48,830 --> 00:06:52,460
+allows us to understand an aspect of a certain kind of query.
+
+142
+00:06:52,460 --> 00:06:55,340
+It's actually going to ground our later analysis
+
+143
+00:06:55,340 --> 00:06:59,270
+comparing how different queries do or do not leak information.
+
+144
+00:06:59,270 --> 00:07:00,860
+In this particular case,
+
+145
+00:07:00,860 --> 00:07:03,770
+a sum actually leaks quite a bit of information.
+
+146
+00:07:03,770 --> 00:07:05,810
+The output of the sum is conditioned on
+
+147
+00:07:05,810 --> 00:07:09,965
+every single individual that has a one in there rho of the database.
+
+148
+00:07:09,965 --> 00:07:12,770
+In the next section, we're going to write some more code to check
+
+149
+00:07:12,770 --> 00:07:16,080
+the sensitivity of any function generically.
+

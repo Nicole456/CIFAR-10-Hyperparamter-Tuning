@@ -1,0 +1,496 @@
+1
+00:00:00,000 --> 00:00:04,135
+In this video, we're going to calculate the sensitivity for a new kind of function,
+
+2
+00:00:04,135 --> 00:00:06,390
+and that function is the threshold function.
+
+3
+00:00:06,390 --> 00:00:09,240
+We're first going to define a new query,
+
+4
+00:00:09,240 --> 00:00:11,220
+which is computing this threshold function,
+
+5
+00:00:11,220 --> 00:00:15,390
+then we're going to create 10 databases of size 10 and compute
+
+6
+00:00:15,390 --> 00:00:19,825
+this function over them with a threshold of five and calculate the sensitivity each time.
+
+7
+00:00:19,825 --> 00:00:22,260
+So, step number one is to create this new query type.
+
+8
+00:00:22,260 --> 00:00:25,035
+So, let's say def query like we did before,
+
+9
+00:00:25,035 --> 00:00:26,580
+which passes in a database,
+
+10
+00:00:26,580 --> 00:00:29,670
+and then it returns the sum over the database and whether or
+
+11
+00:00:29,670 --> 00:00:32,670
+not that is greater than a certain threshold,
+
+12
+00:00:32,670 --> 00:00:35,590
+which we'll set the default to be five.
+
+13
+00:00:35,590 --> 00:00:38,450
+Now, I know the priority that this actually returns a binary value,
+
+14
+00:00:38,450 --> 00:00:39,590
+because it's either greater than or less than.
+
+15
+00:00:39,590 --> 00:00:42,950
+So, we want to go ahead and cast it to a float because this is our sensitivity function,
+
+16
+00:00:42,950 --> 00:00:45,635
+it's actually equipped to use.
+
+17
+00:00:45,635 --> 00:00:49,010
+The interesting thing here is that we run this query on data database.
+
+18
+00:00:49,010 --> 00:00:52,550
+So, let's say, let's grab a database iteration function up here.
+
+19
+00:00:52,550 --> 00:00:53,810
+Let's create 10.
+
+20
+00:00:53,810 --> 00:00:59,390
+So, if we look at database and we just compute a sum over it, notice these changes.
+
+21
+00:00:59,390 --> 00:01:00,965
+There is some deviation,
+
+22
+00:01:00,965 --> 00:01:03,350
+so sometimes it's going to be greater than
+
+23
+00:01:03,350 --> 00:01:05,630
+a threshold and sometimes it's going to be less than threshold.
+
+24
+00:01:05,630 --> 00:01:09,485
+So, if we actually query the database, we see this.
+
+25
+00:01:09,485 --> 00:01:11,840
+So, sometimes it's one, sometimes it's
+
+26
+00:01:11,840 --> 00:01:15,170
+zero and the other interesting thing I want you to consider.
+
+27
+00:01:15,170 --> 00:01:17,690
+So, let's go ahead and go at db.sum,
+
+28
+00:01:17,690 --> 00:01:20,075
+and let's look for one that's six.
+
+29
+00:01:20,075 --> 00:01:21,580
+Okay. So, this database,
+
+30
+00:01:21,580 --> 00:01:23,110
+this should return true.
+
+31
+00:01:23,110 --> 00:01:26,810
+So, we have db.sum greater than five,
+
+32
+00:01:26,810 --> 00:01:28,440
+returns one or returns true.
+
+33
+00:01:28,440 --> 00:01:30,570
+So, when it returns one, it's returning a true,
+
+34
+00:01:30,570 --> 00:01:32,860
+and when it turns zero, it's actually returning a false.
+
+35
+00:01:32,860 --> 00:01:35,280
+So, when we're querying the database, we get one.
+
+36
+00:01:35,280 --> 00:01:38,660
+Now, the interesting thing here is that this
+
+37
+00:01:38,660 --> 00:01:42,410
+means that there are going to be a parallel databases that could be a five.
+
+38
+00:01:42,410 --> 00:01:46,385
+So, this is the nature of how the output of this query
+
+39
+00:01:46,385 --> 00:01:50,820
+can change if we remove an individual from the dataset,
+
+40
+00:01:50,820 --> 00:01:52,440
+because if we remove someone,
+
+41
+00:01:52,440 --> 00:01:54,530
+it could cause this sum to go from
+
+42
+00:01:54,530 --> 00:01:57,095
+six to five and thus the threshold to go from true to false.
+
+43
+00:01:57,095 --> 00:02:01,205
+However, if we have a database with only four people in it for example,
+
+44
+00:02:01,205 --> 00:02:03,365
+well then the query is false, right?
+
+45
+00:02:03,365 --> 00:02:05,935
+But no matter who we remove,
+
+46
+00:02:05,935 --> 00:02:10,025
+this query is going to continue to be false because removing someone from the dataset
+
+47
+00:02:10,025 --> 00:02:14,180
+only makes the output of the query smaller.
+
+48
+00:02:14,180 --> 00:02:16,865
+So, this means that for some databases,
+
+49
+00:02:16,865 --> 00:02:21,620
+we would have positive sensitivity and for other databases it seems almost as if
+
+50
+00:02:21,620 --> 00:02:24,230
+we would have no sensitivity because
+
+51
+00:02:24,230 --> 00:02:26,840
+no matter how many people we removed or who we removed,
+
+52
+00:02:26,840 --> 00:02:29,530
+the output of this threshold query is no different.
+
+53
+00:02:29,530 --> 00:02:31,410
+So, the way we're going check this out,
+
+54
+00:02:31,410 --> 00:02:33,715
+is to explicitly compute the sensitivity.
+
+55
+00:02:33,715 --> 00:02:37,700
+So, sens_f equals sensitivity of
+
+56
+00:02:37,700 --> 00:02:42,400
+the query and number of entries equals five. There we go.
+
+57
+00:02:42,400 --> 00:02:47,080
+So, now let's do this 10 times and print out the sensitivity of each.
+
+58
+00:02:47,080 --> 00:02:49,480
+So, my theory actually isn't holding up.
+
+59
+00:02:49,480 --> 00:02:53,890
+It looks as though our sensitivity is always zero.
+
+60
+00:02:53,890 --> 00:02:56,590
+This is very surprising and this to me actually seems
+
+61
+00:02:56,590 --> 00:02:59,900
+like it could be a bug of some sort,
+
+62
+00:02:59,900 --> 00:03:02,370
+no, entries should be 10.
+
+63
+00:03:02,370 --> 00:03:05,790
+Okay. So, we have databases size 10.
+
+64
+00:03:05,790 --> 00:03:07,480
+Sometimes the sum is greater than one,
+
+65
+00:03:07,480 --> 00:03:08,530
+sometimes it's greater than five,
+
+66
+00:03:08,530 --> 00:03:09,880
+sometimes the sum is less than five.
+
+67
+00:03:09,880 --> 00:03:15,170
+However, the sensitivity itself changes and what these actually correspond to,
+
+68
+00:03:15,170 --> 00:03:22,120
+is a non-zero sensitivity is when the sum of the database is exactly six.
+
+69
+00:03:22,120 --> 00:03:24,845
+Because of the sum of the databases is exactly six,
+
+70
+00:03:24,845 --> 00:03:27,165
+then it's sitting right above the threshold,
+
+71
+00:03:27,165 --> 00:03:28,600
+and so when we remove someone,
+
+72
+00:03:28,600 --> 00:03:31,460
+it can actually drop down to five thus
+
+73
+00:03:31,460 --> 00:03:34,715
+causing the output of the query to be different and the sensitivity to be one.
+
+74
+00:03:34,715 --> 00:03:35,920
+But the rest of the time,
+
+75
+00:03:35,920 --> 00:03:38,600
+when the sum of the database is not six.
+
+76
+00:03:38,600 --> 00:03:42,390
+So, it's significantly below or significantly above six,
+
+77
+00:03:42,390 --> 00:03:45,905
+then [inaudible] of the database doesn't change the output of the query.
+
+78
+00:03:45,905 --> 00:03:47,500
+Now, what does this mean?
+
+79
+00:03:47,500 --> 00:03:50,410
+In previous examples, we've seen a constant sensitivity.
+
+80
+00:03:50,410 --> 00:03:54,470
+We saw some function over binary always has a sensitivity of one,
+
+81
+00:03:54,470 --> 00:03:58,310
+and when our mean had a very consistent sensitivity as well,
+
+82
+00:03:58,310 --> 00:04:00,820
+but this has a variable sensitivity.
+
+83
+00:04:00,820 --> 00:04:03,920
+Now, remember previously I discussed in the previous sections,
+
+84
+00:04:03,920 --> 00:04:08,870
+we talked about how we wouldn't actually use this empirical sensitivity in practice,
+
+85
+00:04:08,870 --> 00:04:13,330
+because it's very inefficient right and sometimes it's not actually perfectly accurate.
+
+86
+00:04:13,330 --> 00:04:16,005
+So, in a context of say, a sum function,
+
+87
+00:04:16,005 --> 00:04:23,045
+we can simply know that the maximum sensitivity of a sum over a database is
+
+88
+00:04:23,045 --> 00:04:25,790
+the maximum value or maximum range of
+
+89
+00:04:25,790 --> 00:04:29,700
+values that any one of those items that you could remove would take on.
+
+90
+00:04:29,700 --> 00:04:31,740
+So, in this particular case,
+
+91
+00:04:31,740 --> 00:04:35,100
+however this seems to be different because the sensitivity
+
+92
+00:04:35,100 --> 00:04:39,045
+here is somewhat dataset specific.
+
+93
+00:04:39,045 --> 00:04:43,900
+So, theoretically, the maximum sensitivity of a threshold is always one as well.
+
+94
+00:04:43,900 --> 00:04:46,460
+Because the maximum amount that they were moving someone
+
+95
+00:04:46,460 --> 00:04:49,400
+from a function including a threshold is one.
+
+96
+00:04:49,400 --> 00:04:50,600
+That's the most that it can change,
+
+97
+00:04:50,600 --> 00:04:52,130
+you can either go from a one to a zero.
+
+98
+00:04:52,130 --> 00:04:55,490
+However, if we actually take a peek at the data,
+
+99
+00:04:55,490 --> 00:05:00,245
+we can tell that sometimes it's going to be one and sometimes it's not going to be one.
+
+100
+00:05:00,245 --> 00:05:03,695
+Now, when implementing differential privacy for the first time,
+
+101
+00:05:03,695 --> 00:05:06,080
+this is how you want to compute sensitivity.
+
+102
+00:05:06,080 --> 00:05:08,825
+Like on the [inaudible] you want to compute it theoretically.
+
+103
+00:05:08,825 --> 00:05:12,320
+You want to say that, "Hey, I'm doing a threshold that means with sensitivity is one,
+
+104
+00:05:12,320 --> 00:05:13,730
+and that's what I'm going to use."
+
+105
+00:05:13,730 --> 00:05:16,775
+However, there are some more advanced techniques
+
+106
+00:05:16,775 --> 00:05:19,370
+one of which we'll look later that actually allows you
+
+107
+00:05:19,370 --> 00:05:21,770
+to kind of take a peek at the data and try to
+
+108
+00:05:21,770 --> 00:05:25,240
+understand what's called a data conditioned sensitivity.
+
+109
+00:05:25,240 --> 00:05:28,160
+The classic simpler use case that we're going to learn
+
+110
+00:05:28,160 --> 00:05:31,130
+about first is not data conditional sensitivity.
+
+111
+00:05:31,130 --> 00:05:33,500
+So, sensitivity just based on the function and what we
+
+112
+00:05:33,500 --> 00:05:36,080
+know about the potential range of the data.
+
+113
+00:05:36,080 --> 00:05:39,140
+But data conditioned sensitivity is
+
+114
+00:05:39,140 --> 00:05:43,385
+sensitivity calculated not just based on the range that we know the data can take,
+
+115
+00:05:43,385 --> 00:05:46,445
+but actually the values in the database.
+
+116
+00:05:46,445 --> 00:05:49,310
+So, this is a database conditioned sensitivity query.
+
+117
+00:05:49,310 --> 00:05:52,045
+So, for now when you're working with differential privacy,
+
+118
+00:05:52,045 --> 00:05:56,104
+still focus on just the pure theoretical calculation
+
+119
+00:05:56,104 --> 00:05:58,285
+of the sensitivity for any given function.
+
+120
+00:05:58,285 --> 00:05:59,790
+Just consider in your mind what
+
+121
+00:05:59,790 --> 00:06:03,480
+the maximum sensitivity that function could be and eventually,
+
+122
+00:06:03,480 --> 00:06:05,480
+we'll get to some of these more advanced concepts that allow
+
+123
+00:06:05,480 --> 00:06:07,490
+you to actually look inside at the dataset values.
+
+124
+00:06:07,490 --> 00:06:10,940
+I hope it has been educational for you and I'll see you in the next section.
+

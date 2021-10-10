@@ -1,0 +1,67 @@
+In the last few lessons, you might have been wondering,
+what does all this have to do with deep learning?
+Well, it turns out the same techniques that we were just studying formed
+the core principles for how
+differential privacy provides guarantees in the context of deep learning.
+Previously, we defined perfect privacy as something like,
+a query to a database returns
+the same value even if we remove any person from that database.
+If we're able to do that,
+then no person is really contributing information
+to the final query and their privacy is protected.
+We use this intuition in the description of epsilon delta.
+In the context of deep learning,
+we have a similar standard, which is based on these ideas,
+which instead of querying a database,
+we're training a model.
+Our definition of perfect privacy would then be something like,
+training a model on a dataset should return
+the same model even if we remove any person from the training dataset.
+So we've replaced, "querying a database with training a model on a dataset".
+In essence, the training process is actually a query,
+but one should notice that this adds two points of
+complexity, which the databases didn't have.
+First, do we always know where people are referenced in a training dataset?
+In a database, every row corresponded to a person,
+so it was very easy to calculate the sensitivity because we can just remove individuals.
+We knew where all of them were.
+However, in a training dataset,
+let's say I'm training a sentiment classifier on movie reviews,
+I have no idea where
+all the people are reference inside of that training dataset because,
+it's just a bunch of natural language.
+So in some cases,
+this can actually be quite a bit more challenging.
+Secondly, neural models rarely ever trained to the same state,
+the same location even when they're trained on the same dataset twice.
+So if I train the same deep neural network twice,
+even if I train over the exact same data,
+the model is not going to train to the same state.
+There's already an element of randomness in the training process.
+So, how do we actually prove or create
+training setups where differential privacy is present?
+The answer to the first question by default seems to be,
+to treat each training example as a single separate person.
+Strictly speaking, this is often a bit
+overzealous as many examples have no relevance to people at all,
+but others may have multiple partial individuals contained within that training example.
+Consider an image, which has multiple people contained within it,
+localizing exactly where people are referenced,
+thus how much the model would change if those people will remove,
+could be quite challenging.
+But obviously, there's a technique we're about to talk about that tries to overcome this.
+The answer to the second question regarding how
+models rarely ever trained at the same location,
+how do we know what sensitivity truly is,
+has several interesting proposed solutions as well which we'll be discussing shortly.
+But first, let's suppose
+a new scenario within which we want to train a deep neural network.
+As mentioned previously, privacy preserving technology is ultimately about
+protecting data owners from individuals or parties they don't trust.
+We only want to add as much noise as is necessary to
+protect these individuals as adding excess noise needlessly hurts the model accuracy,
+or failing to add enough noise might expose someone to privacy risk.
+Thus, when discussing tools with differential privacy,
+it's very important to discuss it in the context of
+different parties who either do or do not trust each other,
+so that we can make sure that we're using an appropriate technique.

@@ -1,0 +1,344 @@
+1
+00:00:00,000 --> 00:00:03,600
+In this section, we're going to take the code that we use to generate
+
+2
+00:00:03,600 --> 00:00:06,720
+an empirical sensitivity measure in the last green test and
+
+3
+00:00:06,720 --> 00:00:09,990
+we're going to roll it up together into a function called sensitivity,
+
+4
+00:00:09,990 --> 00:00:12,360
+which can take any query and empirically
+
+5
+00:00:12,360 --> 00:00:15,720
+measure how sensitive it is to removing people from a database.
+
+6
+00:00:15,720 --> 00:00:19,425
+The first thing we want to do is we want to copy the code that we created before.
+
+7
+00:00:19,425 --> 00:00:22,185
+So this is what generated a database
+
+8
+00:00:22,185 --> 00:00:25,200
+and created every parallel database to that database.
+
+9
+00:00:25,200 --> 00:00:28,390
+Then, we're going to copy some query.
+
+10
+00:00:28,640 --> 00:00:32,040
+We can do copy the line actually queries,
+
+11
+00:00:32,040 --> 00:00:36,990
+this database, and then how we calculated sensitivity.
+
+12
+00:00:36,990 --> 00:00:39,840
+So we're going to change this back to max_distance.
+
+13
+00:00:39,840 --> 00:00:42,680
+Perfect. What we want do here is
+
+14
+00:00:42,680 --> 00:00:45,740
+really just consolidate this code into a single function which accepts
+
+15
+00:00:45,740 --> 00:00:47,090
+this query function as
+
+16
+00:00:47,090 --> 00:00:51,380
+an input parameter and then returned to sensitivity of this function.
+
+17
+00:00:51,380 --> 00:00:54,290
+As mentioned last time, this is empirically measuring sensitivity.
+
+18
+00:00:54,290 --> 00:00:57,665
+The idea here is just to get a sense intuition for,
+
+19
+00:00:57,665 --> 00:00:59,690
+if we were to actually remove you from a database,
+
+20
+00:00:59,690 --> 00:01:00,920
+how much would the query change?
+
+21
+00:01:00,920 --> 00:01:05,710
+But in the real world, we can typically know about sensitivity through other ways.
+
+22
+00:01:05,710 --> 00:01:10,800
+So let's do this def sensitivity and we're going to accept two parameters.
+
+23
+00:01:10,800 --> 00:01:11,835
+One is going to be the query,
+
+24
+00:01:11,835 --> 00:01:14,780
+which is a function object and then the next is going to be
+
+25
+00:01:14,780 --> 00:01:18,200
+the number of entries in the database that we want to query with.
+
+26
+00:01:18,200 --> 00:01:22,590
+So here we replace this 5,000 with this in entries variable.
+
+27
+00:01:22,590 --> 00:01:25,420
+Then, we're going to query the database that we created,
+
+28
+00:01:25,420 --> 00:01:31,270
+calculate the maximum distance from the full database query and every parallel database,
+
+29
+00:01:31,270 --> 00:01:33,670
+and return this max_distance.
+
+30
+00:01:33,670 --> 00:01:38,170
+Let's calculate sensitivity of this sum function.
+
+31
+00:01:38,170 --> 00:01:41,170
+As we saw before in the previous video,
+
+32
+00:01:41,170 --> 00:01:43,825
+the sensitivity is one.
+
+33
+00:01:43,825 --> 00:01:45,950
+Now, let's change this function.
+
+34
+00:01:45,950 --> 00:01:49,660
+Let's cast it to a float and let's calculate a mean.
+
+35
+00:01:49,660 --> 00:01:52,980
+So as you know mean it's just a sum divided by the number of entries.
+
+36
+00:01:52,980 --> 00:01:56,125
+So we should expect that whereas previously
+
+37
+00:01:56,125 --> 00:02:00,550
+our sensitivity is one because we are dividing this by a large number,
+
+38
+00:02:00,550 --> 00:02:03,625
+this should decrease sensitivity quite significantly.
+
+39
+00:02:03,625 --> 00:02:05,880
+As we see here, it truly does.
+
+40
+00:02:05,880 --> 00:02:09,850
+So the sensitivity empirical sensitivity here is 0.0005
+
+41
+00:02:09,850 --> 00:02:14,600
+and this corresponds to the average value in the database.
+
+42
+00:02:14,600 --> 00:02:18,650
+So this is typically returning something like 500 or something near 500.
+
+43
+00:02:18,650 --> 00:02:23,270
+So the average value here would be 0.5 divided by the number of entries.
+
+44
+00:02:23,270 --> 00:02:25,530
+This is what's giving us this notion.
+
+45
+00:02:25,530 --> 00:02:28,450
+Since this database is randomly generated,
+
+46
+00:02:28,450 --> 00:02:30,320
+if we ran into sensitivity a bunch of times,
+
+47
+00:02:30,320 --> 00:02:32,670
+we'd actually get numbers just above and just below.
+
+48
+00:02:32,670 --> 00:02:35,525
+It would approximate the true sensitivity which is really what
+
+49
+00:02:35,525 --> 00:02:39,140
+this sampling does but as it happens here,
+
+50
+00:02:39,140 --> 00:02:43,910
+it tend to line up with the exact sensitivity of this function.
+
+51
+00:02:43,910 --> 00:02:47,090
+This is pretty great. So the nice thing about this convenient function here is that
+
+52
+00:02:47,090 --> 00:02:50,400
+we can pass in arbitrary functions.
+
+53
+00:02:50,400 --> 00:02:54,080
+We can empirically get a sense for how much the output of
+
+54
+00:02:54,080 --> 00:02:57,955
+this function changes when we remove a person from a database.
+
+55
+00:02:57,955 --> 00:03:01,310
+Now, I want to go ahead and discuss and really
+
+56
+00:03:01,310 --> 00:03:04,850
+dive a little bit deeper into this last assumption here,
+
+57
+00:03:04,850 --> 00:03:06,545
+in these databases that we're creating.
+
+58
+00:03:06,545 --> 00:03:09,305
+So let's go ahead and just pull out here so we can see database.
+
+59
+00:03:09,305 --> 00:03:11,255
+Let's create one of size 20.
+
+60
+00:03:11,255 --> 00:03:13,570
+In this database, every single one of these values
+
+61
+00:03:13,570 --> 00:03:17,305
+corresponds to a different person or we're sort of assuming this.
+
+62
+00:03:17,305 --> 00:03:19,660
+So when I'm removing someone from the database,
+
+63
+00:03:19,660 --> 00:03:23,050
+when I'm calculating every parallel database,
+
+64
+00:03:23,050 --> 00:03:25,300
+my assumption is that none of these are
+
+65
+00:03:25,300 --> 00:03:28,570
+accidentally referring to the same person because the the notion of
+
+66
+00:03:28,570 --> 00:03:31,480
+sensitivity is not about how much
+
+67
+00:03:31,480 --> 00:03:34,570
+the function changes when we remove a value from the database,
+
+68
+00:03:34,570 --> 00:03:37,780
+it's about how much a function changes when we remove
+
+69
+00:03:37,780 --> 00:03:41,460
+all values corresponding to a person from the database.
+
+70
+00:03:41,460 --> 00:03:43,420
+We care about the sensitivity to people,
+
+71
+00:03:43,420 --> 00:03:45,370
+not necessarily the sensitivity just to individual values.
+
+72
+00:03:45,370 --> 00:03:48,940
+Now, it so happens that that's the same thing in the databases they're using right now,
+
+73
+00:03:48,940 --> 00:03:51,820
+but I really wanted to call out this notion just so that
+
+74
+00:03:51,820 --> 00:03:54,830
+you get a feeling for what we're really trying to calculate here.
+
+75
+00:03:54,830 --> 00:03:58,835
+What we're really trying to calculate is how much the output value from this function
+
+76
+00:03:58,835 --> 00:04:03,410
+is using information from each individual person database,
+
+77
+00:04:03,410 --> 00:04:05,750
+or is it only an aggregation of
+
+78
+00:04:05,750 --> 00:04:08,555
+the information that actually multiple people are contributing?
+
+79
+00:04:08,555 --> 00:04:11,340
+We'll find that it's a lot easier to protect privacy,
+
+80
+00:04:11,340 --> 00:04:14,170
+if the information that's being returned from our query,
+
+81
+00:04:14,170 --> 00:04:15,920
+the output of this function is actually
+
+82
+00:04:15,920 --> 00:04:18,710
+information that multiple people are contributing to.
+
+83
+00:04:18,710 --> 00:04:23,120
+So we might say intuitive measure here might be a threshold
+
+84
+00:04:23,120 --> 00:04:28,475
+or various other functions which have a much smaller sensitivity profile.
+
+85
+00:04:28,475 --> 00:04:29,930
+In the next few sections, we're going to
+
+86
+00:04:29,930 --> 00:04:33,410
+explore functions like this. So I'll see you there.
+

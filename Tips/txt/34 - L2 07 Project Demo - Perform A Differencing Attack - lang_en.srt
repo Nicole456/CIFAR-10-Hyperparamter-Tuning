@@ -1,0 +1,260 @@
+1
+00:00:00,000 --> 00:00:01,950
+In this project, we want to perform
+
+2
+00:00:01,950 --> 00:00:06,510
+a basic differencing attack to divulge what the value is in database,
+
+3
+00:00:06,510 --> 00:00:09,250
+specifically the value on row 10.
+
+4
+00:00:09,250 --> 00:00:11,010
+The way we're going to do this, we're going to perform
+
+5
+00:00:11,010 --> 00:00:12,990
+two different queries against the database.
+
+6
+00:00:12,990 --> 00:00:16,350
+One, which is a query that includes row 10 and then we're going to
+
+7
+00:00:16,350 --> 00:00:19,730
+perform a query against the database excluding row 10.
+
+8
+00:00:19,730 --> 00:00:21,360
+The idea is we want be able to compare
+
+9
+00:00:21,360 --> 00:00:26,445
+these two different queries and determine what the exact value of row 10 actually is.
+
+10
+00:00:26,445 --> 00:00:29,650
+So the first we want to do is initialize a database,
+
+11
+00:00:29,930 --> 00:00:32,355
+we'll put a 100 values in it.
+
+12
+00:00:32,355 --> 00:00:34,835
+Then we want to initialize a parallel database,
+
+13
+00:00:34,835 --> 00:00:37,100
+meaning a database with just row 10 missing.
+
+14
+00:00:37,100 --> 00:00:39,080
+So this is the same as doing a SQL query,
+
+15
+00:00:39,080 --> 00:00:42,695
+where it select some function
+
+16
+00:00:42,695 --> 00:00:47,390
+where database value does not equal and then the index of a specific number, right?
+
+17
+00:00:47,390 --> 00:00:50,495
+So if for example in this database,
+
+18
+00:00:50,495 --> 00:00:53,780
+if every person was associated with Bob, now we're saying, okay.
+
+19
+00:00:53,780 --> 00:00:58,065
+Run this query, where name does not equal Bob, right?
+
+20
+00:00:58,065 --> 00:01:00,090
+That's what this is going to be. This is the whole database,
+
+21
+00:01:00,090 --> 00:01:02,405
+it's the database with one person missing.
+
+22
+00:01:02,405 --> 00:01:04,475
+So parallel database would be,
+
+23
+00:01:04,475 --> 00:01:09,385
+get parallel database from the database where we're going to remove index 10.
+
+24
+00:01:09,385 --> 00:01:11,130
+Cool? All right.
+
+25
+00:01:11,130 --> 00:01:13,605
+So let's see what's actually- what's the true thing we're trying to divulge.
+
+26
+00:01:13,605 --> 00:01:15,000
+So there's a one here, right?
+
+27
+00:01:15,000 --> 00:01:16,620
+But we're going to try to learn,
+
+28
+00:01:16,620 --> 00:01:18,570
+there's a one here by virtue the fact
+
+29
+00:01:18,570 --> 00:01:21,770
+that we're doing multiple queries against these two databases.
+
+30
+00:01:21,770 --> 00:01:24,560
+So the simplest form we can do is just a sum.
+
+31
+00:01:24,560 --> 00:01:27,710
+So the sum of the database minus sum of the parallel database,
+
+32
+00:01:27,710 --> 00:01:30,030
+this will divulge the exact value, right?
+
+33
+00:01:30,030 --> 00:01:31,560
+So as you can see, it equals one.
+
+34
+00:01:31,560 --> 00:01:34,755
+If this equals zero, this would equal zero we could try that in a second.
+
+35
+00:01:34,755 --> 00:01:42,150
+So this is differencing attack using addition, using a sum query.
+
+36
+00:01:42,150 --> 00:01:44,465
+We can do the same thing with
+
+37
+00:01:44,465 --> 00:01:51,615
+a mean query but all we do is just divide by laying of length the DB.
+
+38
+00:01:51,615 --> 00:01:54,890
+Technically, other operations means we don't have to do this.
+
+39
+00:01:54,890 --> 00:01:58,000
+Got to cast a float.
+
+40
+00:01:58,000 --> 00:02:00,210
+Cool. So as you can see it's non-zero,
+
+41
+00:02:00,210 --> 00:02:03,230
+so we know that this is indeed a one because the database of ones and zeros.
+
+42
+00:02:03,230 --> 00:02:08,765
+Then of course, we can do a differencing attack using a threshold query.
+
+43
+00:02:08,765 --> 00:02:10,880
+So for this one,
+
+44
+00:02:10,880 --> 00:02:12,140
+you can base it off this one I
+
+45
+00:02:12,140 --> 00:02:14,940
+think and really what we're going to do is we're going to say,
+
+46
+00:02:14,940 --> 00:02:17,835
+is this greater than,
+
+47
+00:02:17,835 --> 00:02:19,500
+what was the actual sum?
+
+48
+00:02:19,500 --> 00:02:22,340
+50, so this is 49, sorry.
+
+49
+00:02:22,340 --> 00:02:25,580
+So this will return true because the sum over the database is
+
+50
+00:02:25,580 --> 00:02:29,090
+actually equal to 50 so it should be true but this one will be false, right?
+
+51
+00:02:29,090 --> 00:02:32,615
+So we actually adjust it within 49.
+
+52
+00:02:32,615 --> 00:02:34,670
+All right. So this will return true, this one will turn false and
+
+53
+00:02:34,670 --> 00:02:36,700
+the difference between the two will be one.
+
+54
+00:02:36,700 --> 00:02:39,390
+So as you can see using these three different attacks,
+
+55
+00:02:39,390 --> 00:02:40,980
+they're all doing the same thing, right?
+
+56
+00:02:40,980 --> 00:02:43,910
+They're performing a query with a value that's missing.
+
+57
+00:02:43,910 --> 00:02:47,425
+As you should be familiar with this point,
+
+58
+00:02:47,425 --> 00:02:51,380
+given the intuitions around difference or privacy that we've been formulating,
+
+59
+00:02:51,380 --> 00:02:53,870
+this differencing attack is very close to the heart
+
+60
+00:02:53,870 --> 00:02:56,390
+of the intuitions behind differential privacy.
+
+61
+00:02:56,390 --> 00:02:59,510
+So as we form differential private techniques,
+
+62
+00:02:59,510 --> 00:03:03,860
+we want them to specifically be immune to these kinds of attacks.
+
+63
+00:03:03,860 --> 00:03:08,100
+As we'll see in a formal definition of differential privacy, this is very,
+
+64
+00:03:08,100 --> 00:03:10,580
+very close to the- there's a constraint that we must satisfying or
+
+65
+00:03:10,580 --> 00:03:15,010
+satisfy differential privacy to a certain threshold. See you in the next lesson.
+

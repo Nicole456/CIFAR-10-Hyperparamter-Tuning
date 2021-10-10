@@ -1,0 +1,149 @@
+In the last project, we created a function which lets us
+generate every parallel database to a given input database.
+In this concept, we're going to learn how to query this database,
+and then measure the privacy of that query.
+How are we going to do this?
+Well, we're going to compare the output of the query on the entire database,
+with the output of the query on each of the parallel databases.
+In this way, we're going to see how the query
+changes when we remove an individual from the database.
+Let's unpack this a bit.
+So intuitively, we want to query our database and
+evaluate whether the result of our query is leaking private information.
+As I mentioned, this is about evaluating whether the output of
+the query changes when you remove someone from the database.
+Specifically, we want to evaluate
+the maximum amount that the query changes when someone is removed,
+maximum over all possible people who could be removed.
+So in order to evaluate how much privacy is leaked,
+we're going to iterate over each person in the database and measure the difference
+in the output of the query relative to when we would query the entire database.
+In this section, I'm going to show you how to create
+a function or a query over a database and then
+empirically evaluate the sensitivity of
+that function to two people being removed from the database that we're querying.
+So we're going to query the full database and then we're
+going to look at querying every possible parallel databases.
+We're going to look at the output of these queries and say,
+what's the maximum amount that they differ?
+Now, entity thing to remember as I am doing this is that the in
+production we won't necessarily use
+this technique to actually measure the sensitivity of that function.
+As we'll find it a minute, it turns out that
+different functions actually have a pretty consistent sensitivity,
+which we can know a priori.
+But before we jump to that,
+let's start with a simple query.
+I think that the simplest possible query we can have on the database is a simple sum.
+So first let's create a database,
+so let's create a database at 20 entries.
+Then we have every parallel database.
+This database sends to the function that we created in the last screencast.
+Okay. So what we want to do,
+is we want to then define a function which queries as database,
+and the one that we want to do first,
+I think it's sort of the simplest and most intuitive is a simple sum.
+So let's create a function called query,
+pass the database and return the sum of that database.
+So query db.
+Looks like there are 10 ones in this database, right?
+So if we recreate it again,
+looks like sometimes there's 13,
+obviously this is randomly generated database,
+the number of ones in the output of this query tends to change.
+However, if we look at this database, it's 13,
+and then we query parallel database one,
+that was only 12.
+For a lot this is only 12.
+So as you can see, when we remove people from this database,
+it changes the output of the query.
+What does this mean? What this means is that the output of this query is actually
+conditioned directly on information from a lot of people in this database.
+So as it turns out,
+if this wasn't true, right?
+If the sensitivity was say zero,
+then that would mean that we get the same output
+of the query regardless of who we remove from the database.
+So obviously this is not the case for some,
+but they could be functions later which do have zero sensitivity.
+Let's actually look and see what is the maximum amount that
+this query changes when we remove someone from the database.
+So we iterate over every single person in the database,
+all these parallel databases,
+and just compute the query for them,
+and then see what's the maximum math they change from this query over the full database.
+All right. So let's call this the full result, right?
+So the full query, or full DB.
+Now, let's iterate over every parallel database.
+So for PDB in PDBs,
+as you recall, this is a list of databases.
+Then we're going to compute a parallel database result equals query PDB.
+Then we want to evaluate the distance,
+so I will say the max distance is originally zero.
+Then we want to make a comparison between this PDB result and the full DB result.
+We actually don't care about the sign here.
+We're just looking for the absolute distance, right?
+As you might remember from the previous,
+I mentioned this was called the L1 sensitivity.
+This is because we're computing this sum directly.
+If we were to square this, it will become the L2 just like sort of L1 and L2 norms.
+Let's just put this DB distance equals this.
+Then if DB distance is greater than max distance,
+max distance equals DB distance.
+So let's see what are our max distances.
+Our max distance is one.
+Now, let's think about this for a second.
+Why is our max distance one?
+Let's actually make this database a lot bigger, and so we just do it,
+we'll say with 5,000 people,
+right and see what our max distance says.
+Look, as you can see, our max distance is still one.
+What does it turn out? Our database is binary database, right?
+So all of these entries in the database are either one or zero,
+which means that if we're computing a sum over it,
+the maximum amount that the output of a query could change is just by one,
+because you're removing a person from this database.
+This teaches us something, right?
+So some actually has a consistent sensitivity.
+So even though we're calculating it
+empirically or actually we're iterating through the data,
+and seeing how much it changes,
+this is actually an unnecessary step,
+like we don't have to do this because we know something
+about our database and then we know something
+about the function that we're computing our database.
+We know that the maximum value of any value in a database is a one,
+and the minimum value is a zero.
+So that the most that anyone could change as
+some query is one minus zero which is one, right?
+So this is max distance.
+So intuitively just for the purpose of teaching sensitivity,
+we're walking through this sort of explicit calculation,
+and we'll continue to do this just like a teaching tool.
+In real world production use cases,
+this would be inefficient and sometimes
+inaccurate if you happen to have a database that had all zeros in it for example.
+When you actually do this in the real world,
+the a priori knowledge that you know about your database like
+the maximum and minimum values in the query that you're computing,
+is actually sufficient to know the sensitivity.
+So let's go ahead and rename this.
+We could probably rename this empirical sensitivity,
+so I'm just calling it sensitivity but for the sake of just
+teaching these techniques and getting
+an intuitive feeling for what sensitive is all about.
+I think that this is going to be sufficient.
+Now this definition, the maximum amount that
+the query changes when removing an individual from the database,
+has a specific term.
+It's called the L1 sensitivity or simply the sensitivity for short.
+This is going to be an incredibly important measure because it
+allows us to understand an aspect of a certain kind of query.
+It's actually going to ground our later analysis
+comparing how different queries do or do not leak information.
+In this particular case,
+a sum actually leaks quite a bit of information.
+The output of the sum is conditioned on
+every single individual that has a one in there rho of the database.
+In the next section, we're going to write some more code to check
+the sensitivity of any function generically.

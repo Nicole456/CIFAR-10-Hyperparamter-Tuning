@@ -1,0 +1,123 @@
+So in this video,
+we're actually going to be putting together a Laplacian mechanism,
+a Laplacian randomize mechanism,
+which we are going to use to perform two different kinds of queries; sum and mean.
+We're going to see that the way in which we choose our Beta's,
+the ways in which the we formulate the amount of Laplacian noise to
+create is adjusted based on the sensitivity of sum and mean.
+Such that for mean,
+which has a smaller sensitivity,
+we end up adding a smaller amount of noise.
+So let's jump in.
+First, we're going to say our Epsilon budget for our single query is going to be 0.5,
+and now we're going to import numpy as np,
+and let's create a database, which we're going to query.
+As you will remember,
+all of these databases are the ones and zeros.
+So this is how we know that the sensitivity of addition is only one.
+So because if I were to say the sum is 54,
+but the maximum amount that this could change,
+if I remove anyone of these entries, it'll be one.
+But if this database were a database of two's,
+0-2, well then the sensitivity would actually double to two.
+Because the maximum amount of
+the output would change if I removed entry could be as high as two.
+But in particular, because we know this sort of
+apiary knowledge about a database is all zeros and ones,
+just counting the specific entries in the database,
+we can know that our sensitivity for sum is simply one.
+So let's jump into our first query,
+which is simply the sum over the database.
+So let's create our mechanism.
+So sum_query, mechanism m,
+the source of randomized mechanism.
+So what else we see? Laplacian mechanism.
+We have database and we have our query.
+So Laplacian mechanism.
+Actually, let's go ahead and put in sensitivity of a query.
+So now, the first thing we want to do is we need to
+calculate what the Beta should be for a Laplacian noise.
+So we're going to say Beta equals sensitivity divided by Epsilon.
+So as you might remember, this is how we calculate the correct Beta for Laplacian noise,
+and then we're going to say the amount of noise is equal to,
+I got to convert it to, let's see,
+what are the type was this?
+Okay, torch.tensor.
+So we're sampling values from zero to one,
+and according to this Beta spread parameter,
+this query is actually this function,
+query database, plus noise.
+This is our Laplacian mechanism.
+So let's use it, let's try it out.
+So laplacian_mechanism database some_query and sensitivity of one.
+As you can see every time we create it,
+it's a little bit different.
+The true answer is 54.
+So as you can see when we run this,
+it's just above and below 54. Pretty cool.
+I think I might have said that this was between zero and one.
+So Laplacian, it's not a range between zero and one,
+this is actually a mean centered at
+zero and then Beta is controlling the amount of spread.
+So now let's do this for a mean query.
+So def mean_query db equals db_sum,
+let's say, we just do torch.mean.
+Awesome. We have a 100 entries in our dataset.
+So the thing here is, now we know that
+the sensitivity is actually going to be one divided by 100,
+because it's the max amount that the entry could
+change divided by the total number of entries,
+because that's the output of the query if you divide it by that.
+So this sensitivity is much smaller for me.
+So if we were to use our Laplacian mechanism on the mean query,
+it's one divided by 100.
+So now, as you can see the noise is much smaller.
+The noise is just a 100th smallest,
+it's quite a bit smaller.
+Whereas if you see this,
+this one bounces around by multiple values;
+54, 53, 57, 51,
+so the noise is actually quite larger.
+Whereas, the noise here is much smaller,
+which is also appropriate because the output is also quite smaller.
+Now, the next thing to also remember is that
+this Epsilon is measuring the Epsilon that we are spending per query.
+So let's say, we had a whole budget,
+there was an Epsilon of say five,
+then we wouldn't need to partition this.
+We could do 10 queries and each with Epsilon constraint of 0.05.
+So now, let's try something else.
+So now if I say Epsilon equals 0.00001,
+a very, very, very small Epsilon.
+So almost no leakage. Watch what happens to this.
+So previously, it was dancing around the 0.54 range.
+But now, it's all over the place.
+You see how much random is that this is because we're not leaking hardly any information,
+because basically we're just returning a really big Laplacian distribution,
+and same for this Laplacian mechanism.
+So as we tutor Epsilons and make our Epsilon lower,
+we're actually increasing the amount of noise that we have to add in order to be
+able to get this really constraining level of privacy protection.
+So the other interesting thing to remember
+is that this is the same exact relationship that we
+saw when we were working with local differential privacy in the context of coin flipping.
+So the more noise that we added, the more protection,
+the more plausible deniability that we gave each participant in our survey,
+the more randomize our results we're looking.
+The more randomize our analysis ended up being,
+and the more individuals we needed to actually work
+over in order to be able to get accurate statistics.
+So similarly here, if we
+have mechanisms functions on our data-set that have smaller sensitivity,
+we can actually add less noise overall,
+simply because we're asking for a function that's just less sensitive.
+This function doesn't naturally try to leak as much information.
+So we still have this really close relationship between sensitivity,
+privacy leakage, and the number of entries in a database,
+and the accuracy of the output result.
+So it's a trade-off between these four different things,
+and that's really important understand how this trade-off
+works when we actually use this mechanism in the real world.
+So I hope you've enjoyed working with this project.
+In the next section we're going to jump into
+some more different mechanisms and ways you can use differential privacy.

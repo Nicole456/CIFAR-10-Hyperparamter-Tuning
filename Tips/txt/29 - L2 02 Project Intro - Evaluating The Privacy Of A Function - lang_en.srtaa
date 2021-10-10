@@ -1,0 +1,12 @@
+What I'd like for you to do in the next project is consolidate the code that I
+showed you in the last concept into a single function called sensitivity.
+It should accept a function,
+the query, as input,
+as well as the number of entries that you want to run this database over.
+This function should then initialize a database of the appropriate size,
+initialize all of the parallel databases,
+run the query over the entire database,
+and all parallel databases and correctly calculate the sensitivity of the function,
+which as you may remember is the maximum distance between
+the full database query output and any parallel database.
+Good luck and I'll see you in the next concept.

@@ -1,0 +1,126 @@
+In this lesson, we're going to learn how to orchestrate
+the movement of data between multiple different workers directly.
+In order to do this, we're going to realize that we can actually
+extend the pointer framework that we were using to
+manipulate remote data and actually have pointers to pointers to data.
+Let me show you what I mean. First, let's take
+our Bob and Alice workers and clear out all the objects on them.
+So let's just simply delete all the tensors that happen to be on
+Bob and Alice that might be around from previous exercises,
+and then let's create some data that we can then start to work with.
+So let's say, x equals to th.tensor ([1,2,3,4,5]).
+So this is just a normal tensor so as we've been working with before.
+So the first thing, let's take this and let's send this to Bob.
+So now I've got a pointer to it and Bob has this object,
+but now we're going to do something else.
+We're going to say x.send(alice).
+What this does actually sends this pointer to
+Alice and replaces x on our machine with a pointer to that pointer.
+So now, if we look at bob._objects,
+well, that data hasn't actually moved.
+But if we go alice._objects,
+now we see that on Alice's machine,
+Alice has a pointer from Alice to Bob and
+our pointer no longer points to Bob instead it points to Alice.
+So whenever we were to send a message to
+contact this tensor to use it to add two tensor together or subtract,
+the message would first go to Alice's machine,
+wait to be processed there,
+which would call this pointer.
+Then this pointer will then forward that message to Bob's machine,
+where it would actually be executed up here.
+Let's see an example of that.
+There it was. So now, we have a new pointer.
+This again still pointing to Alice's machine.
+If we look inside of bob._objects,
+we see that now there are two tensors on Bob's machine.
+If we look at alice._objects,
+we see two tensors as well;
+however this time, both of them are pointers.
+So the interesting thing to note here is that the new pointer that was
+created or the new tensor that was created has the exact same pointer chain,
+same dependency chain, same ownership chain as
+the original tensor that was used to create it.
+So when we said y equals x plus x,
+x has a certain dependency chain.
+So x is owned, you can think of,
+by both Alice and Bob to the extent that we as
+the central server cannot actually contact that tensor.
+We can't use that tensor,
+we can't do anything to that tensor unless both Bob and Alice allow us to.
+Because we could send a message to Alice and Alice would say, "Uh-uh,
+I'm not forwarding this to Bob because I don't want to," for a various reasons.
+Maybe it's privacy or just doesn't want
+to or doesn't know where Bob is anymore, who knows what.
+But alternatively, Bob could also say,
+"No, I'm not going to allow you to perform this operation."
+So in a sense,
+both Alice and Bob are actually joint owners over this one digital asset.
+Now this also leads to the second internal conclusion where if we were to try
+to say do an operation between two tensors that we do not have the same chain structure,
+it would lead to an error.
+So let's say let's create this tensor chain again.
+Let's have another one called y.
+So we've sent this to Alice.
+Send to Jon.
+Do we have a third worker?
+Let's pick a word called Jon.
+There we go. Z equals x plus y.
+As you can see, because this was using tensors where the actual data,
+the data is on Bob's machine, that's where we sent it.
+So the data is in the right location.
+But because Jon and Alice disagree,
+they don't have the same ownership structure along the way,
+this can trigger an error.
+Now the next thing is,
+how do we get this data back?
+Well, since we have a pointer to Alice's machine,
+if we call.get,
+then we actually get the pointer from
+Alice and now we're pointing directly to the data again.
+So let me actually show you that this actually removed the object from Alice's machine.
+So let's clear these objects and reset
+up this experiment so it's clean so that we can see it.
+I don't actually need this other tensor for it now either.
+Okay. So now Bob and Alice each have a tensor.
+Alice has a pointer tensor,
+Bob has the actual data.
+So now if I call x.get and we look at this again,
+Bob still has the actual data but
+Alice no longer has the pointer because she sent it to us,
+and now we are pointing directly at Bob's data.
+So then if I were to call x.get again,
+it would actually get the data back,
+and now Bob has no data.
+Beautiful. So I hope this interface really feels intuitive to you.
+We tried to make this as simple, and easy,
+and natural for the average PyTorch user as
+possible and all the things that you should have expect to work indeed worked.
+The other thing that I think you should take away from this is that,
+pointers are actually first-classes.
+It's like they R tensors for all intensive purposes; they have IDs.
+So you could do a pointer chain here that is 50-people long if you wanted to,
+and it would pass all the messages along as you specified it.
+Even, actually, so one thing I didn't cover yet was a garbage collection.
+So let's say if I create this tensor,
+so on Bob and Alice machine and I go delete
+x then we look at Bob and Alice machine again,
+as you can see, garbage collection collected the whole chain.
+Because it assumed that since we deleted the pointer,
+that it should delete the thing that we're pointing to.
+When we delete that pointer,
+then it should delete the thing that that was pointing to.
+So the nice thing here is that again
+just like with the other tools we worked with with before,
+we can do federate learning or other complicated algorithms,
+and in theory the default behavior for
+how objects are collected will prevent memory leaks
+and memory explosions from objects getting so just left around.
+Yeah. So that's this nice tool,
+and what we're going to be able to see in the next lesson is how we can use
+these pointer chains to actually orchestrate how data moves amongst a group of workers.
+So instead of just calling send and get,
+we're going to be able to actually move data around directly like telling Bob,
+"Hey, send this data not to me and then I'll send it to someone.
+Send it directly to Alice," for example.
+So in the next lesson, we'll jump into that. I'll see you there.

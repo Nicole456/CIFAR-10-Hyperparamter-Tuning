@@ -1,0 +1,88 @@
+1
+00:00:00,000 --> 00:00:04,305
+Now this brings us to your final project for course two.
+
+2
+00:00:04,305 --> 00:00:07,155
+Your final project is to do Federated Learning,
+
+3
+00:00:07,155 --> 00:00:10,440
+where the central server is not trusted with the raw gradients.
+
+4
+00:00:10,440 --> 00:00:12,150
+In this final project notebook,
+
+5
+00:00:12,150 --> 00:00:13,680
+you'll receive a data set,
+
+6
+00:00:13,680 --> 00:00:17,160
+and I want you to train on the data set using Federated Learning.
+
+7
+00:00:17,160 --> 00:00:23,040
+However, the gradients should not come up to the central server in raw form.
+
+8
+00:00:23,040 --> 00:00:26,340
+Instead, you should use this new.move for command,
+
+9
+00:00:26,340 --> 00:00:29,265
+to move all of the gradients to one of the workers,
+
+10
+00:00:29,265 --> 00:00:30,675
+sum them up there,
+
+11
+00:00:30,675 --> 00:00:33,375
+and then bring that batch up to the central server.
+
+12
+00:00:33,375 --> 00:00:36,470
+The idea here is that the central server never
+
+13
+00:00:36,470 --> 00:00:39,755
+actually sees the raw gradient for any person.
+
+14
+00:00:39,755 --> 00:00:41,945
+Now you might be asking yourself, "Wait,
+
+15
+00:00:41,945 --> 00:00:45,505
+but that means one of the workers sees the rock gradients."
+
+16
+00:00:45,505 --> 00:00:47,700
+Well, we'll get to that in course three
+
+17
+00:00:47,700 --> 00:00:50,165
+when we look at various forms of secure aggregation.
+
+18
+00:00:50,165 --> 00:00:51,875
+But for now, I want you to,
+
+19
+00:00:51,875 --> 00:00:53,150
+in this last project,
+
+20
+00:00:53,150 --> 00:00:55,775
+do a larger-scale Federated Learning case
+
+21
+00:00:55,775 --> 00:00:58,280
+where you handle the gradients in a special way.
+
+22
+00:00:58,280 --> 00:01:01,210
+Good luck, and I'll see you in the next course.
+

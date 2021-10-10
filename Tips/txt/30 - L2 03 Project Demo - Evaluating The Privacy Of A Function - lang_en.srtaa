@@ -1,0 +1,86 @@
+In this section, we're going to take the code that we use to generate
+an empirical sensitivity measure in the last green test and
+we're going to roll it up together into a function called sensitivity,
+which can take any query and empirically
+measure how sensitive it is to removing people from a database.
+The first thing we want to do is we want to copy the code that we created before.
+So this is what generated a database
+and created every parallel database to that database.
+Then, we're going to copy some query.
+We can do copy the line actually queries,
+this database, and then how we calculated sensitivity.
+So we're going to change this back to max_distance.
+Perfect. What we want do here is
+really just consolidate this code into a single function which accepts
+this query function as
+an input parameter and then returned to sensitivity of this function.
+As mentioned last time, this is empirically measuring sensitivity.
+The idea here is just to get a sense intuition for,
+if we were to actually remove you from a database,
+how much would the query change?
+But in the real world, we can typically know about sensitivity through other ways.
+So let's do this def sensitivity and we're going to accept two parameters.
+One is going to be the query,
+which is a function object and then the next is going to be
+the number of entries in the database that we want to query with.
+So here we replace this 5,000 with this in entries variable.
+Then, we're going to query the database that we created,
+calculate the maximum distance from the full database query and every parallel database,
+and return this max_distance.
+Let's calculate sensitivity of this sum function.
+As we saw before in the previous video,
+the sensitivity is one.
+Now, let's change this function.
+Let's cast it to a float and let's calculate a mean.
+So as you know mean it's just a sum divided by the number of entries.
+So we should expect that whereas previously
+our sensitivity is one because we are dividing this by a large number,
+this should decrease sensitivity quite significantly.
+As we see here, it truly does.
+So the sensitivity empirical sensitivity here is 0.0005
+and this corresponds to the average value in the database.
+So this is typically returning something like 500 or something near 500.
+So the average value here would be 0.5 divided by the number of entries.
+This is what's giving us this notion.
+Since this database is randomly generated,
+if we ran into sensitivity a bunch of times,
+we'd actually get numbers just above and just below.
+It would approximate the true sensitivity which is really what
+this sampling does but as it happens here,
+it tend to line up with the exact sensitivity of this function.
+This is pretty great. So the nice thing about this convenient function here is that
+we can pass in arbitrary functions.
+We can empirically get a sense for how much the output of
+this function changes when we remove a person from a database.
+Now, I want to go ahead and discuss and really
+dive a little bit deeper into this last assumption here,
+in these databases that we're creating.
+So let's go ahead and just pull out here so we can see database.
+Let's create one of size 20.
+In this database, every single one of these values
+corresponds to a different person or we're sort of assuming this.
+So when I'm removing someone from the database,
+when I'm calculating every parallel database,
+my assumption is that none of these are
+accidentally referring to the same person because the the notion of
+sensitivity is not about how much
+the function changes when we remove a value from the database,
+it's about how much a function changes when we remove
+all values corresponding to a person from the database.
+We care about the sensitivity to people,
+not necessarily the sensitivity just to individual values.
+Now, it so happens that that's the same thing in the databases they're using right now,
+but I really wanted to call out this notion just so that
+you get a feeling for what we're really trying to calculate here.
+What we're really trying to calculate is how much the output value from this function
+is using information from each individual person database,
+or is it only an aggregation of
+the information that actually multiple people are contributing?
+We'll find that it's a lot easier to protect privacy,
+if the information that's being returned from our query,
+the output of this function is actually
+information that multiple people are contributing to.
+So we might say intuitive measure here might be a threshold
+or various other functions which have a much smaller sensitivity profile.
+In the next few sections, we're going to
+explore functions like this. So I'll see you there.

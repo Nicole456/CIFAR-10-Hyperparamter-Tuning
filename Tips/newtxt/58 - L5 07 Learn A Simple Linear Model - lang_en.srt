@@ -1,0 +1,51 @@
+So in this project, we're going to use the pointer API that we've learned about in
+the last video and train a simple linear model on a remote worker.
+In this case, we're going to train it on Bob's worker.
+So first we want to create some training data.
+So let's create some toy input data.
+Now what I'd like to do here is initialized data that is about as small as possible.
+So this is not a real-world size neural network,
+but it's going to form the basis for what we
+do when learning some of the other techniques
+because federated learning and
+the different oxidation techniques and
+things that we're doing are complicated enough as it is.
+So we're going to work with a simple linear model for a lot
+of these exercises just to reduce the complexity of everything else was opposed
+to using like a big communist and lots of fancy features so that we can really focus
+just on the privacy preserving aspects of what we're trying to do.
+So we're going to say requires_grad=True, and we're going to send us to Bob.
+I'm going to create targets,
+and we're just going to learn a real linear relationship
+between this column being one and the target.
+So now Bob has a data set input target,
+both around Bob's machine.
+Now the next thing we need are just some linear weights,
+and create like this again requires_grad=True and send it to Bob.
+All right, so now Bob has our input data,
+has a target data, and has a set of weights.
+So let's start by just doing a little bit of forward propagation.
+So our prediction will just be input matrix multiplied by the weights,
+prediction is also a pointer as you might expect the loss
+is pred minus target squared to two in the sum.
+So this is mean squared error loss. Oops, typo there.
+Then we backpropagate, and then we do a weight update.
+This is our alpha of 0.1,
+then we want to zero out our gradients when we're done.
+So that small typo and was your grades at
+the end so they don't accumulate over time and then print loss.
+Of course we have to actually get the loss so we can see it.
+Beautiful. If we do this several times hopefully,
+we should see the loss start to go down.
+Look at that. Let's do an iterator.
+So as you can see,
+once we have moved our data and our weights to row machine,
+all this code is just using native normal run of the mill PyTorch.
+The idea is that for this tool to make it so that things like federated learning and
+remote execution is dead simple if you already know how to use PyTorch.
+Now, in the next section,
+we're going to explore a couple of the "gotchas" and
+other things that can be a bit more challenging to sit or understand,
+or perhaps debug when you're on
+a remote machine or when you're when you have a connection to a remote machine.
+So the next lesson, I'll see you there.

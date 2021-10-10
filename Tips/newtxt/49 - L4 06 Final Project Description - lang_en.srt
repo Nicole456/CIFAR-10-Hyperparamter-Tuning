@@ -1,0 +1,11 @@
+In this first project,
+you will be given two things.
+First, you'll be given a series of
+labelled private datasets which you must keep differentially private.
+Second, you'll be given
+a public unlabeled dataset which you do not need to keep differentially private.
+Your goal is to use the technique described in
+the last lesson to automatically label the second dataset.
+You should then be able to train a model on this second public dataset and get
+a reasonable level of accuracy on the task given a certain epsilon delta constraint.
+Good luck in your project, and I'll see you in the next course.

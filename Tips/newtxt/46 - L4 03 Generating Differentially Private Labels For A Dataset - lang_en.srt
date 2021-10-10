@@ -1,0 +1,251 @@
+So before we jump in,
+let's just walk through the exact scenario that we're working with one more time.
+So the idea here is that,
+we have an unlabeled dataset.
+This is just a general assumption.
+The assumption of this particular differential privacy framework.
+There are other differential privacy frameworks out there,
+but the assumption for this one is that we have an unlabeled dataset.
+One plausible example where this exists,
+is we represent a hospital,
+and a hospital generates data.
+Inside of our hospital,
+we're collecting patient scans of a variety of conditions.
+But this data isn't necessarily labeled.
+No individual person has gone through and said,
+does this particular scan have some particular phenomenon,
+are these scans of males or females?
+Or is there a specific kind of tumor?
+Or a specific kind of other condition that is present in XYZ scan?
+Some of them may have that, but some of them may not.
+For now, we're going to assume that they don't.
+They're just images of people.
+What we want to be able to do us as a hospital,
+is to have a machine learning model that can make predictions on this set of images.
+So we're going to say these images are say radiology scans.
+So they are are MRI's or CT scans or maybe an X-ray of a human body.
+So it's just the X-ray of a human body and we as a hospital care
+about identifying certain things in that X-ray,
+where say there are 10 things we're interested in identifying.
+However, our X-rays, our images aren't labeled.
+So we can't train a machine learning model with our dataset.
+Our dataset just isn't good enough.
+We have the inputs but we don't have the outputs.
+It's a bummer, so it's a bummer because we want people to have machine learning model,
+we want to be able to serve our patients with the ability to automatically predict
+these things as opposed to having to have doctors see every image.
+So we say, what do we do?
+Well, it turns out we know 10 other hospitals that do have this kind of annotated data.
+However, they don't want to give it to us.
+Maybe they're legally are not able to or if there's a competitive dynamic,
+they don't actually just give us the data.
+But they're willing to let us try something a bit more creative,
+which is this particular framework.
+The idea is, we want to somehow annotate our unlabeled data using their labeled data.
+So what we're going to do is we're going to go to 10 different hospitals
+and we're going to somehow pull out statistical signal
+from their datasets to annotate
+our datasets so that we can train our own machine learning model.
+So it make sense? The way that we're going to do this is first,
+we have each one of these partner hospitals train a model on their own datasets.
+So all 10 hospitals train a model,
+some machine learning classifier,
+doesn't even matter what the classifier is,
+whatever classifier they want to be able to using or, well,
+your favorite one is either it's an SVM or
+deep neural net or something, it doesn't matter.
+Then we take their model and we predict it on our data.
+So we take the model and we predict it on our dataset,
+the one that is public to us,
+the one that we're allowed to look at.
+That generates 10 predictions for each of our images.
+Why 10? Because there were 10 hospitals that we partnered with.
+We trained 10 different models and we took all 10 of them and we predicted
+them on each image, generating 10 labels.
+Now, where the differential privacy piece comes in,
+is we want to take their 10 labels and generate whichever label that they must agree on.
+So we want to say, all right, there's 10 models they're voting,
+which label is the most likely given that here are the votes.
+So maybe if all 10 models said,
+there's phenomenon number one in this image.
+Well, then we would say okay, then it's the phenomenon one must be what it is.
+But if half of them said it's phenomenon number three,
+but another half said it's phenomenon number five,
+then we would say 50/50 chance,
+it could be one of these things, could be the other thing.
+So this is exactly what we want to do.
+We want to work with these 10 different hospitals,
+they're going to train each model from their datasets,
+we're going to bring those models to our dataset,
+we're going to predict them over our dataset and then we want to
+calculate the arg max over
+their predictions on our data to figure out what the labels in our data
+should be so that we can train our deep learning classifier, cool?
+So the first training round where like a bunch of hospitals train a bunch of models,
+that's just normal machine learning, normal deep learning.
+So for the moment,
+we're going to skip that part.
+What I'm going to do instead,
+is we're just going to synthesize
+some fake versions of predictions they could have given us on our dataset.
+So we're assuming that those parts already happened because I want to jump
+straight into the differential privacy piece because that's the point of this lesson.
+So the first thing we introduce input NumPy as np.
+I'm going to say num teachers equals 10.
+So these are, were working with 10 hospitals.
+Num examples, so this is the size of our dataset,
+num labels, the number of labels for a classifier.
+We're assuming these are mutually exclusive at the moment.
+It doesn't have to be this way but for the sake of argument,
+we're just saying it can be one of 10 things but
+it can't be multiples, you have to choose.
+But you could do this with two labels,
+100 labels, you could do it with multiple sets of two labels.
+This is very generic,
+we're just picking 10 out of thin air.
+Now, we're going to synthetically generate a tensor,
+where the number of rows is the number of teachers.
+So we have 10 lists of numbers,
+each coming from one of our teachers,
+and there's 10,000 examples from each teacher. Why are they 10,000?
+Because we took the classifier and we predicted
+each teacher's classifier on every example that we have on our dataset, cool?
+Now, just a little bit of NumPy stuff here and voila,
+we have our synthetic datasets,
+so fake labels, fake predictions.
+So these are all the predictions from one teacher, all right?
+Say there's 10,000 of them,
+and these are all the examples for say the first image.
+So this came from the first teacher,
+this came from the second teacher, this came from the third teacher.
+So the first teacher thought it was label four,
+the second teacher thought it was labeled two,
+the third teacher thought it was labeled nine, etc.
+So now, what we care about, what we're trying to do,
+is we're trying to in a deferentially private way,
+combine these labels into a single label.
+The reason that we want to do this is based on one core assumption,
+and that core assumption is that these 10 partner hospitals, have different patients.
+We're assuming they don't have overlapping patients,
+maybe from different parts of the world,
+maybe we just asked them and approved,
+that they have an overlap applications.
+This gets back to our core philosophy of differential privacy which is saying,
+whenever we perform a query,
+that query in theory is hypothetically, perfectly,
+differentially private if the output of the query does
+not change no matter what person I remove from the query.
+However, in this particular case,
+these don't represent individual people,
+these represent whole collections of people.
+So this prediction represents and it has information
+transferring to it from a whole hospital worth of patients.
+This has another whole hospitals with patients.
+This has a whole another hospital with the patients.
+So when we say combine this into one label,
+the perfect way for us to do this would be
+if the output of whatever and however we combine these labels,
+in which case, we probably are going to take whichever one is most frequent.
+We get the same prediction.
+We get the same target,
+the same output of our query regardless
+of whether or not we remove one of these hospitals.
+Because then, if that's our definition of robustness,
+we would also know that we could remove any one of the patients from
+those hospitals and the output of the query would be the same.
+Because one patient is strictly a subset of the whole hospital.
+If that doesn't totally make sense to you yet, it's okay,
+we'll walk through this step-by-step and hopefully I'll make more sense as we go along.
+So for now, all we want to do is take each image
+and convert this vector
+of predictions from all the different hospitals into a single prediction.
+The way we're going to make that conversion is we're going to just
+figure out which one did all of them agree on.
+We're going to take what's called an arg-max.
+So the first thing we need to do,
+so this is an image,
+closing one image where the predictions.
+We're going to compute some label counts.
+So NumPy has this nice thing called bind count and what it does,
+it just goes through and counts the number of times it sees a certain integer.
+So it looks like zero, one,
+two was the most frequent number.
+So if I look at an image one,
+two, three, so yeah.
+Two happen three times,
+see how it counted and so we look at this,
+we see the most frequent one is three.
+So I could see it label counts.
+So I could go NumPy.argmax and it will say two, well index two.
+So which is the third one from the left.
+So this is the most frequent label.
+This is the one that all the hospital models agreed on.
+So all the hospitals predicted our dataset on
+this image and this was the most popular answer.
+That these hospital models came back with.
+However, this is not necessarily differentially private.
+This is the exact answer from these hospitals.
+However, we have interesting technique,
+adding random noise to enforce a certain level of differential privacy and so for that,
+we're going to turn back to our Laplacian mechanism.
+So let's review this a bit.
+So we'll say Epsilon,
+let's set it to 0.1 for now,
+Beta equals one divided by Epsilon,
+and so we're going to say for i in range len label counts.
+So for each label,
+that's Laplacian noise and now,
+we have a new set of loop counts.
+So we actually took the counts and we're adding noise
+to the counts. So does that makes sense?
+So the counts is basically our mini database. All right.
+So if you remember from before,
+like we have a mini database across
+these hospitals of label counts and we're going to add noise to each one of these counts,
+and then we're going to perform arg max.
+Now as you can see,
+the noise actually made us get the wrong answer.
+But this is something that we just have to be okay with.
+So this is going to happen sometimes and our assumption is that later
+on when our our deep neural net is training,
+that it's going to filter through the sum of this noise,
+look for all the ways that these agreed,
+and it will learn how to predict reasonably accurately.
+So this is new label. But this is not enough.
+So this is just one image so what we actually need to
+do is iterate through all of our images.
+Let's go ahead and transpose this so just so we can iterate through
+the rows for an image in prints.
+New labels equals list,
+iterate the whole thing, that was so fast.
+So we have 10,000 new labels.
+So we have now generated a synthetic dataset of
+new labels based on the predictions from all of our partner hospitals.
+Now, you might be wondering,
+how much information did we leak?
+So a super naive interpretation of this
+could be just to add up
+all these Epsilons but we wouldn't just have to add up these Epsilons,
+we'd also have to add them up for every time that we used them.
+So for every label counts.
+So this would be something on the order of 100,000 times 0.1,
+like could be massive.
+That's not what we want.
+The real innovative thing of PATE which we'll go over in the next section,
+actually has a better derivation for how Epsilon is being spent in this model,
+and it's very interesting,
+quite fascinating, and so in the next section,
+I'll show you what
+this fancy PATE framework is
+about and how we can actually get a better bound for this Epsilon.
+But for now, if we were the hospital,
+we had obtained these predictions at pennies labels and
+generated these new labels for our dataset,
+I would then go and train a deep learning model using all of
+my X-ray images with these new synthesized labels
+and I would know that I have spent under
+my new model has fits underneath a certain Epsilon budget.
+That the entire model itself
+being a compression and a collection of all the Epsilons from
+this dataset would be under a certain budget and in the next video,
+we will actually learn just how low that budget can be. See you then.

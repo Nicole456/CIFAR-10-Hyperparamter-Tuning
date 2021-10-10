@@ -1,0 +1,108 @@
+1
+00:00:00,000 --> 00:00:02,430
+In this lesson, we're going to get into the mid of
+
+2
+00:00:02,430 --> 00:00:04,680
+developing differentially private algorithms.
+
+3
+00:00:04,680 --> 00:00:06,900
+The main strategy that we're going to take to protect
+
+4
+00:00:06,900 --> 00:00:09,495
+individual's privacy is one of noise,
+
+5
+00:00:09,495 --> 00:00:12,839
+meaning we're going to add random noise to the database
+
+6
+00:00:12,839 --> 00:00:16,590
+and to the queries in the database in order to protect people's privacy.
+
+7
+00:00:16,590 --> 00:00:19,410
+Now, there are two different kinds of differential privacy, which
+
+8
+00:00:19,410 --> 00:00:23,100
+refer to the two different places that you can add noise.
+
+9
+00:00:23,100 --> 00:00:28,205
+Local differential privacy adds noise to each individual data point.
+
+10
+00:00:28,205 --> 00:00:31,460
+You can think of this as adding noise directly to the database or
+
+11
+00:00:31,460 --> 00:00:34,700
+even having individuals add noise to their own data,
+
+12
+00:00:34,700 --> 00:00:37,010
+before even putting it into the database.
+
+13
+00:00:37,010 --> 00:00:40,250
+In this setting, users are most protected as they
+
+14
+00:00:40,250 --> 00:00:43,700
+do not have to trust the database owner to use their data responsibly.
+
+15
+00:00:43,700 --> 00:00:48,140
+The other kind of differential privacy is called global differential privacy,
+
+16
+00:00:48,140 --> 00:00:52,775
+which adds noise to the output of the query on the database.
+
+17
+00:00:52,775 --> 00:00:58,505
+This means that the database itself contains all of the private information and that it's
+
+18
+00:00:58,505 --> 00:01:01,445
+only the interface to the data which
+
+19
+00:01:01,445 --> 00:01:05,000
+adds the noise necessary to protect each individual's privacy.
+
+20
+00:01:05,000 --> 00:01:10,060
+So what is the real difference between local and global differential privacy?
+
+21
+00:01:10,060 --> 00:01:13,385
+Well, if the database operator is trustworthy,
+
+22
+00:01:13,385 --> 00:01:16,910
+the only difference is that global differential privacy leads to
+
+23
+00:01:16,910 --> 00:01:21,130
+more accurate results with the same level of privacy protection.
+
+24
+00:01:21,130 --> 00:01:24,980
+However, this requires database owner to be trustworthy.
+
+25
+00:01:24,980 --> 00:01:28,880
+Namely, that the database owner should add noise properly.
+
+26
+00:01:28,880 --> 00:01:30,750
+In differential privacy literature,
+
+27
+00:01:30,750 --> 00:01:34,920
+the database owner is called a trusted curator.
+

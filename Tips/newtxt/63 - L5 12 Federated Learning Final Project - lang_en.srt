@@ -1,0 +1,22 @@
+Now this brings us to your final project for course two.
+Your final project is to do Federated Learning,
+where the central server is not trusted with the raw gradients.
+In this final project notebook,
+you'll receive a data set,
+and I want you to train on the data set using Federated Learning.
+However, the gradients should not come up to the central server in raw form.
+Instead, you should use this new.move for command,
+to move all of the gradients to one of the workers,
+sum them up there,
+and then bring that batch up to the central server.
+The idea here is that the central server never
+actually sees the raw gradient for any person.
+Now you might be asking yourself, "Wait,
+but that means one of the workers sees the rock gradients."
+Well, we'll get to that in course three
+when we look at various forms of secure aggregation.
+But for now, I want you to,
+in this last project,
+do a larger-scale Federated Learning case
+where you handle the gradients in a special way.
+Good luck, and I'll see you in the next course.

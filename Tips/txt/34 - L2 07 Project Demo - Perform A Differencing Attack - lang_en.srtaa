@@ -1,0 +1,65 @@
+In this project, we want to perform
+a basic differencing attack to divulge what the value is in database,
+specifically the value on row 10.
+The way we're going to do this, we're going to perform
+two different queries against the database.
+One, which is a query that includes row 10 and then we're going to
+perform a query against the database excluding row 10.
+The idea is we want be able to compare
+these two different queries and determine what the exact value of row 10 actually is.
+So the first we want to do is initialize a database,
+we'll put a 100 values in it.
+Then we want to initialize a parallel database,
+meaning a database with just row 10 missing.
+So this is the same as doing a SQL query,
+where it select some function
+where database value does not equal and then the index of a specific number, right?
+So if for example in this database,
+if every person was associated with Bob, now we're saying, okay.
+Run this query, where name does not equal Bob, right?
+That's what this is going to be. This is the whole database,
+it's the database with one person missing.
+So parallel database would be,
+get parallel database from the database where we're going to remove index 10.
+Cool? All right.
+So let's see what's actually- what's the true thing we're trying to divulge.
+So there's a one here, right?
+But we're going to try to learn,
+there's a one here by virtue the fact
+that we're doing multiple queries against these two databases.
+So the simplest form we can do is just a sum.
+So the sum of the database minus sum of the parallel database,
+this will divulge the exact value, right?
+So as you can see, it equals one.
+If this equals zero, this would equal zero we could try that in a second.
+So this is differencing attack using addition, using a sum query.
+We can do the same thing with
+a mean query but all we do is just divide by laying of length the DB.
+Technically, other operations means we don't have to do this.
+Got to cast a float.
+Cool. So as you can see it's non-zero,
+so we know that this is indeed a one because the database of ones and zeros.
+Then of course, we can do a differencing attack using a threshold query.
+So for this one,
+you can base it off this one I
+think and really what we're going to do is we're going to say,
+is this greater than,
+what was the actual sum?
+50, so this is 49, sorry.
+So this will return true because the sum over the database is
+actually equal to 50 so it should be true but this one will be false, right?
+So we actually adjust it within 49.
+All right. So this will return true, this one will turn false and
+the difference between the two will be one.
+So as you can see using these three different attacks,
+they're all doing the same thing, right?
+They're performing a query with a value that's missing.
+As you should be familiar with this point,
+given the intuitions around difference or privacy that we've been formulating,
+this differencing attack is very close to the heart
+of the intuitions behind differential privacy.
+So as we form differential private techniques,
+we want them to specifically be immune to these kinds of attacks.
+As we'll see in a formal definition of differential privacy, this is very,
+very close to the- there's a constraint that we must satisfying or
+satisfy differential privacy to a certain threshold. See you in the next lesson.

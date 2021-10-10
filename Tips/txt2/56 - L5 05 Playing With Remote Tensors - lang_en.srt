@@ -1,0 +1,120 @@
+1
+00:00:00,000 --> 00:00:03,090
+In this video, I'm going to show you how to be able to send and
+
+2
+00:00:03,090 --> 00:00:06,660
+get tensors to multiple workers at a time.
+
+3
+00:00:06,660 --> 00:00:09,220
+So this is in the same notebook from the last video,
+
+4
+00:00:09,220 --> 00:00:10,770
+we already have a worker called Bob.
+
+5
+00:00:10,770 --> 00:00:13,260
+So the first thing we need to do is to create a second worker,
+
+6
+00:00:13,260 --> 00:00:15,090
+we're going to call them Alice.
+
+7
+00:00:15,090 --> 00:00:19,185
+New virtual worker, pass on the hook, ID equals Alice.
+
+8
+00:00:19,185 --> 00:00:20,955
+Let's create some data we want to send.
+
+9
+00:00:20,955 --> 00:00:23,640
+Now, as I showed you very briefly in the last video,
+
+10
+00:00:23,640 --> 00:00:28,095
+we'll say x_ptr = x.send (bob, alice).
+
+11
+00:00:28,095 --> 00:00:31,905
+If we look at x_ptr, we have a new update.
+
+12
+00:00:31,905 --> 00:00:33,540
+This is called a multi-pointer.
+
+13
+00:00:33,540 --> 00:00:37,460
+So, a multi-point or is simply just a pointer that points to multiple machines.
+
+14
+00:00:37,460 --> 00:00:39,380
+It has an object called child,
+
+15
+00:00:39,380 --> 00:00:43,570
+which is simply a dictionary of the various workers.
+
+16
+00:00:43,570 --> 00:00:46,370
+Now, we can also go x_pointer.get and it
+
+17
+00:00:46,370 --> 00:00:49,540
+returns interestingly two objects instead of one.
+
+18
+00:00:49,540 --> 00:00:52,220
+You see what was contained within inside of
+
+19
+00:00:52,220 --> 00:00:56,200
+x_pointer in this multi pointer it was actually, two pointer objects.
+
+20
+00:00:56,200 --> 00:01:01,415
+So when we call dot get it naturally pull both of them back as separate objects.
+
+21
+00:01:01,415 --> 00:01:04,595
+However, there is another option we can also use.
+
+22
+00:01:04,595 --> 00:01:09,100
+It as an option for us to have it automatically sum the results,
+
+23
+00:01:09,100 --> 00:01:11,530
+which will take these two tensors and sum them together.
+
+24
+00:01:11,530 --> 00:01:16,100
+This is simply a convenience operation which in some contexts is quite nice.
+
+25
+00:01:16,100 --> 00:01:17,750
+Now, in the next section, we're going to start looking
+
+26
+00:01:17,750 --> 00:01:19,250
+at more advanced things that we can
+
+27
+00:01:19,250 --> 00:01:22,505
+do with pointers to remote tensors,
+
+28
+00:01:22,505 --> 00:01:23,780
+by showing you how to do
+
+29
+00:01:23,780 --> 00:01:26,570
+simple arithmetic and other various operations that are inside the hydro
+
+30
+00:01:26,570 --> 00:01:31,780
+JPI on tensors that are not located on the machine that you are on. See you then.
+

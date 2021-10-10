@@ -1,0 +1,396 @@
+1
+00:00:00,000 --> 00:00:02,955
+Let's jump into local differential privacy.
+
+2
+00:00:02,955 --> 00:00:07,150
+Local differential privacy is where given a collection of individuals,
+
+3
+00:00:07,150 --> 00:00:09,900
+each individual adds noise to their data
+
+4
+00:00:09,900 --> 00:00:13,155
+before sending it to the statistical database itself.
+
+5
+00:00:13,155 --> 00:00:16,900
+So everything that gets thrown into the database is already noised.
+
+6
+00:00:16,900 --> 00:00:19,935
+So the protection is happening at a local level.
+
+7
+00:00:19,935 --> 00:00:23,475
+So now the question is, how much noise should we add?
+
+8
+00:00:23,475 --> 00:00:26,160
+Well, this varies as we'll see.
+
+9
+00:00:26,160 --> 00:00:30,390
+Let's start by remembering what we learned about sensitivity in database queries.
+
+10
+00:00:30,390 --> 00:00:35,685
+First off, we saw in previous lessons the basic sum query is not differentially private.
+
+11
+00:00:35,685 --> 00:00:39,920
+In truth, differential privacy always requires a form of
+
+12
+00:00:39,920 --> 00:00:45,815
+randomness or noise added to the query to protect from things like a differencing attack.
+
+13
+00:00:45,815 --> 00:00:50,720
+To discuss this, we're going to discuss something called randomized response.
+
+14
+00:00:50,720 --> 00:00:53,165
+Randomized response is this really amazing technique
+
+15
+00:00:53,165 --> 00:00:55,010
+that is used in the social sciences when
+
+16
+00:00:55,010 --> 00:01:00,005
+trying to learn about the high-level trends for some taboo behavior.
+
+17
+00:01:00,005 --> 00:01:04,640
+So if you imagine that you are perhaps a sociologist and you want to be able to
+
+18
+00:01:04,640 --> 00:01:09,485
+study how many people in a city have committed a certain crime,
+
+19
+00:01:09,485 --> 00:01:11,795
+perhaps you're going to study jaywalking.
+
+20
+00:01:11,795 --> 00:01:16,340
+So you sat down with 1,000 people and you wanted to ask each individual one hey,
+
+21
+00:01:16,340 --> 00:01:19,190
+trust me, I'm not going to tell anyone on you.
+
+22
+00:01:19,190 --> 00:01:20,410
+Have you ever jaywalked,
+
+23
+00:01:20,410 --> 00:01:21,840
+perhaps in the last week?
+
+24
+00:01:21,840 --> 00:01:24,680
+Well, there's this trouble that people are going to be reluctant to divulge
+
+25
+00:01:24,680 --> 00:01:28,070
+this information because it's technically a crime in many locations.
+
+26
+00:01:28,070 --> 00:01:31,580
+So the sociologist is worried that the results are going to be
+
+27
+00:01:31,580 --> 00:01:36,145
+skewed because some subset of population is going to answer dishonestly.
+
+28
+00:01:36,145 --> 00:01:41,540
+So there's this amazing technique where in a certain degree of randomness can be added to
+
+29
+00:01:41,540 --> 00:01:43,790
+the process such that each individual is
+
+30
+00:01:43,790 --> 00:01:47,270
+protected with what's called plausible deniability.
+
+31
+00:01:47,270 --> 00:01:49,735
+It works like this. It's really is pretty cool.
+
+32
+00:01:49,735 --> 00:01:53,930
+So instead of directly asking each person the question,
+
+33
+00:01:53,930 --> 00:01:57,590
+the first thing that a sociologist will do is present the question and then say,
+
+34
+00:01:57,590 --> 00:02:00,230
+"I need for you to flip a coin two times
+
+35
+00:02:00,230 --> 00:02:03,670
+without me seeing it and if the first coin flip is a heads,
+
+36
+00:02:03,670 --> 00:02:06,860
+I want you to answer my yes or no question honestly.
+
+37
+00:02:06,860 --> 00:02:10,820
+Did you jaywalk? But if the first coin flip is a tails,
+
+38
+00:02:10,820 --> 00:02:14,600
+then I want you to answer this question according to the second coin flip."
+
+39
+00:02:14,600 --> 00:02:17,330
+So the idea here is that half the time,
+
+40
+00:02:17,330 --> 00:02:19,715
+individuals are going to be answering honestly.
+
+41
+00:02:19,715 --> 00:02:21,305
+The other half the time,
+
+42
+00:02:21,305 --> 00:02:26,285
+they're going to answer randomly with a 50-50 chance of saying yes or no.
+
+43
+00:02:26,285 --> 00:02:30,290
+The interesting thing here is that if a person says, "Yes,
+
+44
+00:02:30,290 --> 00:02:34,160
+I have jaywalked in the last week," that person has a certain degree of
+
+45
+00:02:34,160 --> 00:02:38,750
+plausible deniability that they're only answering it because of the coin flip.
+
+46
+00:02:38,750 --> 00:02:41,540
+So they have this natural level of protection,
+
+47
+00:02:41,540 --> 00:02:44,335
+this localized differential privacy.
+
+48
+00:02:44,335 --> 00:02:47,000
+They have this randomness applied to
+
+49
+00:02:47,000 --> 00:02:51,470
+their specific data point that is local to them and that's what in theory is
+
+50
+00:02:51,470 --> 00:02:54,860
+able to give them the protection that gives them the freedom to answer
+
+51
+00:02:54,860 --> 00:02:59,185
+honestly and to provide more accurate statistics at the end of the day.
+
+52
+00:02:59,185 --> 00:03:03,285
+Perhaps the most extraordinary thing is that over the aggregate,
+
+53
+00:03:03,285 --> 00:03:04,905
+over the entire population,
+
+54
+00:03:04,905 --> 00:03:07,490
+the individual performing the study can then
+
+55
+00:03:07,490 --> 00:03:10,250
+remove this random noise because as you can imagine,
+
+56
+00:03:10,250 --> 00:03:15,815
+this process is that it takes the true statistic and averages it with a 50-50 coin flip.
+
+57
+00:03:15,815 --> 00:03:17,430
+So in this particular case,
+
+58
+00:03:17,430 --> 00:03:22,190
+let's say that 70 percent of people actually jaywalk, like in the real world.
+
+59
+00:03:22,190 --> 00:03:24,365
+Then we know that when we perform our survey,
+
+60
+00:03:24,365 --> 00:03:29,160
+60 percent of our results will answer yes. Let's take this slowly.
+
+61
+00:03:29,160 --> 00:03:32,650
+So since 70 percent of people actually jaywalk,
+
+62
+00:03:32,650 --> 00:03:35,930
+this means that roughly half our participants will say yes or no with
+
+63
+00:03:35,930 --> 00:03:40,910
+a 50 percent probability and the other will say yes or no with a 70 percent probability.
+
+64
+00:03:40,910 --> 00:03:43,055
+Thus when we average these two together,
+
+65
+00:03:43,055 --> 00:03:47,345
+the results of our survey will be 60 percent. This is incredible.
+
+66
+00:03:47,345 --> 00:03:50,615
+This means that we can take the result of our noise statistic
+
+67
+00:03:50,615 --> 00:03:54,390
+and back into the true distribution, the true result.
+
+68
+00:03:54,390 --> 00:03:58,420
+We can say since 60 percent of people reported that they jaywalk,
+
+69
+00:03:58,420 --> 00:04:03,515
+then we know that the true answer is actually centered around 70 percent and we can do
+
+70
+00:04:03,515 --> 00:04:08,850
+all of this without actually knowing whether any individual person jaywalks.
+
+71
+00:04:08,850 --> 00:04:12,080
+Pretty incredible. So now one thing we have to
+
+72
+00:04:12,080 --> 00:04:15,605
+acknowledge here is that the added privacy comes at the cost of accuracy.
+
+73
+00:04:15,605 --> 00:04:19,760
+Even though that we will on average still get the right statistics,
+
+74
+00:04:19,760 --> 00:04:21,900
+we're still averaging our initial result,
+
+75
+00:04:21,900 --> 00:04:24,600
+60 percent with random noise.
+
+76
+00:04:24,600 --> 00:04:29,540
+So if people happen to flip coins in a really unlikely way,
+
+77
+00:04:29,540 --> 00:04:33,395
+we might accidentally think that 95 percent of people are jaywalking.
+
+78
+00:04:33,395 --> 00:04:38,540
+It's only "in expectation" aka when we have an infinite number of samples,
+
+79
+00:04:38,540 --> 00:04:40,205
+an infinite number of participants,
+
+80
+00:04:40,205 --> 00:04:44,905
+that this noise disappears and we get the exact true distribution.
+
+81
+00:04:44,905 --> 00:04:48,370
+Thus we have gained privacy but we've lost some accuracy,
+
+82
+00:04:48,370 --> 00:04:51,515
+especially if we're only sampling over a small number of people.
+
+83
+00:04:51,515 --> 00:04:55,925
+This trend is true throughout the entire field of differential privacy.
+
+84
+00:04:55,925 --> 00:05:00,215
+Research in differential privacy can thus be grouped into two main themes.
+
+85
+00:05:00,215 --> 00:05:01,940
+The main goal of DP is to get
+
+86
+00:05:01,940 --> 00:05:05,345
+the most accurate query results with the greatest amount of privacy,
+
+87
+00:05:05,345 --> 00:05:08,749
+aka how can we minimize the amount of noise that we are adding,
+
+88
+00:05:08,749 --> 00:05:11,080
+while maximizing the amount of privacy?
+
+89
+00:05:11,080 --> 00:05:13,410
+The second goal is derivative of this,
+
+90
+00:05:13,410 --> 00:05:18,950
+which looks at who trusts or doesn't trust each other in a real world situation.
+
+91
+00:05:18,950 --> 00:05:22,790
+Because if you add noise to protect two people who do trust each other,
+
+92
+00:05:22,790 --> 00:05:25,985
+that noise was wasted and your query was less accurate than necessary.
+
+93
+00:05:25,985 --> 00:05:30,620
+But if you forget to add noise between two people who don't trust each other,
+
+94
+00:05:30,620 --> 00:05:33,755
+meaning a database curator and an individual,
+
+95
+00:05:33,755 --> 00:05:36,425
+then you put one of them more at risk.
+
+96
+00:05:36,425 --> 00:05:39,745
+So we want to minimize a noise accuracy tradeoff.
+
+97
+00:05:39,745 --> 00:05:44,030
+One of the strategies there is to create flexible differential privacy strategies
+
+98
+00:05:44,030 --> 00:05:49,070
+which fit with how people actually do and don't trust each other in the real world.
+
+99
+00:05:49,070 --> 00:05:53,490
+But enough on that. Let's implement local differential privacy for ourselves.
+

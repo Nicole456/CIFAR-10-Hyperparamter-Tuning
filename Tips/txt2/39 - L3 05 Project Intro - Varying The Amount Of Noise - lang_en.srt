@@ -1,0 +1,104 @@
+1
+00:00:00,000 --> 00:00:01,830
+In this next project,
+
+2
+00:00:01,830 --> 00:00:04,725
+I want you to change this query and soup it up a bit.
+
+3
+00:00:04,725 --> 00:00:06,510
+This is a pretty challenging project.
+
+4
+00:00:06,510 --> 00:00:09,810
+This will be tough but the idea behind this project is
+
+5
+00:00:09,810 --> 00:00:13,500
+you get an intuitive sense for exactly what's going on under the hood,
+
+6
+00:00:13,500 --> 00:00:16,335
+and how the re-normalizing step is going to happen.
+
+7
+00:00:16,335 --> 00:00:18,180
+So what I'd like for you to do is to augment
+
+8
+00:00:18,180 --> 00:00:21,090
+the randomized response query from the previous project,
+
+9
+00:00:21,090 --> 00:00:24,825
+to allow for varying amounts of randomness to be added.
+
+10
+00:00:24,825 --> 00:00:29,790
+Specifically, I want you to be able to bias the first coin flip to be
+
+11
+00:00:29,790 --> 00:00:34,830
+higher or lower probability of outputting a one and then run the same experiment.
+
+12
+00:00:34,830 --> 00:00:39,135
+So what you're going to have to do here is to add a new parameter to the query function,
+
+13
+00:00:39,135 --> 00:00:43,010
+so that we'll now accept both of the database and some noise parameter,
+
+14
+00:00:43,010 --> 00:00:44,270
+which is a percentage.
+
+15
+00:00:44,270 --> 00:00:49,460
+The noise parameter should change how likely is for the first coin flip to be a one,
+
+16
+00:00:49,460 --> 00:00:51,205
+as opposed to zero.
+
+17
+00:00:51,205 --> 00:00:53,450
+Then, I want you to properly re-balanced
+
+18
+00:00:53,450 --> 00:00:56,540
+the result of the query given this adjustable parameter.
+
+19
+00:00:56,540 --> 00:00:59,285
+So again, this is a challenging project and of course,
+
+20
+00:00:59,285 --> 00:01:02,809
+I'd like for you to go ahead and experiment with a database of size a 100,
+
+21
+00:01:02,809 --> 00:01:04,940
+and then change the amount of noise and observe
+
+22
+00:01:04,940 --> 00:01:07,820
+the degree to which the query is made less accurate,
+
+23
+00:01:07,820 --> 00:01:09,960
+depending on how much noise you add.
+
+24
+00:01:09,960 --> 00:01:13,130
+Stick with it. It might not be one that everyone gets the first time,
+
+25
+00:01:13,130 --> 00:01:15,170
+but go ahead and jump in and in a second,
+
+26
+00:01:15,170 --> 00:01:17,480
+I'll show you how to implement this project myself.
+

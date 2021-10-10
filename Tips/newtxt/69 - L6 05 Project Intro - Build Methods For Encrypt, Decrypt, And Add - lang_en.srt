@@ -1,0 +1,13 @@
+So in this next project,
+I'd like if you to take the raw protocol you just learned
+about and create several functions which are implemented.
+First, create a method called encrypt which accepts two input parameters,
+the number to be encrypted,
+and the number of shares to be split into,
+and returns a tuple of shares.
+Second, create a method called decrypt which
+accepts as input a tuple of shares and returns the decrypted value.
+Finally, create a method called add which accepts two tuples of shares and returns
+a single tuple shares which are added correctly
+according to the protocol specified in the previous concept.
+Good luck, and I'll see you in the next concept.

@@ -1,0 +1,160 @@
+1
+00:00:00,000 --> 00:00:03,600
+To ground our discussion of differentially private deep learning,
+
+2
+00:00:03,600 --> 00:00:05,145
+let's consider a scenario.
+
+3
+00:00:05,145 --> 00:00:07,319
+Let's say you work for a hospital,
+
+4
+00:00:07,319 --> 00:00:10,155
+and you have a large collection of images about your patients.
+
+5
+00:00:10,155 --> 00:00:12,570
+However, you don't know what's in them.
+
+6
+00:00:12,570 --> 00:00:14,490
+You would like to use images develop
+
+7
+00:00:14,490 --> 00:00:17,160
+a neural network which can automatically classify them.
+
+8
+00:00:17,160 --> 00:00:19,650
+However, since your images aren't labeled,
+
+9
+00:00:19,650 --> 00:00:21,960
+they aren't sufficient to train a classifier.
+
+10
+00:00:21,960 --> 00:00:24,239
+Whoever, being a cunning strategist,
+
+11
+00:00:24,239 --> 00:00:27,660
+you realize that you can reach out to 10 partner hospitals,
+
+12
+00:00:27,660 --> 00:00:29,580
+which do have annotated data.
+
+13
+00:00:29,580 --> 00:00:32,265
+It is your hope to train your new classifier on
+
+14
+00:00:32,265 --> 00:00:35,100
+their datasets so you can automatically label your own.
+
+15
+00:00:35,100 --> 00:00:37,400
+While these hospitals are interested in helping,
+
+16
+00:00:37,400 --> 00:00:41,240
+they have privacy concerns regarding information about their own patients.
+
+17
+00:00:41,240 --> 00:00:44,210
+Thus, you will use the following technique to train a classifier
+
+18
+00:00:44,210 --> 00:00:47,510
+which protects the privacy of the patients in the other hospitals.
+
+19
+00:00:47,510 --> 00:00:52,655
+So first, you'll ask each of the 10 hospitals to train a model on their own datasets,
+
+20
+00:00:52,655 --> 00:00:54,710
+so generating 10 different models.
+
+21
+00:00:54,710 --> 00:00:59,480
+Second, you'll then use each of these 10 partner models to predict on
+
+22
+00:00:59,480 --> 00:01:01,430
+your local dataset generating
+
+23
+00:01:01,430 --> 00:01:04,825
+10 labels for each of your datapoints for each of your images.
+
+24
+00:01:04,825 --> 00:01:08,605
+Then, for each local datapoint, now with 10 labels,
+
+25
+00:01:08,605 --> 00:01:11,600
+you will perform a differentially private query to
+
+26
+00:01:11,600 --> 00:01:15,005
+generate a final true label for each example.
+
+27
+00:01:15,005 --> 00:01:17,315
+This query will be a max function,
+
+28
+00:01:17,315 --> 00:01:20,315
+where max is the most frequent label
+
+29
+00:01:20,315 --> 00:01:24,200
+across the 10 labels assigned for each individual image.
+
+30
+00:01:24,200 --> 00:01:27,005
+We will then need to add Laplacian noise to make this
+
+31
+00:01:27,005 --> 00:01:30,455
+differentially private to a certain epsilon delta constraint.
+
+32
+00:01:30,455 --> 00:01:35,190
+Finally, we will then retrain a new model on our local dataset,
+
+33
+00:01:35,190 --> 00:01:37,985
+which now has these labels that we have automatically generated.
+
+34
+00:01:37,985 --> 00:01:40,700
+This will be our final differentially private model.
+
+35
+00:01:40,700 --> 00:01:42,725
+So let's walk through these steps.
+
+36
+00:01:42,725 --> 00:01:44,480
+I will assume you are already familiar with
+
+37
+00:01:44,480 --> 00:01:46,250
+how to train and predicted deep neural network,
+
+38
+00:01:46,250 --> 00:01:49,405
+so we'll skip steps one and two and work with that example data.
+
+39
+00:01:49,405 --> 00:01:51,705
+We'll focus instead on step three,
+
+40
+00:01:51,705 --> 00:01:57,760
+namely how to perform the differentially private query for each example using toy data.
+

@@ -1,0 +1,40 @@
+To ground our discussion of differentially private deep learning,
+let's consider a scenario.
+Let's say you work for a hospital,
+and you have a large collection of images about your patients.
+However, you don't know what's in them.
+You would like to use images develop
+a neural network which can automatically classify them.
+However, since your images aren't labeled,
+they aren't sufficient to train a classifier.
+Whoever, being a cunning strategist,
+you realize that you can reach out to 10 partner hospitals,
+which do have annotated data.
+It is your hope to train your new classifier on
+their datasets so you can automatically label your own.
+While these hospitals are interested in helping,
+they have privacy concerns regarding information about their own patients.
+Thus, you will use the following technique to train a classifier
+which protects the privacy of the patients in the other hospitals.
+So first, you'll ask each of the 10 hospitals to train a model on their own datasets,
+so generating 10 different models.
+Second, you'll then use each of these 10 partner models to predict on
+your local dataset generating
+10 labels for each of your datapoints for each of your images.
+Then, for each local datapoint, now with 10 labels,
+you will perform a differentially private query to
+generate a final true label for each example.
+This query will be a max function,
+where max is the most frequent label
+across the 10 labels assigned for each individual image.
+We will then need to add Laplacian noise to make this
+differentially private to a certain epsilon delta constraint.
+Finally, we will then retrain a new model on our local dataset,
+which now has these labels that we have automatically generated.
+This will be our final differentially private model.
+So let's walk through these steps.
+I will assume you are already familiar with
+how to train and predicted deep neural network,
+so we'll skip steps one and two and work with that example data.
+We'll focus instead on step three,
+namely how to perform the differentially private query for each example using toy data.

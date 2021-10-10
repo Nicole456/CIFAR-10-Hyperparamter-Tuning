@@ -1,0 +1,35 @@
+In the previous course,
+we had federated learning where we designed a new way for our gradient to be aggregated.
+In particular, in the last project,
+you were able to use the end get and send functionality to make it so that
+individual data owners could send gradients
+directly to each other before sending it up to the module owner.
+While this was certainly a nice feature,
+in the real world,
+we would like to be able to choose arbitrary individual,
+someone totally separate from this situation,
+to be able to perform the gradient aggregation.
+So this brings us to our first lesson of this course,
+where we can use the same technology,
+the same API from last lesson to instead have a trusted aggregator.
+In theory, this is a neutral third party who has a machine
+that we can trust to not look at the gradients when performing the aggregation.
+This is advantageous over the last setup because instead of having
+to trust one of the data owner to perform aggregation,
+who is plausibly sympathetic to the privacy desires of the other data owners,
+but could still be malicious.
+Allowing a third neutral party means that,
+we can choose anyone on the planet,
+meaning that we have a much larger pool to search for in terms of looking for
+trustworthy people and the likelihood that we
+can find the trust with the person is much higher.
+So next I would like for you to take this on yourself.
+For our first project,
+I'd like for you to modify the project you've finished in the last module
+and instead have a trusted secure aggregator,
+third party, perform the gradient aggregation,
+instead of having the data owners do it themselves.
+You can perform this on any arbitrary data set or model,
+it need not be large or complex.
+You need only demonstrate that,
+the neutral third party performs the gradient aggregation.

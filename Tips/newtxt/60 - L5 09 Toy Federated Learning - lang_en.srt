@@ -1,0 +1,227 @@
+In this lesson, we're going to build what we just learned about in Pi sift
+and train our first federated learning model.
+Now, that's going to be about as simple as it can get.
+What we're going to do is, we're going to just distribute
+a tiny toy data set across two different workers,
+and then we're going to show and learn how we can
+train a model while the data stays on those workers.
+First what we want to do is we want to create
+a simple model that can learn from some data.
+Then we'll look at the processes that we
+want to take to be able to train it using federated learning.
+So let's start. So we'll create some data.
+Say, I've got some data code here.
+So this data code is just,
+this should look very familiar, we used it above.
+It's got two inputs and one output for each example
+and we're going to train a simple linear model like we did a few lessons back.
+So we need to have in it. So from torch import nn.
+I think really the optimizer too.
+There we go. So we have a simple linear model.
+So what's the first thing we're going to do is?
+We want to create our optimizers.
+So stochastic gradient ascent.
+Params equals model dot.
+This is just normal PyTorch code, right?
+The first thing that we need to do in our loop is
+zero out our gradients. Then, let's make a prediction.
+So predict equals model data, beautiful.
+We want to calculate the loss function.
+So we can do is explicitly.
+So we're going to use mean squared error loss here.
+I propagate that. Take a step to our optimizer.
+Then let's just print the loss. Cool perfect.
+All right, so now if we did this multiple times,
+we should see this loss go down.
+So we'll say, 20 iterations.
+Actually that's because of variable,
+and we'll have a train method. There we have it.
+A simple linear model that can learn on some toy data.
+So how do we make this federated?
+Well, the first thing we need to do is set up our example.
+So right now all of our data is with us.
+So you might imagine that our data is in the cloud,
+we're on the centralized machine right now.
+So when we think about this code,
+we think about what we are allowed to access, what we're allowed to use.
+Kind of view ourselves internally and our mind as the central server.
+What we would like to do is actually move this data off
+to individual machines somewhere else that are owned by
+other people so that we can then go through the exercise of trying to train
+a model that's doing training on those machines.
+The first thing to do is split our data into
+different pieces and then send it to two different workers.
+I believe we still have Bob and Alice from these examples.
+Bob and Alice, perfect.
+So let's take our data and make data Bob
+which is the first two rows, and we'll send it to Bob.
+Target Bob will be the first two rows of data again and we'll send it to Bob.
+So those are collated with Bob,
+co-located with Bob rather.
+We'll have data Alice equals data,
+we'll send it to Alice.
+Realize this should be target, perfect.
+All right, now let's take these and put these in a list of tuples.
+So we'll say data sets equals,
+and then our first one is Bob.
+So data, Bob, target Bob.
+Then our second one can be data Alice, target Alice.
+Now, I want to use the same model and we're going to use the same optimizer.
+Perfect. So again, most of this is still very familiar PyTorch code.
+The only thing that's different is just the fact that now we
+distributed our data set across Bob and Alice's machines.
+So the first half of our data set is on Bob's machine and
+the second half of our data set is on Alice's machine.
+So in our for loop, previously,
+we iterated over every example and we basically trained on the whole data set.
+This one batch.
+We trained in the whole thing, every time step.
+But now, we have an extra for loop where we iterate over
+each individual person in our example.
+So let's see here.
+So let's just say that we have one example.
+So we'll say, target data.
+Target equals data sets zeros.
+This is the first data set.
+If we look at data, it is a pointer.
+So that's appointed tensor and the ID of the pointer is this number,
+the idea to pointer on Bob's machine.
+So this is a pointer to this tensor that's located on Bob's machine.
+So before we really get started here, we have an issue.
+So our model is located here or as our data is located on Bob's machine.
+So the first thing we need to do is say, model equals models.senddata.location.
+So if you remember,
+when we talked about pointers,
+each pointer has a reference to the worker,
+the virtual worker that exists on the other machine.
+In this case, we're dealing with virtual workers.
+This actually is the workers,
+this is the Python object that we interact with.
+In the case of this being a pointer to another machine,
+this is a client that basically knows how to send messages to the other worker.
+But for all intents and purposes,
+we can just treat this as the worker. So what does this line do?
+This line iterates through every tensor inside this model.
+So in this case, it's a weights tensor in a bias tensor,
+because linear model has two tensors.
+So in basically, every tensor in model.parameter.
+So both of these tensors.
+It's going to call dot send in place on all those tensors.
+So if I run this and then look at the parameters again,
+as you can see now, they're all pointers to data that is elsewhere.
+So the nice thing here is that this convenience function that allows us to say,
+hey take this model and send it to wherever the data happens to be located.
+So that's going to be our second step.
+Now the next thing that we can do is same steps that we did before.
+So we'll call zero grad and optimizer,
+which was zero at the gradients.
+Pred equals model data.
+So this makes it prediction.
+Use the wrong handle there. There we go.
+Again, actually, this was a useful error.
+So this was the error.
+This is the wrong image now because I passed in the wrong tensor.
+So underscore data, which is from right here and then we're going to say
+loss equals pred minus target squared and take the sum.
+I did it again. Silly me.
+Lost.backward. Again, all this is being executed on the remote machine and then opt.step.
+One last thing which brings the model back to us.
+So now, the first thing that we do.
+Send the model to the remote worker,
+send the model to the data.
+This is the federated part.
+Do normal training. Get smarter model back.
+As you can see, we can train in this way.
+However, the even nicer thing is that now we can iterate through this data sets
+object and our model will send in train at all the locations that the data is located in.
+Pretty cool, huh? So now, we wrap this into an outer iterator. There we go.
+Now, our model trains across a distributed data set.
+Now this is a very small change.
+Thanks to the convenience of the PySyft library
+most of our code still looks like normal PyTorch code,
+and we have a full flexibility of the PyTorch API at our disposal.
+The only thing that we really needed to change was where
+the model was located when we were performing federated learning.
+Now, this takes an important step towards preserving the privacy of our users.
+However, there are still a couple of issues with this particular example.
+When we go into the next examples in the next lessons,
+they're really going to be focusing on how we can further alleviate
+and further preserve the privacy of the individuals who are involved.
+So the first one is this.
+So if you think about this model being sent,
+trained on one example and then we're getting it back,
+if I look at the diff between these two models,
+it's quite possible that I could really reverse engineer quite a bit of information about
+what this data actually does or what the data actually is on the other machine.
+So for example, if you're familiar with word embeddings.
+So often a neural net will have word embeddings.
+Maybe it's a sentiment classifier or
+you're training a word to vec model or something like this.
+If say I send the model to Bob,
+Bob performed one batch of training on a tweet.
+For example, maybe the tweet said,
+"I like purple peanuts."
+Then, Bob sent them all back to me after having only trained on that one tweet.
+Well, I could look inside my word embeddings and I can say,
+"Hey, which embeddings actually changed?
+Which embeddings did Bob modify?"
+What that would end up telling me is that
+the only embeddings that Bob actually modified were,
+"I like purple and peanuts."
+This would allow me to basically reverse engineer Bob's data by just
+looking at the difference between the model that I send and the model that I got back.
+Now, there are two main ways that we mitigate this.
+The first one is that we just train more than one iteration.
+So when we train over and over and over again,
+we train with a large amount of data on Bob's machine like this
+further gives Bob a certain degree of privacy because it becomes
+more difficult to reverse engineer what the gradients,
+where as Bob works with more data.
+So in the case of the word embeddings example,
+if Bob actually modifies every word embedding because he trains
+on all of the English Wikipedia when I sent the model to him,
+then it would be much more difficult to know exactly what it said.
+But this is again still a bit of a hand-wave issue.
+It's not really solving the problem of
+guaranteeing that we can't reverse engineer something from from Bob's data.
+So the next strategy that we employ is that instead
+of bringing the model directly back to us and then sending it to Alice,
+we instead train multiple different models in parallel on different workers,
+on different people's data sets.
+So that then we can average those models together and the only model that we see,
+the only model that we get back to us is an average of multiple people's models.
+If you've already taken the differential privacy section of this course,
+then you'll be familiar with the concept that when we average information,
+when we take sums of information across multiple different people,
+then we begin to be able to create
+plausible deniability as to who actually modified each weight.
+This matters here.
+So for example to go back to the word embedding example,
+let's say that I was training on a Twitter corpus across a 100 different people.
+So I sent a copy of the model to
+a 100 different people and each of them trained a few 1,000 tweets on the local machine.
+Then I get back a model and I can see all the different word embeddings that are
+modified and someone modified the word password.
+The trouble is that because the model has already been averaged,
+I don't know which person
+actually touched the word embedding password. Could have been multiple people.
+Could have been just one person.
+It's tough for me to know.
+If you remember the definitions that we have previously about epsilon and delta,
+then if we add a little bit of noise after the aggregation,
+then we can further protect the privacy of
+individuals such that maybe no one touched the password,
+and this is actually just a little bit of the noise that was
+added to the model during the aggregation process.
+So as you can see,
+this is really where we start to cross over from
+just pure remote execution back into
+some of the concepts and the core concepts around privacy
+that we learned about in the differential privacy section.
+But first, before we get to all this,
+we're going to figure out how we can train
+a model on multiple different workers at the same time
+and secondly how can we properly perform the great aggregations,
+and then really building out the tools that we're going to need for this and
+the extensions of PySyft that we're going to need to know about to use this.
+So we're going to unpack in the next section. See you there.

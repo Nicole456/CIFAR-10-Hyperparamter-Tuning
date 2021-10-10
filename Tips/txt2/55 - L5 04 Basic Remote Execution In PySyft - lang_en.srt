@@ -1,0 +1,328 @@
+1
+00:00:00,000 --> 00:00:02,670
+The essence of federated learning is the ability to train
+
+2
+00:00:02,670 --> 00:00:05,685
+models in parallel on a wide number of machines.
+
+3
+00:00:05,685 --> 00:00:08,220
+In order to do this, we first need the ability to tell
+
+4
+00:00:08,220 --> 00:00:11,655
+remote machines to execute operations required for deep learning.
+
+5
+00:00:11,655 --> 00:00:14,609
+Thus, instead of using torch tensors locally,
+
+6
+00:00:14,609 --> 00:00:19,410
+we're now going to work with pointers to tensors that exist on a different machine.
+
+7
+00:00:19,410 --> 00:00:21,000
+However, in order to do this,
+
+8
+00:00:21,000 --> 00:00:25,785
+we first need to know what is an interface to another machine really look like.
+
+9
+00:00:25,785 --> 00:00:31,025
+Fortunately, Pysyft creates this interface for us through something called a worker.
+
+10
+00:00:31,025 --> 00:00:34,640
+The first thing we're going to create is called a virtual worker.
+
+11
+00:00:34,640 --> 00:00:36,814
+What this really does is it just simulates
+
+12
+00:00:36,814 --> 00:00:39,875
+the interface that we might have to another machine.
+
+13
+00:00:39,875 --> 00:00:43,835
+Now a worker in the context of Pysyft really is a new kind of primitive.
+
+14
+00:00:43,835 --> 00:00:48,650
+So whereas PyTorch and TensorFlow are both solely focused around the primitive type,
+
+15
+00:00:48,650 --> 00:00:51,325
+the core type of a tensor, with Pysyft,
+
+16
+00:00:51,325 --> 00:00:54,590
+we have tensors that are owned by a variety of different machines,
+
+17
+00:00:54,590 --> 00:00:55,850
+a variety of different workers.
+
+18
+00:00:55,850 --> 00:00:59,210
+So these workers form another core primitive of the framework.
+
+19
+00:00:59,210 --> 00:01:01,160
+Now, workers really quite something simple.
+
+20
+00:01:01,160 --> 00:01:03,530
+It's just a collection of objects.
+
+21
+00:01:03,530 --> 00:01:05,090
+In most cases, these objects will be
+
+22
+00:01:05,090 --> 00:01:07,490
+simple tensors that we are trying to perform operations with,
+
+23
+00:01:07,490 --> 00:01:10,895
+but sometimes they can be other kinds of objects as well. Let's try it out.
+
+24
+00:01:10,895 --> 00:01:13,130
+So if I create a little bit of data here,
+
+25
+00:01:13,130 --> 00:01:15,800
+I can then use the first piece of functionality that PySyft
+
+26
+00:01:15,800 --> 00:01:18,620
+added to PyTorch and send this data to Bob.
+
+27
+00:01:18,620 --> 00:01:21,920
+Now, if I look inside of Bob's objects collection,
+
+28
+00:01:21,920 --> 00:01:27,020
+I see indeed the tensor that I had originally initialized was actually sent to Bob.
+
+29
+00:01:27,020 --> 00:01:28,615
+But now this begs the question,
+
+30
+00:01:28,615 --> 00:01:30,120
+what was returned when I sent it?
+
+31
+00:01:30,120 --> 00:01:33,480
+This is where PySyft power really starts to be shown for the first time.
+
+32
+00:01:33,480 --> 00:01:37,130
+What was returned to me was a pointer to the remote object.
+
+33
+00:01:37,130 --> 00:01:43,525
+Now, pointer is actually a kind of tensor and it has the full tensor API at its disposal.
+
+34
+00:01:43,525 --> 00:01:48,965
+However, instead of actually executing these commands locally like a normal tensor would,
+
+35
+00:01:48,965 --> 00:01:54,695
+each command is serialized to a simple JSON or tuple format sent
+
+36
+00:01:54,695 --> 00:01:57,140
+to Bob and then Bob executes it on
+
+37
+00:01:57,140 --> 00:02:00,500
+our behalf and returns to us a pointer to the new object.
+
+38
+00:02:00,500 --> 00:02:02,630
+Now, there are few assets on these pointers that are
+
+39
+00:02:02,630 --> 00:02:04,790
+required in order for this to be doable.
+
+40
+00:02:04,790 --> 00:02:08,240
+The first one is location. So we go x.location.
+
+41
+00:02:08,240 --> 00:02:11,960
+We see that this pointer is pointing towards Bob and we
+
+42
+00:02:11,960 --> 00:02:15,330
+actually go check and see is x.location equal to Bob,
+
+43
+00:02:15,330 --> 00:02:16,790
+the answer is true.
+
+44
+00:02:16,790 --> 00:02:21,805
+X has an ID at location and then x has an ID as well.
+
+45
+00:02:21,805 --> 00:02:26,675
+These two pieces of metadata actually allow x to communicate with Bob.
+
+46
+00:02:26,675 --> 00:02:30,905
+So whenever you try to perform a command say addition or subtraction using x,
+
+47
+00:02:30,905 --> 00:02:36,285
+it's going to send a message to self.location and say, "Hey,
+
+48
+00:02:36,285 --> 00:02:38,390
+Bob, find the tensor that has
+
+49
+00:02:38,390 --> 00:02:42,520
+this particular ID and execute the command that I would like for you to execute."
+
+50
+00:02:42,520 --> 00:02:47,435
+There's one more attribute that all tensors and PySyft have which is an owner.
+
+51
+00:02:47,435 --> 00:02:50,155
+In this case because we are the client,
+
+52
+00:02:50,155 --> 00:02:52,590
+the owner defaults to be me.
+
+53
+00:02:52,590 --> 00:02:56,630
+This reveals one other worker which was created without our knowledge.
+
+54
+00:02:56,630 --> 00:03:01,955
+This was created when we first imported and hooked PySyft into PyTorch.
+
+55
+00:03:01,955 --> 00:03:04,250
+This is a worker called local worker.
+
+56
+00:03:04,250 --> 00:03:08,090
+So you see, whenever we actually communicate with a remote machine,
+
+57
+00:03:08,090 --> 00:03:11,840
+what we're really doing whenever we execute a command regarding acts is we're saying,
+
+58
+00:03:11,840 --> 00:03:16,270
+"Hey, local worker, contact Bob and tell him to do this."
+
+59
+00:03:16,270 --> 00:03:19,210
+So there's a connection between local worker and Bob
+
+60
+00:03:19,210 --> 00:03:22,315
+and any other workers it's sort of learn about each other.
+
+61
+00:03:22,315 --> 00:03:24,145
+So let's execute one of those commands now.
+
+62
+00:03:24,145 --> 00:03:25,720
+So if I go x.get,
+
+63
+00:03:25,720 --> 00:03:28,870
+just to remind you that x is a pointer,
+
+64
+00:03:28,870 --> 00:03:31,620
+and I will actually get the information back from Bob.
+
+65
+00:03:31,620 --> 00:03:34,055
+If I go and look in Bob objects,
+
+66
+00:03:34,055 --> 00:03:38,090
+you'll see that Bob no longer has any tensors anymore.
+
+67
+00:03:38,090 --> 00:03:39,460
+Because you can see this is
+
+68
+00:03:39,460 --> 00:03:42,970
+a very powerful interface that allows us to do everything that
+
+69
+00:03:42,970 --> 00:03:48,580
+PyTorch can normally do but we can execute it on arbitrary remote machines.
+
+70
+00:03:48,580 --> 00:03:51,490
+We will see that this pointer interface actually allows us to
+
+71
+00:03:51,490 --> 00:03:55,870
+coordinate large complex protocols such as Federated Learning with ease.
+
+72
+00:03:55,870 --> 00:03:59,495
+In the next section, what I'd like for you to do is play around with this.
+
+73
+00:03:59,495 --> 00:04:03,890
+So what I would first like you to do is to extend
+
+74
+00:04:03,890 --> 00:04:08,300
+this use of send and instead create two workers.
+
+75
+00:04:08,300 --> 00:04:11,485
+So I want you to create a Bob worker and then Alice worker.
+
+76
+00:04:11,485 --> 00:04:17,630
+Then, I want you to boost send and get a tensor to both of those workers simultaneously.
+
+77
+00:04:17,630 --> 00:04:22,760
+So instead of just calling.send you're going to call.send Bob and Alice. All right.
+
+78
+00:04:22,760 --> 00:04:25,375
+So go ahead and take a shot at that project,
+
+79
+00:04:25,375 --> 00:04:26,490
+get used to this interface,
+
+80
+00:04:26,490 --> 00:04:28,665
+get PySyft imported to your system,
+
+81
+00:04:28,665 --> 00:04:30,130
+and in the next video,
+
+82
+00:04:30,130 --> 00:04:32,920
+I'll show you how I would execute this program.
+

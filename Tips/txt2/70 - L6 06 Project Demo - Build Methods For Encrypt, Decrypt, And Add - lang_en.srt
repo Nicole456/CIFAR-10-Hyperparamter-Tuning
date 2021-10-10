@@ -1,0 +1,376 @@
+1
+00:00:00,000 --> 00:00:04,155
+So in this video I'm going to show you how I would create these different methods,
+
+2
+00:00:04,155 --> 00:00:06,810
+which can implement this additive secret sharing protocol.
+
+3
+00:00:06,810 --> 00:00:09,540
+So the first thing that we want to be able to do was,
+
+4
+00:00:09,540 --> 00:00:11,295
+define an encrypt method.
+
+5
+00:00:11,295 --> 00:00:16,695
+So we had a requirement for this where the encrypt method except the tuple,
+
+6
+00:00:16,695 --> 00:00:20,460
+we're going to call it x, and then a number of shares that it should create.
+
+7
+00:00:20,460 --> 00:00:22,530
+We're going to set that to be default to three.
+
+8
+00:00:22,530 --> 00:00:24,855
+Now, as you move from the protocol,
+
+9
+00:00:24,855 --> 00:00:28,710
+encryption is really about generating three shares such
+
+10
+00:00:28,710 --> 00:00:32,775
+that when we sum them together and take a modulus of that sum,
+
+11
+00:00:32,775 --> 00:00:34,905
+modulus, some large prime,
+
+12
+00:00:34,905 --> 00:00:38,610
+that it will decrypt to the correct value.
+
+13
+00:00:38,610 --> 00:00:42,870
+So the first thing we're going to do is outside of the actual method,
+
+14
+00:00:42,870 --> 00:00:46,200
+is populate a list of shares.
+
+15
+00:00:46,200 --> 00:00:47,910
+So as an empty list, we're going to put
+
+16
+00:00:47,910 --> 00:00:50,860
+our shares and the first thing I can do is actually,
+
+17
+00:00:50,860 --> 00:00:54,110
+under the assumption that we are generating three shares,
+
+18
+00:00:54,110 --> 00:00:57,050
+I can generate the first two shares, totally randomly.
+
+19
+00:00:57,050 --> 00:01:00,620
+Then it is just about figuring out what to set the third share value two,
+
+20
+00:01:00,620 --> 00:01:05,240
+so that their sum, actually sum to the appropriate number, modulus Q.
+
+21
+00:01:05,240 --> 00:01:06,800
+Now, first thing we're going to do is,
+
+22
+00:01:06,800 --> 00:01:09,245
+choose a really large Q as well.
+
+23
+00:01:09,245 --> 00:01:10,490
+It'd be a nice thing to have here,
+
+24
+00:01:10,490 --> 00:01:11,660
+we can use this big number here,
+
+25
+00:01:11,660 --> 00:01:14,150
+and then I go for I in range,
+
+26
+00:01:14,150 --> 00:01:23,250
+in share, minus one, shares.append, random per randint, zero to Q.
+
+27
+00:01:23,250 --> 00:01:25,695
+The idea here is that, again,
+
+28
+00:01:25,695 --> 00:01:31,350
+the values of the first two shares don't matter because the only constraint that we have,
+
+29
+00:01:31,350 --> 00:01:33,630
+is that, the all three shares, must sum to something.
+
+30
+00:01:33,630 --> 00:01:34,970
+So once we have the first two shares,
+
+31
+00:01:34,970 --> 00:01:37,810
+we can then use those to calculate what the third share should be.
+
+32
+00:01:37,810 --> 00:01:39,560
+For that, the final share,
+
+33
+00:01:39,560 --> 00:01:44,505
+is just going to be the sum of these shares mod Q,
+
+34
+00:01:44,505 --> 00:01:47,015
+and then we're going to subtract this from Q,
+
+35
+00:01:47,015 --> 00:01:49,310
+which is the difference between,
+
+36
+00:01:49,310 --> 00:01:51,110
+when this wraps around,
+
+37
+00:01:51,110 --> 00:01:54,890
+which is Q and the sum of these values thus far.
+
+38
+00:01:54,890 --> 00:01:58,355
+So this is the distance between when this would basically revert back to zero.
+
+39
+00:01:58,355 --> 00:02:03,080
+Then we do plus x plus whatever our value is and I believe,
+
+40
+00:02:03,080 --> 00:02:05,940
+let's set x to be five for now.
+
+41
+00:02:05,940 --> 00:02:08,370
+The shares append the final share,
+
+42
+00:02:08,370 --> 00:02:10,340
+and now we have our final shares.
+
+43
+00:02:10,340 --> 00:02:12,325
+So now if I were to just say sum,
+
+44
+00:02:12,325 --> 00:02:14,305
+these shares, log Q,
+
+45
+00:02:14,305 --> 00:02:15,625
+we get out five.
+
+46
+00:02:15,625 --> 00:02:17,680
+Perfect, it is exactly what we were trying to do.
+
+47
+00:02:17,680 --> 00:02:21,315
+So this is actually our encrypt method.
+
+48
+00:02:21,315 --> 00:02:24,345
+I did say I wanted to return a tuple,
+
+49
+00:02:24,345 --> 00:02:26,490
+so we can do tuple,
+
+50
+00:02:26,490 --> 00:02:28,365
+and cast this to be a tuple.
+
+51
+00:02:28,365 --> 00:02:31,820
+So now if I say, encrypt, number five,
+
+52
+00:02:31,820 --> 00:02:35,750
+I said in shares, equals 10.
+
+53
+00:02:35,750 --> 00:02:39,200
+That didn't work because we're setting this right here.
+
+54
+00:02:39,200 --> 00:02:41,120
+Perfect. All right. So now,
+
+55
+00:02:41,120 --> 00:02:44,330
+we have the ability to encrypt a number using additive sharing.
+
+56
+00:02:44,330 --> 00:02:46,895
+Okay. Now, let's work on a decrypt method.
+
+57
+00:02:46,895 --> 00:02:50,525
+So a decrypt method is just going to accept shares as input
+
+58
+00:02:50,525 --> 00:02:53,750
+and then return the sum of these shares, mod Q.
+
+59
+00:02:53,750 --> 00:02:54,770
+Easy-peasy.
+
+60
+00:02:54,770 --> 00:02:56,970
+Now, in some cases, in some language,
+
+61
+00:02:56,970 --> 00:02:58,805
+you have to worry about say overflow issue here,
+
+62
+00:02:58,805 --> 00:03:02,010
+where you'd need to actually, mod Q as you're summing up the shares,
+
+63
+00:03:02,010 --> 00:03:04,840
+but this particular case Q isn't that large, so it's not too big of a deal.
+
+64
+00:03:04,840 --> 00:03:08,265
+In Python, it's actually pretty good at managing really large numbers.
+
+65
+00:03:08,265 --> 00:03:10,395
+It's got lots of conveyance items that are put.
+
+66
+00:03:10,395 --> 00:03:13,020
+So now, if I say, decrypt,
+
+67
+00:03:13,020 --> 00:03:17,535
+encrypt, five, boom, decrease back to five. Pretty cool.
+
+68
+00:03:17,535 --> 00:03:21,270
+All right and then the last method we need to do was an add.
+
+69
+00:03:21,270 --> 00:03:24,105
+For that, it accepts two different tuples.
+
+70
+00:03:24,105 --> 00:03:26,150
+Now, you remember, the addition is really just
+
+71
+00:03:26,150 --> 00:03:28,325
+about adding the corresponding shares together.
+
+72
+00:03:28,325 --> 00:03:30,740
+So in this case, this is as simple as,
+
+73
+00:03:30,740 --> 00:03:32,540
+just iterating through each share [inaudible] together.
+
+74
+00:03:32,540 --> 00:03:35,810
+So for I in range, length of a,
+
+75
+00:03:35,810 --> 00:03:40,520
+I guess we could assert then a equals len b,
+
+76
+00:03:40,520 --> 00:03:43,840
+c.append ai plus bi,
+
+77
+00:03:43,840 --> 00:03:47,730
+mod Q, return tuple c. All right.
+
+78
+00:03:47,730 --> 00:03:50,400
+So now, if we said, decrypt,
+
+79
+00:03:50,400 --> 00:03:57,300
+add encrypt five, encrypt 10, made a mistake.
+
+80
+00:03:57,300 --> 00:04:00,325
+Wrong bracket. Supposed to be parentheses.
+
+81
+00:04:00,325 --> 00:04:01,995
+Actually, I think we've said one too many.
+
+82
+00:04:01,995 --> 00:04:03,605
+Boom, there we go.
+
+83
+00:04:03,605 --> 00:04:07,290
+So now, we can do encrypted addition between
+
+84
+00:04:07,290 --> 00:04:10,965
+two numbers that are encrypted into multiple shares.
+
+85
+00:04:10,965 --> 00:04:13,970
+So I guess just to break this apart, the more explicitly.
+
+86
+00:04:13,970 --> 00:04:15,965
+So you can see what these look like,
+
+87
+00:04:15,965 --> 00:04:17,945
+just say there are definitely,
+
+88
+00:04:17,945 --> 00:04:19,985
+generating shares into the hood.
+
+89
+00:04:19,985 --> 00:04:22,670
+Notice every time we do this, it actually generates a different set of shares
+
+90
+00:04:22,670 --> 00:04:25,930
+because they're randomly generated. How about that?
+
+91
+00:04:25,930 --> 00:04:28,550
+But they always do get to the same value.
+
+92
+00:04:28,550 --> 00:04:31,340
+So I hope you've enjoyed this project, and to the next section,
+
+93
+00:04:31,340 --> 00:04:34,040
+we're going to build on this and learn a bit more about the types of
+
+94
+00:04:34,040 --> 00:04:37,010
+things we want to do with this encrypted computation. See you then.
+

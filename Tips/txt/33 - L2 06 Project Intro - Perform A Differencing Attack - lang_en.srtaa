@@ -1,0 +1,18 @@
+In this concept, we're going to explore how to compromise or attack differential privacy.
+In particular, we want to talk about
+the simplest attack, which is called a differencing attack.
+Sadly, none of the functions we've looked at so far are differentially private,
+despite them having varying levels of sensitivity.
+We're going to demonstrate this here by using this differencing attack.
+So let's say we want to figure out a specific person's value in the database.
+If we're able to perform a query using a sum,
+all we would have to do is query for the sum of
+the entire database and then the sum of the entire database without that person.
+In SQL, this might look something like this.
+As you can see, by comparing these two SQL queries,
+we can determine whether John Doe actually had cancer.
+So what I'd like for you to do in the next project is
+perform this differencing attack using the sum,
+mean, and threshold query functions we already created.
+The purpose of this exercise is to give you an intuition for
+how privacy can fail in these environments.

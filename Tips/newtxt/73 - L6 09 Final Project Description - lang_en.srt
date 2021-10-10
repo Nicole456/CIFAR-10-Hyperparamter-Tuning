@@ -1,0 +1,30 @@
+In the final project for this course,
+I'd like for you to build on the first project where you
+perform federated learning with a trusted secure aggregator.
+In this project, I'd like for you to take
+the same neural networks you worked with in the first project,
+and aggregate gradients using additive secret sharing and
+fixed precision encoding as you learn about in the last several lessons.
+Make sure you use at least the three data owners per aggregation.
+This will ensure that no one will ever see anyone's gradients other than their own,
+protecting the privacy without needing to trust a secure aggregator.
+Okay. So in this next project,
+what I would like for you to do is leverage
+this secret sharing technique that you learned about in the last section,
+right using PySyft where you can do a fixed precision of
+encoding of an additive secret sharing tensor,
+and I want you to actually use this to
+aggregate gradients in the federated learning contexts, right?
+So take the same example that we were working with
+towards the beginning of this lesson where we were using
+a trusted third party to form the aggregation and just
+replace the trusted third party with this encryption protocol,
+with this additive secret sharing protocol,
+so that no one actually has to share their own gradients with any other worker directly,
+instead they will encrypt it, right?
+Encrypt the individual values so that you the data scientist can actually pull up
+the model and average the gradients from
+these multiple different workers without
+anyone ever seeing a gradient that isn't their own.
+So I wish you the best of luck with this project,
+and I'll see you in the next section.

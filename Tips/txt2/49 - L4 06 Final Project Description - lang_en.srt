@@ -1,0 +1,44 @@
+1
+00:00:00,000 --> 00:00:01,785
+In this first project,
+
+2
+00:00:01,785 --> 00:00:03,690
+you will be given two things.
+
+3
+00:00:03,690 --> 00:00:05,610
+First, you'll be given a series of
+
+4
+00:00:05,610 --> 00:00:09,780
+labelled private datasets which you must keep differentially private.
+
+5
+00:00:09,780 --> 00:00:11,130
+Second, you'll be given
+
+6
+00:00:11,130 --> 00:00:14,985
+a public unlabeled dataset which you do not need to keep differentially private.
+
+7
+00:00:14,985 --> 00:00:17,250
+Your goal is to use the technique described in
+
+8
+00:00:17,250 --> 00:00:20,805
+the last lesson to automatically label the second dataset.
+
+9
+00:00:20,805 --> 00:00:24,420
+You should then be able to train a model on this second public dataset and get
+
+10
+00:00:24,420 --> 00:00:29,220
+a reasonable level of accuracy on the task given a certain epsilon delta constraint.
+
+11
+00:00:29,220 --> 00:00:31,940
+Good luck in your project, and I'll see you in the next course.
+

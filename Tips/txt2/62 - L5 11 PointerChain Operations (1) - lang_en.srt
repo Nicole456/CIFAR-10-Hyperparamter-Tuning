@@ -1,0 +1,200 @@
+1
+00:00:00,000 --> 00:00:03,360
+In this video, we're going to learn how we can use pointer chains to
+
+2
+00:00:03,360 --> 00:00:08,670
+orchestrate the movement of data directly between remote workers.
+
+3
+00:00:08,670 --> 00:00:13,350
+So the first thing we want to do is clear the objects in Bob and Alice's workers.
+
+4
+00:00:13,350 --> 00:00:21,415
+This will just make it easy for us to see what's going on.
+
+5
+00:00:21,415 --> 00:00:29,710
+Awesome. Let's create some data and send it to Bob and Alice.
+
+6
+00:00:30,860 --> 00:00:34,530
+Specifically, we're going to send the data to
+
+7
+00:00:34,530 --> 00:00:41,020
+Bob and I'm going to send a pointer to that data to Alice.
+
+8
+00:00:47,330 --> 00:00:53,170
+Beautiful. So the command
+
+9
+00:00:53,170 --> 00:00:57,875
+that we're going to learn how to use in this video is called remote_get.
+
+10
+00:00:57,875 --> 00:01:03,645
+It goes like this. So this is an inline command.
+
+11
+00:01:03,645 --> 00:01:11,095
+Instead of calling get directly and pulling say this pointer up to us,
+
+12
+00:01:11,095 --> 00:01:12,605
+up to the local worker,
+
+13
+00:01:12,605 --> 00:01:18,730
+this is actually going to go down to this pointer and call get on this pointer,
+
+14
+00:01:18,730 --> 00:01:24,280
+which just going to pull the data from Bob to Alice.
+
+15
+00:01:24,280 --> 00:01:31,335
+So if I call remote_get, notice x is still the same wrapper.
+
+16
+00:01:31,335 --> 00:01:33,130
+So it's still pointing to Alice,
+
+17
+00:01:33,130 --> 00:01:36,320
+but now Bob doesn't have any data at
+
+18
+00:01:36,320 --> 00:01:40,670
+all and the data itself has moved to Alice. All right.
+
+19
+00:01:40,670 --> 00:01:45,850
+So when we call this remote_get. It was as if we were telling Alice say, "Hey, Alice,
+
+20
+00:01:45,850 --> 00:01:52,905
+call that get on your pointer and pull the data that Bob has to Alice's machine."
+
+21
+00:01:52,905 --> 00:01:57,050
+So we were able to orchestrate this data to
+
+22
+00:01:57,050 --> 00:02:01,935
+move from Bob's to Alice's machine without ever touching our machine.
+
+23
+00:02:01,935 --> 00:02:06,229
+This forms the basis for how we can continue to orchestrate
+
+24
+00:02:06,229 --> 00:02:11,105
+increasingly complex protocols involving larger numbers of workers.
+
+25
+00:02:11,105 --> 00:02:13,340
+Now as it turns out,
+
+26
+00:02:13,340 --> 00:02:16,010
+we don't necessarily have to actually create this
+
+27
+00:02:16,010 --> 00:02:18,700
+whole double send and then remote_get business,
+
+28
+00:02:18,700 --> 00:02:21,770
+we also have the convenience operator for doing this ourselves.
+
+29
+00:02:21,770 --> 00:02:26,040
+So right now, let's say that the data is on Alice's machine.
+
+30
+00:02:26,040 --> 00:02:27,830
+If we want it to move back to Bob,
+
+31
+00:02:27,830 --> 00:02:32,640
+we can go x.move(bob) and
+
+32
+00:02:32,640 --> 00:02:37,875
+then our pointer becomes appointed to Bob instead of being appointed to Alice.
+
+33
+00:02:37,875 --> 00:02:43,025
+So now appointed to Bob and Bob has the data again.
+
+34
+00:02:43,025 --> 00:02:47,655
+Alice, this is a garbage collection issue.
+
+35
+00:02:47,655 --> 00:02:52,970
+This is because we still have a pointer to it.
+
+36
+00:02:52,970 --> 00:02:56,070
+So let me clean up here so you can actually see this.
+
+37
+00:03:06,850 --> 00:03:09,810
+So I'm going to send this to Bob.
+
+38
+00:03:19,360 --> 00:03:21,680
+As you can see,
+
+39
+00:03:21,680 --> 00:03:24,840
+Alice does not have anything yet.
+
+40
+00:03:25,900 --> 00:03:35,190
+x.move(alice), and now Bob
+
+41
+00:03:35,190 --> 00:03:39,345
+doesn't have anything and Alice does.
+
+42
+00:03:39,345 --> 00:03:42,260
+So we have to orchestrate this movement of data
+
+43
+00:03:42,260 --> 00:03:45,530
+directly from one worker to another using the move function.
+
+44
+00:03:45,530 --> 00:03:47,599
+Under the hood inside the move function,
+
+45
+00:03:47,599 --> 00:03:50,420
+it actually first sends the pointer down to
+
+46
+00:03:50,420 --> 00:03:53,720
+the machine you want to move the data to and then calls remote_get.
+
+47
+00:03:53,720 --> 00:03:58,105
+So it just uses the same protocol and move as a convenience operator.
+
+48
+00:03:58,105 --> 00:03:59,840
+Now, in the next video,
+
+49
+00:03:59,840 --> 00:04:03,800
+we're going to talk a bit more about the project that I'd like to use these tools
+
+50
+00:04:03,800 --> 00:04:09,000
+that you've learned so far in the context of Federated Learning. See you then.
+

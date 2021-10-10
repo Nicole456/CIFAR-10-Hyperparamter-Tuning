@@ -1,0 +1,99 @@
+Let's jump into local differential privacy.
+Local differential privacy is where given a collection of individuals,
+each individual adds noise to their data
+before sending it to the statistical database itself.
+So everything that gets thrown into the database is already noised.
+So the protection is happening at a local level.
+So now the question is, how much noise should we add?
+Well, this varies as we'll see.
+Let's start by remembering what we learned about sensitivity in database queries.
+First off, we saw in previous lessons the basic sum query is not differentially private.
+In truth, differential privacy always requires a form of
+randomness or noise added to the query to protect from things like a differencing attack.
+To discuss this, we're going to discuss something called randomized response.
+Randomized response is this really amazing technique
+that is used in the social sciences when
+trying to learn about the high-level trends for some taboo behavior.
+So if you imagine that you are perhaps a sociologist and you want to be able to
+study how many people in a city have committed a certain crime,
+perhaps you're going to study jaywalking.
+So you sat down with 1,000 people and you wanted to ask each individual one hey,
+trust me, I'm not going to tell anyone on you.
+Have you ever jaywalked,
+perhaps in the last week?
+Well, there's this trouble that people are going to be reluctant to divulge
+this information because it's technically a crime in many locations.
+So the sociologist is worried that the results are going to be
+skewed because some subset of population is going to answer dishonestly.
+So there's this amazing technique where in a certain degree of randomness can be added to
+the process such that each individual is
+protected with what's called plausible deniability.
+It works like this. It's really is pretty cool.
+So instead of directly asking each person the question,
+the first thing that a sociologist will do is present the question and then say,
+"I need for you to flip a coin two times
+without me seeing it and if the first coin flip is a heads,
+I want you to answer my yes or no question honestly.
+Did you jaywalk? But if the first coin flip is a tails,
+then I want you to answer this question according to the second coin flip."
+So the idea here is that half the time,
+individuals are going to be answering honestly.
+The other half the time,
+they're going to answer randomly with a 50-50 chance of saying yes or no.
+The interesting thing here is that if a person says, "Yes,
+I have jaywalked in the last week," that person has a certain degree of
+plausible deniability that they're only answering it because of the coin flip.
+So they have this natural level of protection,
+this localized differential privacy.
+They have this randomness applied to
+their specific data point that is local to them and that's what in theory is
+able to give them the protection that gives them the freedom to answer
+honestly and to provide more accurate statistics at the end of the day.
+Perhaps the most extraordinary thing is that over the aggregate,
+over the entire population,
+the individual performing the study can then
+remove this random noise because as you can imagine,
+this process is that it takes the true statistic and averages it with a 50-50 coin flip.
+So in this particular case,
+let's say that 70 percent of people actually jaywalk, like in the real world.
+Then we know that when we perform our survey,
+60 percent of our results will answer yes. Let's take this slowly.
+So since 70 percent of people actually jaywalk,
+this means that roughly half our participants will say yes or no with
+a 50 percent probability and the other will say yes or no with a 70 percent probability.
+Thus when we average these two together,
+the results of our survey will be 60 percent. This is incredible.
+This means that we can take the result of our noise statistic
+and back into the true distribution, the true result.
+We can say since 60 percent of people reported that they jaywalk,
+then we know that the true answer is actually centered around 70 percent and we can do
+all of this without actually knowing whether any individual person jaywalks.
+Pretty incredible. So now one thing we have to
+acknowledge here is that the added privacy comes at the cost of accuracy.
+Even though that we will on average still get the right statistics,
+we're still averaging our initial result,
+60 percent with random noise.
+So if people happen to flip coins in a really unlikely way,
+we might accidentally think that 95 percent of people are jaywalking.
+It's only "in expectation" aka when we have an infinite number of samples,
+an infinite number of participants,
+that this noise disappears and we get the exact true distribution.
+Thus we have gained privacy but we've lost some accuracy,
+especially if we're only sampling over a small number of people.
+This trend is true throughout the entire field of differential privacy.
+Research in differential privacy can thus be grouped into two main themes.
+The main goal of DP is to get
+the most accurate query results with the greatest amount of privacy,
+aka how can we minimize the amount of noise that we are adding,
+while maximizing the amount of privacy?
+The second goal is derivative of this,
+which looks at who trusts or doesn't trust each other in a real world situation.
+Because if you add noise to protect two people who do trust each other,
+that noise was wasted and your query was less accurate than necessary.
+But if you forget to add noise between two people who don't trust each other,
+meaning a database curator and an individual,
+then you put one of them more at risk.
+So we want to minimize a noise accuracy tradeoff.
+One of the strategies there is to create flexible differential privacy strategies
+which fit with how people actually do and don't trust each other in the real world.
+But enough on that. Let's implement local differential privacy for ourselves.

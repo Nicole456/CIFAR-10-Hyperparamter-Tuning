@@ -1,0 +1,120 @@
+Federated Learning is one of
+the most widely deployed techniques in the context of private deep learning.
+The term was coined at Google a few years ago by Brenda McMann, et al.
+And Google has been pioneering this field ever since.
+Federated Learning is a technique for
+training machine learning models on data to which we do not have access.
+So basically, instead of bringing all the data into one machines in the Cloud,
+and training a model,
+we're going to bring that model to the data,
+train it locally wherever the data lives and
+merely upload model updates to a central server.
+So there are several use cases here we're Federated Learning is quite interesting,
+but the first and probably most famous use case is in the context of mobile phones.
+If you're familiar with smart phones,
+when you open your texting app,
+and the texting app tries to predict the next word that you're about to text,
+the machine learning model that actually does that,
+if you have an iPhone or Android,
+it's actually trained using Federated Learning.
+Meaning when you go home at night and you plug in your phone and attach it to Wi-Fi,
+every once in a while, it'll actually do a bit of local training on your device,
+on your own text messages,
+and it will send a new model,
+a slightly smarter model up to the Cloud and then later you'll
+get an updated aggregation of everyone else's model that also went up to the Cloud,
+thus giving you a smarter model.
+So the nice thing about this approach is that you are able
+to benefit from having this texting model inside
+your phone despite the fact that you personally
+are not generating enough training data for it to become intelligent.
+So you're benefiting from this model becoming smart by
+looking at thousands and millions of other phones,
+without any of these people having to divulge
+the private informations contained in their phone,
+and without you having to divulge any private information within your phone.
+In the context of Federated Learning,
+there are also other applications that are very interesting.
+One interesting case is predictive maintenance.
+So, for example, if you own a car.
+Every several 1,000 miles you have to take it in to get an oil change, right?
+We just have this fixed number of miles that we have to do this typically.
+But Federated Learning could be used to try to
+predict when your car needs to go into maintenance
+ahead of time by having a model that actually lives within all cars that are on the road,
+studying when they actually start to break down.
+So in this particular way,
+using various aspects of your climate, how you drive,
+the kind of engine you have,
+these kinds of predictive models could actually become intelligent in doing this.
+The nice thing is that, this wouldn't actually require you to
+upload any data from your car to some sort of central server.
+In theory, a model just comes down to your car,
+it learns how to predict when your car is going to require maintenance and
+it uploads that ability to predict.
+An update to the model,
+backup to the Cloud.
+Another interesting use cases is in wearable medical devices.
+So you can imagine if you have one of those sort of fancy watches,
+or wristbands that's tracking your movement, heart rate,
+or perhaps even your sleep cycles or if you maybe you log your diet online,
+one of these dialoguing apps,
+you can imagine that Federated Learning will allow you to learn
+a machine learning model which could help you optimize certain parts of your health,
+whether it's your diet for having a better sleep cycle,
+or how much you move during the day for accomplishing some sort of wake up.
+Again, the nice thing here is that you by yourself are not
+actually generating enough training data to be able to train a model like this.
+But, if you collaboratively trained as
+single machine learning model with thousands or millions of other people,
+then everyone can benefit from this machine learning model
+without anyone having to upload their data to a central Cloud.
+Finally, one of the other widely deployed use cases
+of Federated Learning is inside of mobile browsers,
+often in the context of ad blocking or an auto-complete.
+So, when you go up to your browser and you start to type
+some website and it tries to predict what
+website it thinks you're trying to refer to, again,
+that's another example where Federated Learning has been
+used out in the world to allow large groups of
+individuals to enjoy the benefits of
+ML models without having to upload all of their data to the Cloud.
+So I hope these examples give you a sense for
+the kind of settings when Federated Learning is useful,
+and really a context for the setup that
+leads to people wanting to use Federated Learning.
+The general challenge is that you have a scenario where
+a dataset is distributed amongst a large number of sources,
+usually because it's being produced by the sources,
+in the context of phone's,
+browser, wearable medical devices,
+or automobiles, for example.
+What we want to do is, we want be able to train a machine learning model on that dataset.
+But you aren't able to aggregate that data set for a variety of reasons.
+Sometimes it's for privacy, right?
+There might be a legal restriction that prevents
+you from aggregating the data to a central server,
+medical data for example has a lot of these kinds of legal restrictions.
+There might be user discomfort.
+So in the case of this ad blocker or autocomplete use case within browsers,
+people don't really want to upload
+every webpage URL that they're going to to some central server if they don't need to.
+Then of course, there are competitive dynamics.
+So if you think in the context that predictive maintenance,
+automobile companies might not want to upload to
+some central server every time one of their automobiles breaks down.
+Now, if it's just within one brand,
+maybe just Ford or something like that, that'd be great.
+But if you can imagine that if Toyota could
+see when Honda cars break down because if some central server,
+there could be some strange competitive dynamics or
+leaks of potentially negative information.
+But Federated Learning isn't just about privacy.
+Often it's used because of engineering constraints.
+As it turns out, Federated Learning can actually be used to reduce the bandwidth cost of
+having to upload datasets to the Cloud by
+allowing training to happen locally inside of these devices.
+So, this is why the contexts of Federated Learning is an incredibly powerful tool.
+It's already been widely deployed to some very substantial use cases,
+and it's one of the things that's really advancing the fastest
+in terms of privacy, preserving technologies.

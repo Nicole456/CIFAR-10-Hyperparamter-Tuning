@@ -1,0 +1,190 @@
+So in this project, we're going to take the code that we wrote in
+the last section and we're going to add one extra feature.
+That extra feature is that we're going to make it so that we can bias
+the first coin flip to be arbitrarily more likely or less likely to be heads.
+The thing that we're going to need to change is how we actually
+reskew the output of our mean query later.
+So the first thing we're going to do is go ahead and copy this query.
+So this is the code that we had from last time.
+We have this first coin flip and we determine
+the likelihood of this coin flip to be a heads or tails based on this threshold.
+So the torch code here actually,
+these outputs, a random distribution of numbers between zero and one.
+So if we look at here,
+it's a bunch of random numbers,
+just uniformly random between zero and one.
+We threshold it so that say 50 percent of them
+on average are above the threshold and 50 percent are below.
+So now, what we want to do in this section is we want to make this adjustable.
+We want to make this a noise parameter which actually
+sets the likelihood that the coin flip will be a heads.
+So let's say 0.2, maybe 0.2 percent probability of being a heads.
+So how does these change things?
+The interesting thing here is all the rest of the pieces are really the same.
+So the first coin flip, we've modified with this a little bit.
+The second coin flip is still a random distribution between a 50/50 coin flip,
+just sometimes we're more or less likely to actually rely on
+the second coin flip depending on
+the likelihood that our first coin flip is a heads or tails.
+Augmented database is still created in the same way
+because it's still based on these two coin flips.
+The part that's different however is how we reskew the results for this mean query later.
+Because the nature of this average is based on
+the idea that we are reskewing the data set to have the same average,
+to have the same mean as the original database.
+We take whatever the actual database was.
+So in one example earlier,
+we mentioned that perhaps 70 percent of people on
+average answered true to whatever the question was.
+We take whatever this distribution is so that we'll say it's centered around
+0.7 and we average it with a distribution that is centered around 0.5,
+then that returns a distribution if they're weighted evenly that's averaged around 0.6.
+So we had a true distribution mean,
+let's just say it was 0.7.
+Then we say that our noise distribution,
+we'll say it's 0.5 because it's a random coin flip.
+A 70 percent of people said yes to our question,
+and then 50/50 coin flip.
+So this means that the augmented database mean is going to
+be "true_dist mean times noise_dist_ mean divided by two."
+Oh, plus, sorry. However, we want to get rid of this random noise
+on average while still keeping the noise that we actually put on each individual entry.
+More importantly, if we are more or less likely to choose as distribution,
+we want to make sure that however we reskew this so that the means are correct,
+we can properly deskew it according to this noise parameter.
+What we really do here is we actually sort of run this mean in reverse.
+We're unaveraging the output of the query.
+So we'll go ahead and pop this out so we can work with it out here.
+So this is the one we're going to work with.
+First, we're going to create a sort of in which it's actually our skewed query.
+So the output of our query.
+So our skewed result,
+which equals augmented database dot float dot mean.
+So it's a skewed result. So this is the wrong result.
+We need to basically unaverage this with 0.5.
+It's being averaged at 0.5 but it's a weighted average and
+that weighted average according to this weight.
+Yeah, let's talk about this analogy down here just a little bit longer.
+So if we say our noise parameter is 0.2,
+in our original example,
+this was 50/50 first coin flip,
+which meant that 50 percent of the time,
+we use the true distribution with a mean of 0.7,
+and 50 percent of the time,
+we use a distribution that also had 0.5.
+So another way of thinking about this is that
+our true distribution mean was being multiplied by noise.
+So half of the time, we're using this distribution,
+and the other half of the time,
+we were using noise distribution mean one minus noise.
+So how do we then reverse this?
+Well, basically we can do simple algebra and pull out
+what the true distribution mean was by removing all these other terms.
+For de-using all these different terms.
+It's going to be a multiplications attraction component because we want to get
+out this value or at least deskew this value according to these others.
+So let's go ahead and do that.
+So the way in which we do this is we say,
+we take our skewed result,
+and we say our final or augments result or private result is going
+to equal our skewed result divided by our noise minus 0.5,
+and the 0.5 is this 0.5 right here.
+Then, we're going to multiply this times noise divided by one minus noise.
+The deal that's going on right here is what
+we're basically deskewing these results so that
+our private result has its mean adjusted according to this noise parameter.
+So this noise parameter was at 0.5,
+then the skewed result,
+the distance between a skewed result and the private result is basically
+this is halfway between the true mean of distribution,
+and the mean of the distribution of 50/50 coin flip.
+So notice that 0.5.
+So 0.5 minus 0.4929, 0.5 minus 0.4858.
+This is roughly half of this,
+so we're doubling the distance because there was a 50/50 average.
+So as we can see, this is the correct algebraic deskewing formula.
+Then we return to the same things we did before.
+Okay. Now, we want to do a similar experiment to what we did last time.
+However, instead of varying the size of the database,
+we want to vary the amount of noise that we're adding to the database.
+So we're going to keep the database, I think it was the size of 100.
+Then, we're going to have this noise parameter.
+Let's start at like 0.1,
+it's relatively low noise 0.2,
+and we're just going to keep doubling and see what happens.
+It's changing less than I expected. Oh, we do not run this.
+There we go. It's changing quite a bit less than expected,
+actually. Let's just keep going.
+Typo. Results. As we increase the amount of noise,
+the difference between on average starts getting quite a bit more.
+But if we counter this with a large dataset,
+then they come back together.
+So the size of the data set allows you to add more noise or
+more privacy protection to
+the individuals who are inside the dataset. This is an interesting trade-off.
+The counter-intuitive thing here is that the more private data you have access to,
+the easier it is to protect the privacy of the people who were involved.
+So the larger this corpus of dataset is,
+the more noise you can add while still getting an accurate result.
+Now, in society, this is actually probably even more counter-intuitive
+because people think of preserving privacy is
+as giving statistician's access to less and less data,
+but in fact, with differential privacy,
+the opposite is true.
+Because the intuition behind differential privacy is about
+saying we want to learn about an aggregation over a large corpus.
+We want to learn something that is common about many different people.
+So one thing might be,
+let's say you're performing statistical analysis of medical records.
+Let's say you're going to identify tumors inside of MRI scans.
+You have a collection of say 1,000 images that have
+the tumors annotated so you're trying to learn how to
+detect tumors inside of individuals.
+When you're performing a statistical analysis,
+you're not actually interested in whether any one of these people has a tumor.
+Now, you're not trying to violate any particular person's privacy, instead,
+you're trying to do a statistical study to understand what do tumors in humans look like.
+You're actually trying to go after information that is fundamentally public but just
+happens to be buried inside of individual private data points.
+More importantly, the way in which
+this technology works is that the differential privacy is a very complex kind of
+filter and the way that the differentially private filter works is that it
+looks for information that is consistent across multiple different individuals.
+It tries to filter out perfect differential privacy
+so no information leakage would, in theory,
+be able to block out any information that is unique about participants in
+your dataset and only let through
+information that is consistent across multiple different people,
+aka allowing you to learn what do tumors in humans look like
+without learning whether any individual person
+that you were studying actually had a tumor.
+That's the nature of this kind of a filter that differential privacy allows us to have.
+But it's only allowed to look for repeating statistical information inside the dataset.
+So if you have a really small data set,
+the odds of it finding the same statistical pattern twice
+are actually pretty low because you only have a few people to look at.
+If you have a dataset of five images,
+every image is totally unique,
+everything's going to look like it's totally private information,
+differential privacy will have to get rid of all the data,
+it won't let anything through,
+even a small amount of noise will totally corrupt the output of your query.
+However, if you have say a million images or maybe,
+in this case, we have 10,000 entries,
+then it becomes a lot easier to learn
+about general characteristics in the dataset because you have
+more data points to look at and compare with each other
+to look for a similar statistical information.
+So what are differentially private mechanisms?
+They're mechanisms that study a dataset and filter out
+any information that is unique to individual points
+in your dataset and try to let through information that is
+consistent across multiple different people in your dataset.
+This is why one of the big takeaways from this project in
+this lesson is really that the larger the corpus of information that you can work with,
+the easier it is for you to protect privacy because it's easier for your algorithm to
+detect that some statistical information is happening in more than one person,
+and thus is not private or unique or sensitive to that person
+because it's a general characteristic of humans more and more generally.
+So it gets a little bit of the philosophy differential privacy.
+In the next lesson, we'll really unpack what this means a bit more formally.

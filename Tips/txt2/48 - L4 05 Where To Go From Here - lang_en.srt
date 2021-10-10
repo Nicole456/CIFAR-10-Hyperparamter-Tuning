@@ -1,0 +1,504 @@
+1
+00:00:00,000 --> 00:00:03,150
+Before moving on to a description of the final project for this section,
+
+2
+00:00:03,150 --> 00:00:06,705
+I first wanted to just take a quick pit stop and talk about
+
+3
+00:00:06,705 --> 00:00:10,460
+where to go from here to continue your education on differential privacy
+
+4
+00:00:10,460 --> 00:00:14,640
+so that the first and most resounding recommendation that I can give right now is to
+
+5
+00:00:14,640 --> 00:00:19,215
+read the Algorithmic Foundations of Differential Privacy by Cynthia Dwork and Aaron Roth.
+
+6
+00:00:19,215 --> 00:00:22,860
+This is the comprehensive book on the subject.
+
+7
+00:00:22,860 --> 00:00:26,910
+I hope that this video series is actually giving you a really great foundation,
+
+8
+00:00:26,910 --> 00:00:31,620
+an intuition and encode examples to be able to work with this book so that the pros are,
+
+9
+00:00:31,620 --> 00:00:33,420
+I mean, it's the definitive work.
+
+10
+00:00:33,420 --> 00:00:37,705
+It's free online because
+
+11
+00:00:37,705 --> 00:00:40,935
+Aaron Roth is actually hosting it for free that people can download.
+
+12
+00:00:40,935 --> 00:00:43,620
+It has the full field.
+
+13
+00:00:43,620 --> 00:00:48,500
+I think was written in what, 2013? So it has lots of very modern mechanisms,
+
+14
+00:00:48,500 --> 00:00:51,605
+some great stories, and great intuitions.
+
+15
+00:00:51,605 --> 00:00:55,985
+I think the most challenging part of it is once you get into it,
+
+16
+00:00:55,985 --> 00:01:00,260
+it delves pretty deeply into the math and the formal proofs.
+
+17
+00:01:00,260 --> 00:01:02,540
+So it might be more challenging and more
+
+18
+00:01:02,540 --> 00:01:05,855
+dense if you're not used to working with this kind of set notation.
+
+19
+00:01:05,855 --> 00:01:11,120
+However, it is truly the definitive work on the subject, the comprehensive work.
+
+20
+00:01:11,120 --> 00:01:12,980
+If you're going to teach a course in differential privacy,
+
+21
+00:01:12,980 --> 00:01:15,185
+this is the textbook that you want to use,
+
+22
+00:01:15,185 --> 00:01:17,480
+and so I highly recommend checking this out.
+
+23
+00:01:17,480 --> 00:01:20,480
+Secondarily, you should certainly check out this paper
+
+24
+00:01:20,480 --> 00:01:23,720
+called The Deep Learning with Differential Privacy, it had some really,
+
+25
+00:01:23,720 --> 00:01:26,940
+really great concepts that I think are going to be quite influential,
+
+26
+00:01:26,940 --> 00:01:28,405
+or actually, are already are quite
+
+27
+00:01:28,405 --> 00:01:31,250
+influential and will continue to be so within the field of deep learning.
+
+28
+00:01:31,250 --> 00:01:33,320
+As far as topics that you should learn next.
+
+29
+00:01:33,320 --> 00:01:35,780
+So if this course was longer,
+
+30
+00:01:35,780 --> 00:01:38,150
+we would have jumped into the exponential mechanism,
+
+31
+00:01:38,150 --> 00:01:39,710
+we would've jumped into moments accountant,
+
+32
+00:01:39,710 --> 00:01:41,630
+which is actually talked about in this paper,
+
+33
+00:01:41,630 --> 00:01:45,030
+as well as differentially private stochastic gradient descent.
+
+34
+00:01:45,190 --> 00:01:49,970
+I'm confident before too long with these algorithms will be present
+
+35
+00:01:49,970 --> 00:01:53,840
+in the existing toolkits for differential privacy.
+
+36
+00:01:53,840 --> 00:01:55,340
+They should be relatively easy to use.
+
+37
+00:01:55,340 --> 00:01:56,390
+So at the very least,
+
+38
+00:01:56,390 --> 00:01:59,030
+you want to become familiar with the interfaces and the
+
+39
+00:01:59,030 --> 00:02:02,270
+APIs of what these algorithms signify and mean.
+
+40
+00:02:02,270 --> 00:02:05,000
+Then finally, there's a bit of advice.
+
+41
+00:02:05,000 --> 00:02:07,430
+So if you're used to doing deep learning,
+
+42
+00:02:07,430 --> 00:02:10,820
+you're probably used to jumping in with both feet first,
+
+43
+00:02:10,820 --> 00:02:13,640
+and then maybe asking questions later.
+
+44
+00:02:13,640 --> 00:02:18,050
+I know that in my own pursuits of deep learning I've been very
+
+45
+00:02:18,050 --> 00:02:23,030
+aggressive to be getting my hands dirty with these techniques,
+
+46
+00:02:23,030 --> 00:02:24,640
+and like really going for it.
+
+47
+00:02:24,640 --> 00:02:29,850
+However, when doing differential privacy,
+
+48
+00:02:29,850 --> 00:02:35,625
+there are some times small nuanced things that can actually cause you negative exposure.
+
+49
+00:02:35,625 --> 00:02:37,760
+People can actually get hurt if
+
+50
+00:02:37,760 --> 00:02:40,540
+private information gets leaked because something wasn't implemented correctly.
+
+51
+00:02:40,540 --> 00:02:46,160
+This is different from a culture that is most popular in AID phone in
+
+52
+00:02:46,160 --> 00:02:48,980
+communities where if you train a model and it
+
+53
+00:02:48,980 --> 00:02:52,280
+gets 99 percent accuracy instead of a 100 percent accuracy,
+
+54
+00:02:52,280 --> 00:02:54,170
+nine times out of 10,
+
+55
+00:02:54,170 --> 00:02:56,780
+it's not going to be that big of a deal.
+
+56
+00:02:56,780 --> 00:03:00,380
+With privacy, it's a bit more like cryptography,
+
+57
+00:03:00,380 --> 00:03:03,950
+where if you're off by just a little bit sometimes that can actually be
+
+58
+00:03:03,950 --> 00:03:09,185
+a catastrophic mistake that someone can exploit to then steal lots of information.
+
+59
+00:03:09,185 --> 00:03:11,345
+So for your actual deployments,
+
+60
+00:03:11,345 --> 00:03:14,840
+the first thing is I would recommend to stick with public frameworks that
+
+61
+00:03:14,840 --> 00:03:18,920
+are open-source actively being developed on and lots of people have their eyes on.
+
+62
+00:03:18,920 --> 00:03:21,005
+Because this is an early field,
+
+63
+00:03:21,005 --> 00:03:26,325
+there's still proofs that come out that it push against different techniques.
+
+64
+00:03:26,325 --> 00:03:29,120
+So for example, there's been a paper recently
+
+65
+00:03:29,120 --> 00:03:32,030
+published talking about how for Laplacian distribution.
+
+66
+00:03:32,030 --> 00:03:35,315
+So remember we were using Laplacian distributions for a lot in this course.
+
+67
+00:03:35,315 --> 00:03:40,070
+That if you use a Laplace generating
+
+68
+00:03:40,070 --> 00:03:44,740
+function that isn't implemented in quite the right way,
+
+69
+00:03:44,740 --> 00:03:47,030
+there's actually an exploit to leak
+
+70
+00:03:47,030 --> 00:03:51,030
+more information based on the fact that you're using floating point numbers.
+
+71
+00:03:51,530 --> 00:03:56,270
+Even if you implemented the algorithm correctly as described in this course,
+
+72
+00:03:56,270 --> 00:03:57,710
+as describing Cynthia Dwork's books,
+
+73
+00:03:57,710 --> 00:03:59,780
+there can still be little gotchas in
+
+74
+00:03:59,780 --> 00:04:02,210
+the actual computer science implementation of these things
+
+75
+00:04:02,210 --> 00:04:07,010
+just like there can be little gotchas in work around in cryptography.
+
+76
+00:04:07,010 --> 00:04:09,320
+So writing cryptography libraries can be very challenging.
+
+77
+00:04:09,320 --> 00:04:11,480
+So all there's to say, if you actually are interested
+
+78
+00:04:11,480 --> 00:04:13,640
+in implementing this within your own organization,
+
+79
+00:04:13,640 --> 00:04:15,320
+I highly recommend sticking with
+
+80
+00:04:15,320 --> 00:04:19,010
+public published code that people are vetting, and people are backing,
+
+81
+00:04:19,010 --> 00:04:21,470
+that people are doing DevOps on,
+
+82
+00:04:21,470 --> 00:04:24,230
+because if you tried to roll the whole thing from
+
+83
+00:04:24,230 --> 00:04:26,750
+scratch yourself it's going to be more challenging,
+
+84
+00:04:26,750 --> 00:04:28,190
+and it's going to be more likely that you'll
+
+85
+00:04:28,190 --> 00:04:31,465
+introduce vulnerabilities that you might not know about.
+
+86
+00:04:31,465 --> 00:04:34,900
+Secondarily, on a more positive note,
+
+87
+00:04:34,900 --> 00:04:36,560
+join the differential privacy community.
+
+88
+00:04:36,560 --> 00:04:38,060
+So it's a small book,
+
+89
+00:04:38,060 --> 00:04:40,835
+quickly growing community of a very interesting folks
+
+90
+00:04:40,835 --> 00:04:43,880
+at the intersection of some folks going from machine learning background,
+
+91
+00:04:43,880 --> 00:04:46,730
+some folks come from a statistics background,
+
+92
+00:04:46,730 --> 00:04:48,650
+some folks come from a cryptography background.
+
+93
+00:04:48,650 --> 00:04:50,420
+It's a really, really vibrant community,
+
+94
+00:04:50,420 --> 00:04:52,599
+and I've been very pleasantly,
+
+95
+00:04:52,599 --> 00:04:57,150
+maybe not surprised, but I deeply enjoy being around people in this community.
+
+96
+00:04:57,150 --> 00:05:00,620
+They typically have a really strong social bent,
+
+97
+00:05:00,620 --> 00:05:03,620
+they really are interested in actually making the world a better place.
+
+98
+00:05:03,620 --> 00:05:05,910
+I really have enjoyed being a part of this community,
+
+99
+00:05:05,910 --> 00:05:07,670
+I highly recommend doing so yourself.
+
+100
+00:05:07,670 --> 00:05:10,700
+So you can do this by going to conferences, going to workshops,
+
+101
+00:05:10,700 --> 00:05:12,560
+obviously join open-mind slack which we'll
+
+102
+00:05:12,560 --> 00:05:14,630
+talk about I think a little bit the next lesson,
+
+103
+00:05:14,630 --> 00:05:16,490
+with lots of other people who are interested in differential privacy,
+
+104
+00:05:16,490 --> 00:05:18,935
+but it's really a vibrant group and I highly recommend it.
+
+105
+00:05:18,935 --> 00:05:23,540
+Third, don't get too ahead of yourself on deployment.
+
+106
+00:05:23,540 --> 00:05:26,940
+So again, this is a bit more like the first point.
+
+107
+00:05:26,940 --> 00:05:31,865
+You've got a solid introduction to the concept differential privacy in this course,
+
+108
+00:05:31,865 --> 00:05:34,775
+but this is by no means a comprehensive course.
+
+109
+00:05:34,775 --> 00:05:38,855
+This is not enough to do a production deployment at the moment.
+
+110
+00:05:38,855 --> 00:05:44,849
+However, this is I think a great introduction to the field of differential privacy,
+
+111
+00:05:44,849 --> 00:05:47,000
+and ultimately will lead you to the skill sets
+
+112
+00:05:47,000 --> 00:05:49,835
+necessary for production deployments of these algorithms.
+
+113
+00:05:49,835 --> 00:05:53,990
+So the other thing to do is to keep track of state of the research.
+
+114
+00:05:53,990 --> 00:05:55,910
+So there's still research being published.
+
+115
+00:05:55,910 --> 00:06:00,810
+Many of these algorithms are still debated.
+
+116
+00:06:00,810 --> 00:06:04,310
+So people still try to make counterpoints or maybe this isn't perfectly
+
+117
+00:06:04,310 --> 00:06:08,330
+privacy preserving to stay update on literature because it's a fast-paced field,
+
+118
+00:06:08,330 --> 00:06:10,370
+there's new mechanisms coming all the time.
+
+119
+00:06:10,370 --> 00:06:12,100
+There's new forms of differential privacy,
+
+120
+00:06:12,100 --> 00:06:15,740
+new definitions of differential privacy coming out all the time,
+
+121
+00:06:15,740 --> 00:06:18,170
+and it's really exciting field to be in.
+
+122
+00:06:18,170 --> 00:06:21,890
+But just be very mindful when you're interested in doing this in
+
+123
+00:06:21,890 --> 00:06:25,640
+production in the real world of just how new this field is,
+
+124
+00:06:25,640 --> 00:06:27,095
+how quickly it's changing,
+
+125
+00:06:27,095 --> 00:06:31,795
+and how new the code bases are as well that are actually implemented in these algorithms.
+
+126
+00:06:31,795 --> 00:06:34,900
+Now, enough on that let's jump into the final project.
+

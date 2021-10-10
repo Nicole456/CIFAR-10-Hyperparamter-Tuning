@@ -1,0 +1,271 @@
+In the last section, we generated a vector called new labels.
+This was the output of our private data analysis.
+Meaning that we had 10 different private datasets,
+datasets from private sources that we computed complex function over,
+to generate these new labels.
+Now we're asking the question,
+how much information would leak through these labels if we were to publish them?
+If we were to just put them out on the Internet for anyone to see, like,
+how much epsilon is actually present inside these labels?
+The reason that we care about this is because our true goal is actually
+train a deep learning model using these labels.
+So we have a dataset of cells amount.
+Remember we're a hospital that has our own x-ray scans.
+These are our synthetically generated labels for these x-ray scans.
+These labels came from private information.
+So there's some amount of
+information leakage that would be potentially inside of these new labels.
+We want to answer the question,
+how much epsilon is in total?
+The reason that we care about this is,
+this is really important property in differential privacy,
+which is, it is immune to post-processing.
+Meaning that if a dataset contains a certain amount of private information,
+no amount of post-processing could divulge more information than was in the dataset.
+So if the dataset has five epsilon worth of information in it,
+no amount of post-processing on that would suddenly yield a dataset with six epsilon.
+For example, you can't go up afterwards.
+This is like an information theoretical bottleneck.
+So it's like if I give you one bit of information about me,
+you can't turn that into,
+actually, in two bits.
+If I give you one epsilon about me,
+you can't turn that into two epsilon without
+getting one epsilon about me from someone else.
+So this immunity of post-processing is really important,
+and this is why we care about these labels.
+Because the ultimate claim we want to be able to say is, "Hey,
+we as a hospital now have a deep learning model that
+has a certain level of epsilon contained within,
+or is underneath a certain level of epsilon at a privacy budget."
+The way that we're doing that,
+the way that PATE recommends that we do that is
+instead of trying to train a Deep learning model directly,
+that has a certain amount epsilon,
+we first synthetically generate a dataset that has it at epsilon.
+Then by extension, by this post-processing property of differential privacy,
+we will also know that any Deep Learning model trained on
+this dataset will also satisfy the same epsilon constraint.
+So this is what we care about. Now when we look at this naive epsilon,
+if we were simply just to add up all these epsilons,
+we take the number of labels,
+so 10 labels times the number of predictions, times our epsilon,
+then we would get some massive epsilon that would just be exorbitant,
+and we would never be able to publish.
+However, the clever part of PATE is actually in its epsilon analysis.
+So this is standard,
+kind of Laplace noisy max mechanism.
+But the PATE analysis is really where this algorithm shines.
+Here's where the analysis actually starts to happen.
+So let's just say, for example,
+we have one image worth of labels that came from our 10 different hospitals.
+So we're going to say labels equals num.array.
+We'll say, the first hospital labeled one of our images,
+so we're working with just one of our images in the system.
+So the first hospital took our image,
+read it to their classifier and said, "I think it's labeled nine."
+Second hospital said nine again,
+third hospital said three,
+the fourth hospitals said six,
+and then nine, and then nine,
+and then nine, and then nine, and then eight.
+How many are they? One, two, three, four,
+five, six, seven, eight, nine.
+Then this one said two.
+So now the question is, which one do we think it is?
+Well, clearly we think it's a nine.
+So nine was the one that did the most hospital models
+of our partner hospitals thought this was.
+They thought this was the correct label for our x-ray scan.
+So now if we were to take our counts equals np.bincount labels,
+minlength equals 10, look at counts,
+and indeed we find that label number nine is the one that has the most counts.
+Now, let's go back to our intuitive understanding of differential privacy and say,
+okay, differential privacy, this was about computing functions on private datasets,
+and our definition of perfect privacy was something like if I
+can remove anyone from the input to my database,
+I'll think of anyone for my database,
+and my query to that database does not change,
+then this query has perfect privacy.
+Because the output of my query is not conditioned on any specific person.
+So how does it apply to this example right here?
+The way that applies to this example right here is that instead of saying an individual,
+we're going to say a hospital.
+If I could remove any hospital from my search for the max,
+my arg max function.
+So this is my query.
+I used the result, query result.
+If I could remove any one of these hospitals from this query result,
+and the query result would be identical,
+then we would say, "Perfect privacy." How great is that?
+However, the degree to which we can do this
+is actually somewhat conditioned on what the labels actually were.
+So if all the hospitals agree,
+if every single hospital said,
+"It's labeled nine for sure," then we have very low sensitivity.
+So we know that we can remove any one of these data points,
+and the queries ought to be the same.
+More importantly, we know that we could remove any person
+from the dataset that
+created these labels and the output of this query result be the same.
+Because remember, this nine represents a whole group of people.
+So when we're think about differential privacy and saying, "Hey,
+it's not about numbers,
+it's not about ids,
+it's about people," I could remove a person from
+the dataset that generated this nine and
+the output of my query wouldn't be the same, sorry would be the same.
+How do I know that? Because I know that no matter what happens to this nine,
+this nine could become a 2,976,
+and the most that this query result would still be a nine.
+So if I know that this one,
+the output of the query is not conditioned on this particular value,
+then I also know that the output of my query is not
+conditioned on anything that created this value,
+including all of the people in this hospital.
+If I know that across all of these guys, then we're saying,
+"Man, this is a near perfect query."
+This is not leaking
+any private information because the output of
+this query result is not conditioned at any specific person.
+Now there is one core assumption to this.
+That is, these unique partitions of the data.
+Meaning that the same patient,
+the same person was not present at any two of these hospitals.
+The reason for that is that in theory, hypothetically, that person,
+if they actually participated in the training of all of these models,
+and they were removed in theory, hypothetically,
+it's possible that they could actually change the result of all of
+these models because the models will have learned something
+slightly different such that this output query result was different.
+So that's why the core assumption of
+PATE is that when you partition your dataset into these partitions,
+then you know where the references to people are
+that you're trying to protect. Does that make sense?
+So ultimately, at the end of the day,
+what we're trying to say is the output of this query is immune to
+any specific person being
+removed from all of the data that was used to create this query.
+If we note these partitions are across people,
+then we can use the removal of a whole hospitals with the data as a proxy,
+as a proxy for moving one person.
+The cool thing is that under some conditions,
+we can know for a fact that
+removing any one of these hospitals from
+our calculation wouldn't change the output of the result.
+Now, what does all this have to do with epsilon?
+How do we actually tie this back to epsilon?
+Previous mechanisms that we looked at,
+in our previous calculation to differential privacy,
+we weren't actually looking at the data,
+like we sort of talked about the idea that that's not what you would actually do.
+Well, the cool thing about PATE,
+the PATE analysis is that they actually figured out
+a way to take a pick at these labels and say,
+"Hey, how much do these hospitals really agree or disagree?"
+Because if they all agree,
+I know that my epsilon level is really, really low.
+It's only if they disagree that
+removing a hospital would actually cause my queries all to be different.
+Okay. The PATE analysis is a formal set of mechanisms that's capable of
+doing this and actually computing
+an Epsilon level that is conditioned on this level of agreement.
+So we're going to go ahead and use a tool that has implemented
+this analysis to actually do this.
+Okay. So this tool is in a toolkit called PySyft.
+If you don't have it, go pip install syft and it should import all your dependencies.
+I already have it installed, so I'm not going to worry about that.
+So then we go from syft.frameworks.torch.differential_privacy,
+import pate, pate.perform_analysis.
+Okay. So what I'm going to do
+next is I'm going to actually generate a synthetic dataset again.
+So I've got one pull up over here.
+I'm just going to drop it in.
+This is a similar style of dataset that we had before,
+so num_teachers, num_examples, num_labels.
+We generate some preds, we generate some true_indices.
+This is what the actual labels should be, this is the labels.
+Yeah. We're going to perform our analysis of this.
+So these indices aren't necessarily true but they're the ones that came from up here,
+perform_analysis, and we're going to say that the teacher_preds equals preds.
+I'm going to say that true_indices equals indices.
+We're going to say that noise_epsilon.
+So this noise_epsilon level is the Epsilon level that we used when noising our examples.
+All right. So 0.1 Delta.
+So we got to pick it at a level of Deltas from, remember,
+Epsilon and Delta, 1e negative 5.
+So this is 10 to the power of negative five.
+Cool. Now, if we perform this analysis,
+it returns two things.
+So the first is a data_dependent_epsilon.
+So this is the fancy one.
+This is the one we're actually looks inside and says,
+"Hey, how much agreement is here?"
+Tries to give us sort of the tightest Epsilon that it can,
+and this is the data_independent_epsilon which is looser.
+It's a simpler Epsilon.
+It doesn't actually look at the data to be able to tell.
+As you can see, data_independent_epsilon.
+As you can see, they're very, very, very close to each other.
+However, the data_independent one is slightly higher.
+So this says there is a teeny, teeny,
+teeny, nine amount of agreement between the models.
+It's not surprising that there wasn't much agreement.
+After all, we randomly generated them.
+So now, what are we going to do now?
+What I'd like to do is just give you an intuition and show you that if we were to force,
+if we were to change these predictions and actually
+make it so that there was a certain amount of agreement,
+say if the first five examples all 10 hospitals agreed
+that it was label 0, this would change.
+Let's check it out. Let's rerun it again.
+I have forced the first five examples,
+so all have perfect consensus at zero.
+Now, the data_dependent_epsilon says,
+"This dataset only leaks eight Epsilon as opposed
+to the 11.7 Epsilon that we would have had to leak before."
+So what if we force it to be the first 50?
+So we only had a 100 examples,
+so I'm getting pretty aggressive here.
+Well, then now we get down to 1.52.
+So significantly better privacy leak there.
+Now, there is one thing that is here.
+So we sort of introduce an extreme amount of agreement here,
+and so we sort of push the bounds.
+This actually tracks the number of moments.
+It's a moment tracking algorithm.
+So in reality, we would follow
+these instructions and we would set these moments by default and set to eight.
+So maybe we set this to 20 or something like that.
+But the idea here and the intuition here is that the greater the agreement,
+the more the predictions agree with each other,
+the tighter an Epsilon value we can get.
+So intuitively, when you're using PATE,
+also this has really strong intuition,
+this means that if you can do things with your algorithm to
+encourage models at different locations to agree with each other,
+to find the true signal,
+to not overfit to the data,
+that when you actually combine these together later,
+you're going to find that you have a less privacy leakage
+because each model was better at only memorizing,
+only learning the generic information it was going for.
+For example, what do tumors look like in humans as opposed
+to whether image 576 has a tumor?
+So this PATE framework actually rewards you for creating
+good generalized models that don't memorize
+the data by giving you a better Epsilon levels at the end.
+So I hope that you found this to be quite a compelling framework.
+Now note also that even though we've used
+this sort of healthcare example as like a driving example,
+it doesn't have to be datasets that are required from some of the hospital.
+If you have a private dataset and a public dataset,
+you can leverage labels in the private dataset, split it.
+Split the dataset in the 10 or 100 partitions, train your models,
+train your future models, and then use that to
+annotate your public dataset you can train a model from.
+You don't have to be bringing in data from part organizations,
+you can do all this yourself.
+In fact, in the later project,
+we're actually going to do that.
+So yeah. I hope you've enjoyed this lesson and I'll see you in the next one.

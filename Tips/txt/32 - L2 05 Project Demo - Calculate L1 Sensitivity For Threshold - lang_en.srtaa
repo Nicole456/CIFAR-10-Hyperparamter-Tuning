@@ -1,0 +1,124 @@
+In this video, we're going to calculate the sensitivity for a new kind of function,
+and that function is the threshold function.
+We're first going to define a new query,
+which is computing this threshold function,
+then we're going to create 10 databases of size 10 and compute
+this function over them with a threshold of five and calculate the sensitivity each time.
+So, step number one is to create this new query type.
+So, let's say def query like we did before,
+which passes in a database,
+and then it returns the sum over the database and whether or
+not that is greater than a certain threshold,
+which we'll set the default to be five.
+Now, I know the priority that this actually returns a binary value,
+because it's either greater than or less than.
+So, we want to go ahead and cast it to a float because this is our sensitivity function,
+it's actually equipped to use.
+The interesting thing here is that we run this query on data database.
+So, let's say, let's grab a database iteration function up here.
+Let's create 10.
+So, if we look at database and we just compute a sum over it, notice these changes.
+There is some deviation,
+so sometimes it's going to be greater than
+a threshold and sometimes it's going to be less than threshold.
+So, if we actually query the database, we see this.
+So, sometimes it's one, sometimes it's
+zero and the other interesting thing I want you to consider.
+So, let's go ahead and go at db.sum,
+and let's look for one that's six.
+Okay. So, this database,
+this should return true.
+So, we have db.sum greater than five,
+returns one or returns true.
+So, when it returns one, it's returning a true,
+and when it turns zero, it's actually returning a false.
+So, when we're querying the database, we get one.
+Now, the interesting thing here is that this
+means that there are going to be a parallel databases that could be a five.
+So, this is the nature of how the output of this query
+can change if we remove an individual from the dataset,
+because if we remove someone,
+it could cause this sum to go from
+six to five and thus the threshold to go from true to false.
+However, if we have a database with only four people in it for example,
+well then the query is false, right?
+But no matter who we remove,
+this query is going to continue to be false because removing someone from the dataset
+only makes the output of the query smaller.
+So, this means that for some databases,
+we would have positive sensitivity and for other databases it seems almost as if
+we would have no sensitivity because
+no matter how many people we removed or who we removed,
+the output of this threshold query is no different.
+So, the way we're going check this out,
+is to explicitly compute the sensitivity.
+So, sens_f equals sensitivity of
+the query and number of entries equals five. There we go.
+So, now let's do this 10 times and print out the sensitivity of each.
+So, my theory actually isn't holding up.
+It looks as though our sensitivity is always zero.
+This is very surprising and this to me actually seems
+like it could be a bug of some sort,
+no, entries should be 10.
+Okay. So, we have databases size 10.
+Sometimes the sum is greater than one,
+sometimes it's greater than five,
+sometimes the sum is less than five.
+However, the sensitivity itself changes and what these actually correspond to,
+is a non-zero sensitivity is when the sum of the database is exactly six.
+Because of the sum of the databases is exactly six,
+then it's sitting right above the threshold,
+and so when we remove someone,
+it can actually drop down to five thus
+causing the output of the query to be different and the sensitivity to be one.
+But the rest of the time,
+when the sum of the database is not six.
+So, it's significantly below or significantly above six,
+then [inaudible] of the database doesn't change the output of the query.
+Now, what does this mean?
+In previous examples, we've seen a constant sensitivity.
+We saw some function over binary always has a sensitivity of one,
+and when our mean had a very consistent sensitivity as well,
+but this has a variable sensitivity.
+Now, remember previously I discussed in the previous sections,
+we talked about how we wouldn't actually use this empirical sensitivity in practice,
+because it's very inefficient right and sometimes it's not actually perfectly accurate.
+So, in a context of say, a sum function,
+we can simply know that the maximum sensitivity of a sum over a database is
+the maximum value or maximum range of
+values that any one of those items that you could remove would take on.
+So, in this particular case,
+however this seems to be different because the sensitivity
+here is somewhat dataset specific.
+So, theoretically, the maximum sensitivity of a threshold is always one as well.
+Because the maximum amount that they were moving someone
+from a function including a threshold is one.
+That's the most that it can change,
+you can either go from a one to a zero.
+However, if we actually take a peek at the data,
+we can tell that sometimes it's going to be one and sometimes it's not going to be one.
+Now, when implementing differential privacy for the first time,
+this is how you want to compute sensitivity.
+Like on the [inaudible] you want to compute it theoretically.
+You want to say that, "Hey, I'm doing a threshold that means with sensitivity is one,
+and that's what I'm going to use."
+However, there are some more advanced techniques
+one of which we'll look later that actually allows you
+to kind of take a peek at the data and try to
+understand what's called a data conditioned sensitivity.
+The classic simpler use case that we're going to learn
+about first is not data conditional sensitivity.
+So, sensitivity just based on the function and what we
+know about the potential range of the data.
+But data conditioned sensitivity is
+sensitivity calculated not just based on the range that we know the data can take,
+but actually the values in the database.
+So, this is a database conditioned sensitivity query.
+So, for now when you're working with differential privacy,
+still focus on just the pure theoretical calculation
+of the sensitivity for any given function.
+Just consider in your mind what
+the maximum sensitivity that function could be and eventually,
+we'll get to some of these more advanced concepts that allow
+you to actually look inside at the dataset values.
+I hope it has been educational for you and I'll see you in the next section.

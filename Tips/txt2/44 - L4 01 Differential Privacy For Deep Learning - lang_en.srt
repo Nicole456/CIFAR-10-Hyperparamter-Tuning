@@ -1,0 +1,268 @@
+1
+00:00:00,000 --> 00:00:02,460
+In the last few lessons, you might have been wondering,
+
+2
+00:00:02,460 --> 00:00:04,350
+what does all this have to do with deep learning?
+
+3
+00:00:04,350 --> 00:00:08,160
+Well, it turns out the same techniques that we were just studying formed
+
+4
+00:00:08,160 --> 00:00:10,050
+the core principles for how
+
+5
+00:00:10,050 --> 00:00:13,860
+differential privacy provides guarantees in the context of deep learning.
+
+6
+00:00:13,860 --> 00:00:17,280
+Previously, we defined perfect privacy as something like,
+
+7
+00:00:17,280 --> 00:00:19,200
+a query to a database returns
+
+8
+00:00:19,200 --> 00:00:22,740
+the same value even if we remove any person from that database.
+
+9
+00:00:22,740 --> 00:00:24,210
+If we're able to do that,
+
+10
+00:00:24,210 --> 00:00:26,790
+then no person is really contributing information
+
+11
+00:00:26,790 --> 00:00:30,030
+to the final query and their privacy is protected.
+
+12
+00:00:30,030 --> 00:00:33,605
+We use this intuition in the description of epsilon delta.
+
+13
+00:00:33,605 --> 00:00:35,045
+In the context of deep learning,
+
+14
+00:00:35,045 --> 00:00:38,800
+we have a similar standard, which is based on these ideas,
+
+15
+00:00:38,800 --> 00:00:41,085
+which instead of querying a database,
+
+16
+00:00:41,085 --> 00:00:42,375
+we're training a model.
+
+17
+00:00:42,375 --> 00:00:45,440
+Our definition of perfect privacy would then be something like,
+
+18
+00:00:45,440 --> 00:00:47,900
+training a model on a dataset should return
+
+19
+00:00:47,900 --> 00:00:52,285
+the same model even if we remove any person from the training dataset.
+
+20
+00:00:52,285 --> 00:00:58,340
+So we've replaced, "querying a database with training a model on a dataset".
+
+21
+00:00:58,340 --> 00:01:02,575
+In essence, the training process is actually a query,
+
+22
+00:01:02,575 --> 00:01:04,970
+but one should notice that this adds two points of
+
+23
+00:01:04,970 --> 00:01:07,325
+complexity, which the databases didn't have.
+
+24
+00:01:07,325 --> 00:01:12,490
+First, do we always know where people are referenced in a training dataset?
+
+25
+00:01:12,490 --> 00:01:15,320
+In a database, every row corresponded to a person,
+
+26
+00:01:15,320 --> 00:01:20,000
+so it was very easy to calculate the sensitivity because we can just remove individuals.
+
+27
+00:01:20,000 --> 00:01:21,615
+We knew where all of them were.
+
+28
+00:01:21,615 --> 00:01:23,535
+However, in a training dataset,
+
+29
+00:01:23,535 --> 00:01:26,765
+let's say I'm training a sentiment classifier on movie reviews,
+
+30
+00:01:26,765 --> 00:01:28,565
+I have no idea where
+
+31
+00:01:28,565 --> 00:01:31,070
+all the people are reference inside of that training dataset because,
+
+32
+00:01:31,070 --> 00:01:32,570
+it's just a bunch of natural language.
+
+33
+00:01:32,570 --> 00:01:34,070
+So in some cases,
+
+34
+00:01:34,070 --> 00:01:36,580
+this can actually be quite a bit more challenging.
+
+35
+00:01:36,580 --> 00:01:41,200
+Secondly, neural models rarely ever trained to the same state,
+
+36
+00:01:41,200 --> 00:01:44,560
+the same location even when they're trained on the same dataset twice.
+
+37
+00:01:44,560 --> 00:01:47,660
+So if I train the same deep neural network twice,
+
+38
+00:01:47,660 --> 00:01:50,270
+even if I train over the exact same data,
+
+39
+00:01:50,270 --> 00:01:53,050
+the model is not going to train to the same state.
+
+40
+00:01:53,050 --> 00:01:56,210
+There's already an element of randomness in the training process.
+
+41
+00:01:56,210 --> 00:01:58,700
+So, how do we actually prove or create
+
+42
+00:01:58,700 --> 00:02:01,595
+training setups where differential privacy is present?
+
+43
+00:02:01,595 --> 00:02:04,400
+The answer to the first question by default seems to be,
+
+44
+00:02:04,400 --> 00:02:07,505
+to treat each training example as a single separate person.
+
+45
+00:02:07,505 --> 00:02:09,725
+Strictly speaking, this is often a bit
+
+46
+00:02:09,725 --> 00:02:13,460
+overzealous as many examples have no relevance to people at all,
+
+47
+00:02:13,460 --> 00:02:17,915
+but others may have multiple partial individuals contained within that training example.
+
+48
+00:02:17,915 --> 00:02:21,805
+Consider an image, which has multiple people contained within it,
+
+49
+00:02:21,805 --> 00:02:24,870
+localizing exactly where people are referenced,
+
+50
+00:02:24,870 --> 00:02:28,430
+thus how much the model would change if those people will remove,
+
+51
+00:02:28,430 --> 00:02:29,765
+could be quite challenging.
+
+52
+00:02:29,765 --> 00:02:33,580
+But obviously, there's a technique we're about to talk about that tries to overcome this.
+
+53
+00:02:33,580 --> 00:02:35,630
+The answer to the second question regarding how
+
+54
+00:02:35,630 --> 00:02:38,014
+models rarely ever trained at the same location,
+
+55
+00:02:38,014 --> 00:02:40,790
+how do we know what sensitivity truly is,
+
+56
+00:02:40,790 --> 00:02:45,275
+has several interesting proposed solutions as well which we'll be discussing shortly.
+
+57
+00:02:45,275 --> 00:02:47,160
+But first, let's suppose
+
+58
+00:02:47,160 --> 00:02:50,945
+a new scenario within which we want to train a deep neural network.
+
+59
+00:02:50,945 --> 00:02:54,980
+As mentioned previously, privacy preserving technology is ultimately about
+
+60
+00:02:54,980 --> 00:02:59,300
+protecting data owners from individuals or parties they don't trust.
+
+61
+00:02:59,300 --> 00:03:03,650
+We only want to add as much noise as is necessary to
+
+62
+00:03:03,650 --> 00:03:08,900
+protect these individuals as adding excess noise needlessly hurts the model accuracy,
+
+63
+00:03:08,900 --> 00:03:12,940
+or failing to add enough noise might expose someone to privacy risk.
+
+64
+00:03:12,940 --> 00:03:15,815
+Thus, when discussing tools with differential privacy,
+
+65
+00:03:15,815 --> 00:03:19,580
+it's very important to discuss it in the context of
+
+66
+00:03:19,580 --> 00:03:23,450
+different parties who either do or do not trust each other,
+
+67
+00:03:23,450 --> 00:03:26,780
+so that we can make sure that we're using an appropriate technique.
+

@@ -1,0 +1,50 @@
+In this video, we're going to learn how we can use pointer chains to
+orchestrate the movement of data directly between remote workers.
+So the first thing we want to do is clear the objects in Bob and Alice's workers.
+This will just make it easy for us to see what's going on.
+Awesome. Let's create some data and send it to Bob and Alice.
+Specifically, we're going to send the data to
+Bob and I'm going to send a pointer to that data to Alice.
+Beautiful. So the command
+that we're going to learn how to use in this video is called remote_get.
+It goes like this. So this is an inline command.
+Instead of calling get directly and pulling say this pointer up to us,
+up to the local worker,
+this is actually going to go down to this pointer and call get on this pointer,
+which just going to pull the data from Bob to Alice.
+So if I call remote_get, notice x is still the same wrapper.
+So it's still pointing to Alice,
+but now Bob doesn't have any data at
+all and the data itself has moved to Alice. All right.
+So when we call this remote_get. It was as if we were telling Alice say, "Hey, Alice,
+call that get on your pointer and pull the data that Bob has to Alice's machine."
+So we were able to orchestrate this data to
+move from Bob's to Alice's machine without ever touching our machine.
+This forms the basis for how we can continue to orchestrate
+increasingly complex protocols involving larger numbers of workers.
+Now as it turns out,
+we don't necessarily have to actually create this
+whole double send and then remote_get business,
+we also have the convenience operator for doing this ourselves.
+So right now, let's say that the data is on Alice's machine.
+If we want it to move back to Bob,
+we can go x.move(bob) and
+then our pointer becomes appointed to Bob instead of being appointed to Alice.
+So now appointed to Bob and Bob has the data again.
+Alice, this is a garbage collection issue.
+This is because we still have a pointer to it.
+So let me clean up here so you can actually see this.
+So I'm going to send this to Bob.
+As you can see,
+Alice does not have anything yet.
+x.move(alice), and now Bob
+doesn't have anything and Alice does.
+So we have to orchestrate this movement of data
+directly from one worker to another using the move function.
+Under the hood inside the move function,
+it actually first sends the pointer down to
+the machine you want to move the data to and then calls remote_get.
+So it just uses the same protocol and move as a convenience operator.
+Now, in the next video,
+we're going to talk a bit more about the project that I'd like to use these tools
+that you've learned so far in the context of Federated Learning. See you then.

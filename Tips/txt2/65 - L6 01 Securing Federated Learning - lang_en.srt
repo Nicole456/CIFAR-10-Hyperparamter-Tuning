@@ -1,0 +1,140 @@
+1
+00:00:00,020 --> 00:00:02,130
+In the previous course,
+
+2
+00:00:02,130 --> 00:00:06,240
+we had federated learning where we designed a new way for our gradient to be aggregated.
+
+3
+00:00:06,240 --> 00:00:08,400
+In particular, in the last project,
+
+4
+00:00:08,400 --> 00:00:12,090
+you were able to use the end get and send functionality to make it so that
+
+5
+00:00:12,090 --> 00:00:14,610
+individual data owners could send gradients
+
+6
+00:00:14,610 --> 00:00:18,945
+directly to each other before sending it up to the module owner.
+
+7
+00:00:18,945 --> 00:00:21,165
+While this was certainly a nice feature,
+
+8
+00:00:21,165 --> 00:00:22,365
+in the real world,
+
+9
+00:00:22,365 --> 00:00:25,340
+we would like to be able to choose arbitrary individual,
+
+10
+00:00:25,340 --> 00:00:27,690
+someone totally separate from this situation,
+
+11
+00:00:27,690 --> 00:00:30,105
+to be able to perform the gradient aggregation.
+
+12
+00:00:30,105 --> 00:00:32,975
+So this brings us to our first lesson of this course,
+
+13
+00:00:32,975 --> 00:00:34,760
+where we can use the same technology,
+
+14
+00:00:34,760 --> 00:00:39,545
+the same API from last lesson to instead have a trusted aggregator.
+
+15
+00:00:39,545 --> 00:00:43,355
+In theory, this is a neutral third party who has a machine
+
+16
+00:00:43,355 --> 00:00:47,510
+that we can trust to not look at the gradients when performing the aggregation.
+
+17
+00:00:47,510 --> 00:00:51,080
+This is advantageous over the last setup because instead of having
+
+18
+00:00:51,080 --> 00:00:54,320
+to trust one of the data owner to perform aggregation,
+
+19
+00:00:54,320 --> 00:00:58,040
+who is plausibly sympathetic to the privacy desires of the other data owners,
+
+20
+00:00:58,040 --> 00:00:59,510
+but could still be malicious.
+
+21
+00:00:59,510 --> 00:01:02,120
+Allowing a third neutral party means that,
+
+22
+00:01:02,120 --> 00:01:04,285
+we can choose anyone on the planet,
+
+23
+00:01:04,285 --> 00:01:08,270
+meaning that we have a much larger pool to search for in terms of looking for
+
+24
+00:01:08,270 --> 00:01:10,460
+trustworthy people and the likelihood that we
+
+25
+00:01:10,460 --> 00:01:13,100
+can find the trust with the person is much higher.
+
+26
+00:01:13,100 --> 00:01:16,540
+So next I would like for you to take this on yourself.
+
+27
+00:01:16,540 --> 00:01:17,800
+For our first project,
+
+28
+00:01:17,800 --> 00:01:20,975
+I'd like for you to modify the project you've finished in the last module
+
+29
+00:01:20,975 --> 00:01:24,335
+and instead have a trusted secure aggregator,
+
+30
+00:01:24,335 --> 00:01:27,035
+third party, perform the gradient aggregation,
+
+31
+00:01:27,035 --> 00:01:30,080
+instead of having the data owners do it themselves.
+
+32
+00:01:30,080 --> 00:01:32,820
+You can perform this on any arbitrary data set or model,
+
+33
+00:01:32,820 --> 00:01:34,340
+it need not be large or complex.
+
+34
+00:01:34,340 --> 00:01:35,960
+You need only demonstrate that,
+
+35
+00:01:35,960 --> 00:01:39,970
+the neutral third party performs the gradient aggregation.
+

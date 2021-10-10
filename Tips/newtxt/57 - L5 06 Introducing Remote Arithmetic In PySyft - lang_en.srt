@@ -1,0 +1,60 @@
+In this lesson, we're going to learn a bit more about
+the APIs that pointer tensors offer,
+and the full range of functionality they give us when
+controlling pointers to tensors on other machines.
+The first thing we'd like to do is initialize some data to play with.
+So let's say X equals a torch tensor,
+and we'll send this to bob and Y equals another torch tensor,
+I have the tensor of ones and we'll send this also to bob.
+Now, of course, if we were to send one to Bob and another one to Alice,
+then we couldn't do any functions that involve both tensors because as you'd imagine,
+they wouldn't be on the same machine.
+So as you can see here, we have tensor X which is a pointer tensor,
+where the pointer is located on the worker called me,
+which is the one that's as mentioned previously initialize inside the hook,
+and it has an ID of this 873 in big number.
+But it's pointing to a tensor on Bob with an ID that starts with 99233,
+and Y is quite similar.
+The nice thing about these pointers tensors is that,
+we can just pretend that they're normal tensors.
+So if it goes Z equals X plus Y,
+we've returned a pointer to the output of X plus Y is executed on Bob's machine.
+We'll go Z equals z.get,
+as you can see the output is correct.
+So take this one into a five and add it to one to each of the individual values.
+Now, if you prefer to use some of torches functions instead of using methods,
+you can also go z equals th.add,
+and we pass in x and y,
+and this generates a pointer to the output again and of course we can go equals
+z.get and look at z and we get the same result.
+However torches used for more than
+just simple operations and it actually has some more advanced protocols,
+so if you consider say back propagation.
+So if we were to instead create a couple of tensors which had variable send this to Bob,
+we can even use this more advanced functionality.
+So let's say x equals the.tensor again,
+actually let's just copy these guys from here,
+but instead we're going to say requires grad equals true, floating-point numbers.
+It's now if we go z equals x plus y,
+most sum up to a single number,
+and then z backwards or call back propagation,
+what this would do normally is it will create gradients on x and y.
+So if we actually call x back,
+we have x itself and we get x.grad,
+that's a tensor of once just as it should be.
+So as you can see, the full API of Pi towards that our disposal and as much as possible,
+the craters of PySyft have tried to make it feel like you're using
+normal Pi torch as close as possible to the original API.
+So this leads us to the next project.
+What I'd like for you to do in this project is leveraged
+this API to train a simple linear model.
+So you're going to use sort of the backward function,
+you're going to use variables,
+and you can even use optimizers or things from nn.modules,
+so like nn.Linear for example.
+So you might be familiar with this module, right?
+So and just learn a simple linear model with one core constraint,
+I want the data and the model to be located on Bob's machine.
+So take a step at this project,
+and in the next video,
+I'll show you how I would do this with PySyft.

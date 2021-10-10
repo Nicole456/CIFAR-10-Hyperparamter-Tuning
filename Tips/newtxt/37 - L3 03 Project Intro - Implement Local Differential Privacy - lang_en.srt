@@ -1,0 +1,20 @@
+In this project, what I'd like for you to do is to
+implement randomized response in our database.
+You're going to "flip coins" by just using
+a simple 1/0 random number generator in Python.
+So for each entry in the database,
+you want to flip two coins.
+Generate two random 1/0 responses.
+If the first coin is heads,
+leave the entry in the database as it is.
+If the first coin is tails,
+then reset that entry in the database according to the second coin flipped as you were.
+Then, I want you to perform a query both on
+the original database and on the database which then modified with random bits.
+Perform the mean query on both of these databases.
+Return the results of both queries so that we can compare them.
+After implementing this logic, however,
+I want you to study how much the noise changes on
+the output of the query databases of varying sizes.
+Report both the true query and the noised query for databases of sizes 10,
+100, 1000, and 10,000.
